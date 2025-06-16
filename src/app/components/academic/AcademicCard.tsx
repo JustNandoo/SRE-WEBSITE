@@ -13,7 +13,7 @@ export interface AcademicCardProps {
 const AcademicCard: React.FC<AcademicCardProps> = ({
   id,
   title,
-  image,
+  // image,
   description,
   category = "Solar Technology"
 }) => {
