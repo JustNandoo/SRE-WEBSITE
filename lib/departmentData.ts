@@ -55,7 +55,7 @@ export const teamMembers: TeamMember[] = [
     id: 1,
     name: "Sarah Johnson",
     position: "PR Director",
-    department: DepartmentType.PR,
+    department: DepartmentType.PM,
     image: "/images/team/sarah.jpg",
     bio: "With over 10 years of experience in public relations, Sarah leads our PR initiatives.",
   },
