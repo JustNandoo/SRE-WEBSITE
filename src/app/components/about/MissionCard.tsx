@@ -5,7 +5,7 @@ interface MissionProps{
   imgPath: string,
   heading: string,
   text: string,
-  children: React.ReactNode,
+  // children: React.ReactNode,
 }
 
 interface MissionWrapper{
