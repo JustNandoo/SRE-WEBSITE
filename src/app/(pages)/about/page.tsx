@@ -2,7 +2,7 @@ import Hero from "@/app/layouts/about/Hero";
 import Vismis from "@/app/layouts/about/VismisSect";
 import Structure from "@/app/layouts/about/StructureSect";
 import PresdirSect from "@/app/layouts/about/PresdirSection";
-import Departmen from "@/app/layouts/about/DepartmentSection";
+import Department from "@/app/layouts/about/DepartmentSection";
 import SectionContact from "@/app/layouts/about/SectionContact";
 
 export default function Page() {
@@ -12,7 +12,7 @@ export default function Page() {
       <Vismis/>
       <Structure/>
       <PresdirSect/>
-      <Departmen/>
+      <Department/>
       <SectionContact/>
     </div>
   );

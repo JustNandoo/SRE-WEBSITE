@@ -101,30 +101,33 @@ const DepartmentSection: React.FC = () => {
                 <p className="text-sm text-gray-600 mt-1 mb-4">
                   {department.description}
                 </p>
-                <Link
-                  href="#"
-                  ref={(el) => (buttonRefs.current[department.id] = el)}
-                  onMouseEnter={() => handleMouseEnter(department.id)}
-                  onMouseLeave={() => handleMouseLeave(department.id)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openModal(department.id);
-                  }}
-                  className="flex max-w-md mx-auto items-center justify-center py-2.5 px-6 sm:px-4 md:px-8 rounded-full font-medium text-white bg-[#012e21] border-2 text-xs border-[#fff0aa] shadow-lg transition-all hover:shadow-sm"
-                >
-                  <span>Meet The Team</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                <Link href="#" passHref legacyBehavior>
+                  <a
+                    ref={(el) => {
+                      buttonRefs.current[department.id] = el;
+                    }}
+                    onMouseEnter={() => handleMouseEnter(department.id)}
+                    onMouseLeave={() => handleMouseLeave(department.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openModal(department.id);
+                    }}
+                    className="flex max-w-md mx-auto items-center justify-center py-2.5 px-6 sm:px-4 md:px-8 rounded-full font-medium text-white bg-[#012e21] border-2 text-xs border-[#fff0aa] shadow-lg transition-all hover:shadow-sm"
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                    <span>Meet The Team</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </a>
                 </Link>
               </div>
             </div>
