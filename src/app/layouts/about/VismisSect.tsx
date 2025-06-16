@@ -1,0 +1,64 @@
+import Image from "next/image"
+import { MissionCardWrapper, MissionCard } from "../../components/about/MissionCard"
+
+export default function vismis(){
+  return(
+    <div className="bg-[#F2C601] w-full min-h-screen p-10 relative">
+      <article className="lg:w-1/2 mx-auto text-center mb-20">
+        <div className="w-auto flex -space-x-7 items-baseline justify-center mb-5 relative">
+          <h2 className="text-7xl text-[#10926C] font-bold">
+            Vision
+          </h2>
+          <Image
+            src="/img/icons/about/union.svg"
+            alt="union.svg"
+            width={50}
+            height={50}
+            className="relative -top-5"
+          />
+        </div>
+        <p className="text-xl text-[#022E21] tracking-wider">
+          Raise interest and spread insight among PENS students regarding Renewable Energy by developing innovation, exchanging ideas, and facilitating students as active students in the field of Renewable Energy
+        </p>
+        
+      </article>
+
+      <article className="max-w-7xl mx-auto mb-20">
+        <div className="flex items-baseline justify-center  mb-10">
+          <Image
+            src="/img/icons/about/union (1).svg"
+            alt="union (1).svg"
+            width={100}
+            height={100}
+          />
+          <h2 className="text-7xl text-[#134576] font-bold">
+            Mission
+          </h2>
+        </div>
+
+        <MissionCardWrapper>
+          <MissionCard
+            imgPath="math.gif"
+            heading="Education"
+            text="Disseminating knowledge and implementing the development of renewable energy that is green and sustainable."
+          />
+          <MissionCard
+            imgPath="eco-earth.gif"
+            heading="Environment"
+            text="Reducing the impact of conventional energy, preserving culture, and protecting the Earth."
+          />
+          <MissionCard
+            imgPath="wind-turbine.gif"
+            heading="Technology"
+            text="Developing cutting-edge innovations to increase the capacity and benefits of renewable energy for the surrounding environment."
+          />
+          <MissionCard
+            imgPath="renewable-energy.gif"
+            heading="Law"
+            text="Supporting the transition from conventional energy to green energy to achieve Indonesia's net zero emission target."
+          />
+        </MissionCardWrapper>
+      </article>
+    </div>
+  )
+}
