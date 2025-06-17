@@ -67,7 +67,7 @@ const DepartmentSection: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             A TEAM OF
             <br />
-            ALL OUR DEPARTMENT
+            ALL OUR DEPARTMENTS
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
