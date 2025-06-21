@@ -8,12 +8,12 @@ import SectionContact from "@/app/layouts/about/SectionContact";
 export default function Page() {
   return (
     <div className="relative">
-      <Hero/>
-      <Vismis/>
-      <Structure/>
-      <PresdirSect/>
-      <Department/>
-      <SectionContact/>
+      <Hero />
+      <Vismis />
+      <Structure />
+      <PresdirSect />
+      <Department />
+      <SectionContact />
     </div>
   );
 }
