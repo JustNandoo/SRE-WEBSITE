@@ -3,7 +3,7 @@ import Vismis from "@/app/layouts/about/VismisSect";
 import Structure from "@/app/layouts/about/StructureSect";
 import PresdirSect from "@/app/layouts/about/PresdirSection";
 import Department from "@/app/layouts/about/DepartmentSection";
-import SectionContact from "@/app/layouts/about/SectionContact";
+import Contact from "@/app/layouts/SectionContact";
 
 export default function Page() {
   return (
@@ -13,7 +13,7 @@ export default function Page() {
       <Structure />
       <PresdirSect />
       <Department />
-      <SectionContact />
+      <Contact />
     </div>
   );
 }

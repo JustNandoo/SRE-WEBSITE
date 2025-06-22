@@ -1,6 +1,6 @@
 import Home from "@/app/layouts/article/SectionHome";
 import Article from "@/app/layouts/article/SectionArticle";
-import Contact from "@/app/layouts/article/SectionContact";
+import Contact from "@/app/layouts/SectionContact";
 
 export default function Page() {
   return (

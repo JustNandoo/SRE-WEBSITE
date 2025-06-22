@@ -1,5 +1,5 @@
-import Contact from "@/app/layouts/academic/SectionContact";
 import Home from "@/app/layouts/academic/SectionHome";
+import Contact from "@/app/layouts/SectionContact";
 
 export default function Page() {
   return (
