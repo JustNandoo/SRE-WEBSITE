@@ -3,10 +3,17 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function News() {
   const buttonRef = useRef<HTMLAnchorElement | null>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
   const [hoverAnimation, setHoverAnimation] = useState<gsap.core.Tween | null>(
     null
   );
@@ -26,13 +33,66 @@ export default function News() {
     }
   }, []);
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header Animation
+      gsap.from(headerRef.current, {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        y: -50,
+        duration: 1,
+        ease: "power2.out",
+      });
+
+      // Cards Animation
+      gsap.from(cardsRef.current, {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: "power2.out",
+        stagger: 0.2,
+      });
+
+      // Button Animation
+      gsap.from(buttonRef.current, {
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        scale: 0.8,
+        y: 30,
+        duration: 0.8,
+        ease: "back.out(1.7)",
+        delay: 0.5,
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="relative h-full bg-[url('/img/bg/bg2.png')] bg-cover bg-fixed bg-center">
+    <div
+      ref={sectionRef}
+      className="relative h-full bg-[url('/img/bg/bg2.png')] bg-cover bg-fixed bg-center"
+    >
       <div className="mx-auto h-full flex flex-col items-center px-4 py-8">
         {/* Header section */}
-        <div className="w-full flex flex-col items-center mb-4 md:mb-12 px-4">
+        <div
+          ref={headerRef}
+          className="w-full flex flex-col items-center mb-4 md:mb-12 px-4"
+        >
           <div className="relative w-full max-w-md flex justify-between items-start">
-            {/* Text content */}
             <div className="flex-1 flex flex-col">
               <h1 className="text-center text-3xl md:text-4xl lg:text-[3.5rem] font-semibold">
                 <span className="text-yellow-200">{"WHAT'S NEW AT"}</span>
@@ -42,7 +102,6 @@ export default function News() {
               </h1>
             </div>
 
-            {/* Image - positioned absolutely on larger screens */}
             <div className="absolute -right-20 top-1/2 transform -translate-y-1/2 hidden md:block">
               <Image
                 src="/img/icons/signAsk.png"
@@ -55,64 +114,33 @@ export default function News() {
           </div>
         </div>
 
-        {/* Three separate boxes container */}
+        {/* Boxes */}
         <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Box 1 */}
-          <div className="w-full p-6 bg-[#022E21] rounded-[2rem] shadow-xl space-y-5">
-            <div className="flex flex-col -space-y-7 text-[#FFF1AA]">
-              <h1 className="text-[3rem] font-bold">Lorem</h1>
-              <h1 className="text-[3rem] font-bold">Ipsum</h1>
+          {[1, 2, 3].map((_, idx) => (
+            <div
+              key={idx}
+              ref={(el) => {
+                if (el) cardsRef.current[idx] = el;
+              }}
+              className="w-full p-6 bg-[#022E21] rounded-[2rem] shadow-xl space-y-5"
+            >
+              <div className="flex flex-col -space-y-7 text-[#FFF1AA]">
+                <h1 className="text-[3rem] font-bold">Lorem</h1>
+                <h1 className="text-[3rem] font-bold">Ipsum</h1>
+              </div>
+              <p className="text-[#FFF1AA]/80">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+                in dui mauris.
+              </p>
+              <Image
+                src="/img/bg/bg1.jpg"
+                width={100}
+                height={100}
+                alt="Decoration icon"
+                className="w-full rounded-[1.5rem]"
+              />
             </div>
-            <p className="text-[#FFF1AA]/80">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in
-              dui mauris.
-            </p>
-            <Image
-              src="/img/bg/bg1.jpg"
-              width={100}
-              height={100}
-              alt="Decoration icon"
-              className="w-full rounded-[1.5rem]"
-            />
-          </div>
-
-          {/* Box 2 */}
-          <div className="w-full p-6 bg-[#022E21] rounded-[2rem] shadow-xl space-y-5">
-            <div className="flex flex-col -space-y-7 text-[#FFF1AA]">
-              <h1 className="text-[3rem] font-bold">Lorem</h1>
-              <h1 className="text-[3rem] font-bold">Ipsum</h1>
-            </div>
-            <p className="text-[#FFF1AA]/80">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in
-              dui mauris.
-            </p>
-            <Image
-              src="/img/bg/bg1.jpg"
-              width={100}
-              height={100}
-              alt="Decoration icon"
-              className="w-full rounded-[1.5rem]"
-            />
-          </div>
-
-          {/* Box 3 */}
-          <div className="w-full p-6 bg-[#022E21] rounded-[2rem] shadow-xl space-y-5">
-            <div className="flex flex-col -space-y-7 text-[#FFF1AA]">
-              <h1 className="text-[3rem] font-bold">Lorem</h1>
-              <h1 className="text-[3rem] font-bold">Ipsum</h1>
-            </div>
-            <p className="text-[#FFF1AA]/80">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in
-              dui mauris.
-            </p>
-            <Image
-              src="/img/bg/bg1.jpg"
-              width={100}
-              height={100}
-              alt="Decoration icon"
-              className="w-full rounded-[1.5rem]"
-            />
-          </div>
+          ))}
         </div>
 
         {/* button */}

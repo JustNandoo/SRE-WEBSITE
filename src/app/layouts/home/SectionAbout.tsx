@@ -5,6 +5,9 @@ import localFont from "next/font/local";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -22,20 +25,117 @@ export default function About() {
     null
   );
 
-  useEffect(() => {
-    if (buttonRef.current) {
-      const animation = gsap.to(buttonRef.current, {
-        scale: 1.05,
-        y: -3,
-        boxShadow: "0px 12px 0px 0px rgba(1,46,33, 50%)",
-        ease: "power2.out",
-        duration: 0.2,
-        paused: true,
-      });
+useEffect(() => {
+  const ctx = gsap.context(() => {
+    // 👇 Scroll animation buat button
+    gsap.from(buttonRef.current, {
+      scrollTrigger: {
+        trigger: buttonRef.current,
+        start: "top 90%",
+        toggleActions: "play reverse play reverse",
+      },
+      opacity: 0,
+      scale: 0,
+      duration: 0.6,
+      ease: "back.out(1.7)",
+    });
 
-      setHoverAnimation(animation);
-    }
-  }, []);
+
+    // Animasi h3 (Hello Energyzens)
+    gsap.from(".about-h3", {
+      scrollTrigger: {
+        trigger: ".about-h3",
+        start: "top 80%",
+        toggleActions: "play reverse play reverse",
+      },
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.6,
+      ease: "power2.out",
+    });
+
+    // h2 (About)
+    gsap.from(".about-h2", {
+      scrollTrigger: {
+        trigger: ".about-h2",
+        start: "top 80%",
+        toggleActions: "play reverse play reverse",
+      },
+      opacity: 0,
+      x: -100,
+      duration: 0.6,
+      ease: "power3.out",
+    });
+
+    // h1 (SRE PENS)
+    gsap.from(".about-h1", {
+      scrollTrigger: {
+        trigger: ".about-h1",
+        start: "top 80%",
+        toggleActions: "play reverse play reverse",
+      },
+      opacity: 0,
+      x: -100,
+      duration: 0.6,
+      ease: "power3.out",
+    });
+
+    // Paragraf
+    gsap.from(".about-desc", {
+      scrollTrigger: {
+        trigger: ".about-desc",
+        start: "top 85%",
+        toggleActions: "play reverse play reverse",
+      },
+      opacity: 0,
+      y: 50,
+      duration: 0.6,
+      ease: "power2.out",
+    });
+
+    // Tombol
+    gsap.from(buttonRef.current, {
+      scrollTrigger: {
+        trigger: buttonRef.current,
+        start: "top 90%",
+        toggleActions: "play reverse play reverse",
+      },
+      opacity: 0,
+      scale: 0,
+      duration: 0.6,
+      ease: "back.out(1.7)",
+    });
+
+    // h4 dan link (Official Website)
+    gsap.from([".about-h4", ".about-link"], {
+      scrollTrigger: {
+        trigger: ".about-h4",
+        start: "top 85%",
+        toggleActions: "play reverse play reverse",
+      },
+      opacity: 0,
+      y: 40,
+      stagger: 0.15,
+      duration: 0.5,
+      ease: "power2.out",
+    });
+  });
+
+  if (buttonRef.current) {
+    const animation = gsap.to(buttonRef.current, {
+      scale: 1.05,
+      y: -3,
+      boxShadow: "0px 12px 0px 0px rgba(1,46,33, 0.5)",
+      ease: "power2.out",
+      duration: 0.2,
+      paused: true,
+    });
+
+    setHoverAnimation(animation);
+  }
+
+  return () => ctx.revert(); // clean up saat komponen unmount
+}, []);
 
   return (
     <div>
@@ -49,7 +149,7 @@ export default function About() {
           <div className="mt-5">
             {/* slogan welcome */}
             <h3
-              className={`text-green-700 font-bold text-lg sm:text-2xl md:text-3xl text-center ${poppins.variable}`}
+              className={`about-h3 text-green-700 font-bold text-lg sm:text-2xl md:text-3xl text-center ${poppins.variable}`}
             >
               ★Hello, Energyzens!★
             </h3>
@@ -57,23 +157,21 @@ export default function About() {
             <div className="flex flex-col leading-none mt-10">
               {/* h2 tetap di kiri */}
               <h2
-                className={`self-start text-[#022E21] font-extrabold text-lg text-[2rem] md:text-[3rem] lg:text-[4rem] ${poppins.variable}`}
+                className={`about-h2 self-start text-[#022E21] font-extrabold text-lg text-[2rem] md:text-[3rem] lg:text-[4rem] ${poppins.variable}`}
               >
                 About
               </h2>
               {/* h1 berada di tengah */}
               <h1
-                className={`self-center text-green-700 font-extrabold text-[5.45rem] md:text-[6.9rem] lg:text-[10rem] xl:text-[11.55rem] ${akira.className}`}
+                className={`about-h1 self-center text-green-700 font-extrabold text-[5.45rem] md:text-[6.9rem] lg:text-[10rem] xl:text-[11.55rem] ${akira.className}`}
               >
                 SRE <span className="text-[#134576]">PENS</span>
               </h1>
             </div>
             {/* Description */}
-            <p className="text-gray-800 text-sm sm:text-sm md:text-lg mt-12 text-center leading-relaxed max-w-2xl mx-auto">
+            <p className="about-desc text-gray-800 text-sm sm:text-sm md:text-lg mt-12 text-center leading-relaxed max-w-2xl mx-auto">
               <span className="font-extrabold">SRE PENS</span> is a{" "}
-              <span className="text-[#134576] font-bold">
-                Student Chapter
-              </span>{" "}
+              <span className="text-[#134576] font-bold">Student Chapter</span>{" "}
               that pays attention to Renewable Energy issues, accommodates the
               knowledge of PENS students in Renewable Energy, and is able to
               implement innovations related to the sustainability of the energy
@@ -104,13 +202,13 @@ export default function About() {
           </Link>
           <div className="flex flex-col items-center justify-center space-y-2">
             <h4
-              className={`text-[#fff1aa] font-extrabold text-2xl md:text-3xl lg:text-4xl text-center mt-32 ${poppins.variable}`}
+              className={`about-h4 text-[#fff1aa] font-extrabold text-2xl md:text-3xl lg:text-4xl text-center mt-32 ${poppins.variable}`}
             >
               Part of <span className="text-[#022E21]">SRE Indonesia</span>
             </h4>
             <Link
               href={"#"}
-              className="text-[#F2C601] font-bold text-md md:text-xl lg:text-2xl underline flex sm:font-semibold items-center justify-center"
+              className="about-link text-[#F2C601] font-bold text-md md:text-xl lg:text-2xl underline flex sm:font-semibold items-center justify-center"
             >
               Official Website
               <svg
