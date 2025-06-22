@@ -10,64 +10,42 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const SectionContact: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<Array<HTMLHeadingElement | null>>([]);
-  const iconsRef = useRef<Array<HTMLAnchorElement | null>>([]);
-  const copyrightRef = useRef<HTMLDivElement>(null);
-  const balingRef = useRef<HTMLImageElement>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const heading1Ref = useRef<HTMLHeadingElement | null>(null);
+  const heading2Ref = useRef<HTMLHeadingElement | null>(null);
+  const balingRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Animasi Judul
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 70%",
-        },
-      });
-
-      // Animasi Ikon Sosmed
-      gsap.from(iconsRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 70%",
-        },
-      });
-
-      // Copyright muncul dari bawah
-      gsap.from(copyrightRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 70%",
-        },
-      });
-
-      // Baling-baling muter
-      gsap.fromTo(
-        balingRef.current,
-        { rotate: 0 },
-        {
-          rotate: 360,
-          duration: 2,
-          repeat: -1,
-          ease: "linear",
-        }
-      );
-    }, containerRef);
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%",
+            toggleActions: "play reverse play reverse", // biar hidup pas scroll balik
+            // markers: true, // boleh aktifin buat debugging
+          },
+        })
+        .from([heading1Ref.current, heading2Ref.current], {
+          opacity: 0,
+          y: 50,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "power3.out",
+        })
+        .fromTo(
+          balingRef.current,
+          { scale: 0, opacity: 0, rotate: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            rotate: 360,
+            duration: 1.2,
+            ease: "back.out(1.7)",
+          },
+          "-=0.6" // overlap dikit sama heading
+        );
+    }, sectionRef);
 
     return () => ctx.revert();
   }, []);
@@ -96,45 +74,40 @@ const SectionContact: React.FC = () => {
 
   return (
     <div
-      ref={containerRef}
+      ref={sectionRef}
       className="relative h-screen flex items-center justify-center bg-[url('/img/bg/bg3.png')] bg-cover bg-fixed bg-center"
     >
       <div className="z-10 text-center px-4">
         <h1
-          ref={(el) => {
-            if (el) titleRef.current[0] = el;
-          }}
+          ref={heading1Ref}
           className="text-white text-5xl md:text-7xl font-bold mb-2"
         >
-          {"Let's Get"}
+          {`Let's Get`}
         </h1>
         <h1
-          ref={(el) => {
-            if (el) titleRef.current[1] = el;
-          }}
-          className="text-[#FFF1AA] text-5xl md:text-7xl font-bold mb-12 relative"
+          ref={heading2Ref}
+          className="relative text-[#FFF1AA] text-5xl md:text-7xl font-bold mb-12"
         >
           Connected
-          <span className="absolute sm:inline-block right-115 top-57 hidden">
+          <span className="absolute top-[35%] -right-[10%] sm:block">
             <Image
               ref={balingRef}
               src="/img/icons/UnionBalingIjo.png"
               alt="Turbin Angin"
               width={100}
               height={100}
+              className="w-12 md:w-16 lg:w-20"
             />
           </span>
         </h1>
 
+        {/* Sosmed icon */}
         <div className="flex justify-center space-x-6 mb-16">
-          {socialLinks.map((social, i) => (
+          {socialLinks.map((social) => (
             <Link
               key={social.id}
               href={social.url}
               aria-label={social.label}
-              ref={(el) => {
-                if (el) iconsRef.current[i] = el;
-              }}
               className="bg-emerald-500 text-white p-4 rounded-full hover:bg-emerald-600 transition-all duration-300 transform hover:scale-110"
             >
               {social.icon}
@@ -142,10 +115,7 @@ const SectionContact: React.FC = () => {
           ))}
         </div>
 
-        <div
-          ref={copyrightRef}
-          className="text-gray-400 text-sm flex justify-center items-center mt-24"
-        >
+        <div className="text-gray-400 text-sm flex justify-center items-center mt-24">
           Copyright © SRE PENS 2025
         </div>
       </div>
