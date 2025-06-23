@@ -101,8 +101,8 @@ const DepartmentSection: React.FC = () => {
                 <p className="text-sm text-gray-600 mt-1 mb-4">
                   {department.description}
                 </p>
-                <Link href="#" passHref legacyBehavior>
-                  <a
+                <Link href="#"
+                  
                     ref={(el) => {
                       buttonRefs.current[department.id] = el;
                     }}
@@ -127,7 +127,7 @@ const DepartmentSection: React.FC = () => {
                         clipRule="evenodd"
                       />
                     </svg>
-                  </a>
+                  
                 </Link>
               </div>
             </div>

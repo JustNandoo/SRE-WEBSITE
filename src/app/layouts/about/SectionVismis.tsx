@@ -11,9 +11,11 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Vismis() {
   const visionRef = useRef(null);
   const missionRef = useRef(null);
+  const cardWrapperRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Vision animation
       gsap.from(visionRef.current, {
         scrollTrigger: {
           trigger: visionRef.current,
@@ -26,6 +28,7 @@ export default function Vismis() {
         ease: "power3.out",
       });
 
+      // Mission heading animation
       gsap.from(missionRef.current, {
         scrollTrigger: {
           trigger: missionRef.current,
@@ -37,6 +40,21 @@ export default function Vismis() {
         duration: 1,
         delay: 0.2,
         ease: "power3.out",
+      });
+
+      // Card animation
+      const cards = gsap.utils.toArray(".mission-card") as HTMLElement[];
+      gsap.from(cards, {
+        scrollTrigger: {
+          trigger: cardWrapperRef.current,
+          start: "top 85%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power2.out",
       });
     });
 
@@ -74,28 +92,30 @@ export default function Vismis() {
           <h2 className="text-7xl text-[#134576] font-bold">Mission</h2>
         </div>
 
-        <MissionCardWrapper>
-          <MissionCard
-            imgPath="math.gif"
-            heading="Education"
-            text="Disseminating knowledge and implementing the development of renewable energy that is green and sustainable."
-          />
-          <MissionCard
-            imgPath="eco-earth.gif"
-            heading="Environment"
-            text="Reducing the impact of conventional energy, preserving culture, and protecting the Earth."
-          />
-          <MissionCard
-            imgPath="wind-turbine.gif"
-            heading="Technology"
-            text="Developing cutting-edge innovations to increase the capacity and benefits of renewable energy for the surrounding environment."
-          />
-          <MissionCard
-            imgPath="renewable-energy.gif"
-            heading="Law"
-            text="Supporting the transition from conventional energy to green energy to achieve Indonesia's net zero emission target."
-          />
-        </MissionCardWrapper>
+        <div ref={cardWrapperRef}>
+          <MissionCardWrapper>
+            <MissionCard
+              imgPath="math.gif"
+              heading="Education"
+              text="Disseminating knowledge and implementing the development of renewable energy that is green and sustainable."
+            />
+            <MissionCard
+              imgPath="eco-earth.gif"
+              heading="Environment"
+              text="Reducing the impact of conventional energy, preserving culture, and protecting the Earth."
+            />
+            <MissionCard
+              imgPath="wind-turbine.gif"
+              heading="Technology"
+              text="Developing cutting-edge innovations to increase the capacity and benefits of renewable energy for the surrounding environment."
+            />
+            <MissionCard
+              imgPath="renewable-energy.gif"
+              heading="Law"
+              text="Supporting the transition from conventional energy to green energy to achieve Indonesia's net zero emission target."
+            />
+          </MissionCardWrapper>
+        </div>
       </article>
     </div>
   );
