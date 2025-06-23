@@ -108,7 +108,10 @@ const MeetDepartment: React.FC = () => {
       const diff = startX - endX;
       const cardWidth = container.offsetWidth / slidesToShow;
       if (Math.abs(diff) > 50) {
-        container.scrollBy({ left: diff > 0 ? cardWidth : -cardWidth, behavior: "smooth" });
+        container.scrollBy({
+          left: diff > 0 ? cardWidth : -cardWidth,
+          behavior: "smooth",
+        });
       }
       startX = null;
     };
@@ -122,40 +125,41 @@ const MeetDepartment: React.FC = () => {
   }, [slidesToShow]);
 
   // Animation
-useEffect(() => {
-  const ctx = gsap.context(() => {
-    // Animate title
-    if (titleRef.current) {
-      gsap.from(titleRef.current, {
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      cardRefs.current = [];
+      // Animate title
+      if (titleRef.current) {
+        gsap.from(titleRef.current, {
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 80%",
+            toggleActions: "play reverse play reverse",
+          },
+          opacity: 0,
+          y: 30,
+          duration: 1,
+          ease: "power3.out",
+        });
+      }
+
+      // Animate cards
+      gsap.from(cardRefs.current, {
         scrollTrigger: {
-          trigger: titleRef.current,
+          trigger: containerRef.current,
           start: "top 80%",
           toggleActions: "play reverse play reverse",
         },
         opacity: 0,
-        y: 30,
+        y: 50,
         duration: 1,
-        ease: "power3.out",
+        stagger: 0.2,
+        ease: "power2.out",
       });
-    }
+    }, containerRef);
 
-    // Animate cards
-    gsap.from(cardRefs.current, {
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 80%",
-        toggleActions: "play reverse play reverse",
-      },
-      opacity: 0,
-      y: 50,
-      duration: 1,
-      stagger: 0.2,
-      ease: "power2.out",
-    });
-  }, containerRef);
-
-  return () => ctx.revert();
-}, []);
+    return () => ctx.revert();
+  }, []);
 
   const duplicatedSlides = [...departments, ...departments];
 
@@ -163,7 +167,10 @@ useEffect(() => {
     <div className="min-h-screen bg-gradient-to-b from-yellow-100 to-[#134576] py-64 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h1 ref={titleRef} className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4">
+          <h1
+            ref={titleRef}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4"
+          >
             Meet Our Leaders
           </h1>
         </div>
@@ -183,7 +190,9 @@ useEffect(() => {
                 key={`${dept.id}-${index}`}
                 className="w-full md:w-[calc(100%/3)] flex-shrink-0 px-4"
                 style={{ minWidth: `${100 / slidesToShow}%` }}
-                ref={(el) => (cardRefs.current[index] = el)}
+                ref={(el) => {
+                  if (el) cardRefs.current[index] = el;
+                }}
               >
                 <div className="relative aspect-square overflow-hidden rounded-xl group bg-[#10926C]">
                   <Image
