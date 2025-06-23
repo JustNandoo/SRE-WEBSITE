@@ -68,8 +68,8 @@ export default function Vismis() {
         <div className="w-auto flex -space-x-7 items-baseline justify-center mb-5 relative">
           <h2 className="text-7xl text-[#10926C] font-bold">Vision</h2>
           <Image
-            src="/img/icons/about/union.svg"
-            alt="union.svg"
+            src="/img/icons/about/BalingBiru.svg"
+            alt="BalingBiru.svg"
             width={50}
             height={50}
             className="relative -top-5"
@@ -84,8 +84,8 @@ export default function Vismis() {
       <article ref={missionRef} className="max-w-7xl mx-auto mb-20">
         <div className="flex items-baseline justify-center mb-10">
           <Image
-            src="/img/icons/about/union (1).svg"
-            alt="union (1).svg"
+            src="/img/icons/about/Panel.svg"
+            alt="Panel.svg"
             width={100}
             height={100}
           />
