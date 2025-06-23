@@ -1,14 +1,54 @@
-import Image from "next/image"
-import { MissionCardWrapper, MissionCard } from "../../components/about/MissionCard"
+"use client";
 
-export default function vismis(){
-  return(
+import Image from "next/image";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import { MissionCardWrapper, MissionCard } from "../../components/about/MissionCard";
+
+gsap.registerPlugin(ScrollTrigger);
+
+export default function Vismis() {
+  const visionRef = useRef(null);
+  const missionRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(visionRef.current, {
+        scrollTrigger: {
+          trigger: visionRef.current,
+          start: "top 80%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: "power3.out",
+      });
+
+      gsap.from(missionRef.current, {
+        scrollTrigger: {
+          trigger: missionRef.current,
+          start: "top 80%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        delay: 0.2,
+        ease: "power3.out",
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
     <div className="bg-[#F2C601] w-full min-h-screen p-10 relative">
-      <article className="lg:w-1/2 mx-auto text-center mb-20">
+      {/* Vision Section */}
+      <article ref={visionRef} className="lg:w-1/2 mx-auto text-center mb-20">
         <div className="w-auto flex -space-x-7 items-baseline justify-center mb-5 relative">
-          <h2 className="text-7xl text-[#10926C] font-bold">
-            Vision
-          </h2>
+          <h2 className="text-7xl text-[#10926C] font-bold">Vision</h2>
           <Image
             src="/img/icons/about/union.svg"
             alt="union.svg"
@@ -20,20 +60,18 @@ export default function vismis(){
         <p className="text-xl text-[#022E21] tracking-wider">
           Raise interest and spread insight among PENS students regarding Renewable Energy by developing innovation, exchanging ideas, and facilitating students as active students in the field of Renewable Energy
         </p>
-        
       </article>
 
-      <article className="max-w-7xl mx-auto mb-20">
-        <div className="flex items-baseline justify-center  mb-10">
+      {/* Mission Section */}
+      <article ref={missionRef} className="max-w-7xl mx-auto mb-20">
+        <div className="flex items-baseline justify-center mb-10">
           <Image
             src="/img/icons/about/union (1).svg"
             alt="union (1).svg"
             width={100}
             height={100}
           />
-          <h2 className="text-7xl text-[#134576] font-bold">
-            Mission
-          </h2>
+          <h2 className="text-7xl text-[#134576] font-bold">Mission</h2>
         </div>
 
         <MissionCardWrapper>
@@ -60,5 +98,5 @@ export default function vismis(){
         </MissionCardWrapper>
       </article>
     </div>
-  )
+  );
 }
