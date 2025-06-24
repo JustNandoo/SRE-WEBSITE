@@ -6,6 +6,7 @@ export interface EventData {
   time: string;
   category: string;
   description: string;
+  image: string; // 🆕 added image field
 }
 
 export const upcomingEvents: EventData[] = [
@@ -15,7 +16,8 @@ export const upcomingEvents: EventData[] = [
     date: "2025-06-25",
     time: "14:00",
     category: "Workshop",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    image: "https://i.pinimg.com/736x/19/ef/aa/19efaa4a1192466e3fa4c554bee2833e.jpg"
   },
   {
     id: "2",
@@ -23,7 +25,8 @@ export const upcomingEvents: EventData[] = [
     date: "2025-06-26",
     time: "10:00",
     category: "Seminar",
-    description: "Sed do eiusmod tempor incididunt ut labore"
+    description: "Sed do eiusmod tempor incididunt ut labore",
+    image: "https://i.pinimg.com/736x/19/ef/aa/19efaa4a1192466e3fa4c554bee2833e.jpg"
   },
   {
     id: "3",
@@ -31,7 +34,8 @@ export const upcomingEvents: EventData[] = [
     date: "2025-06-27",
     time: "16:00",
     category: "Conference",
-    description: "Magna aliqua ut enim ad minim veniam"
+    description: "Magna aliqua ut enim ad minim veniam",
+    image: "https://i.pinimg.com/736x/19/ef/aa/19efaa4a1192466e3fa4c554bee2833e.jpg"
   },
   {
     id: "4",
@@ -39,6 +43,7 @@ export const upcomingEvents: EventData[] = [
     date: "2025-06-28",
     time: "09:00",
     category: "Training",
-    description: "Ullamco laboris nisi ut aliquip ex ea commodo"
+    description: "Ullamco laboris nisi ut aliquip ex ea commodo",
+    image: "https://i.pinimg.com/736x/19/ef/aa/19efaa4a1192466e3fa4c554bee2833e.jpg"
   }
 ];
