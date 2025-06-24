@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 import ArticleCard, {
   ArticleCardProps,
 } from "../../components/article/ArticleCard";
 import { articleContent } from "../../../../lib/articleData";
 import { Poppins } from "next/font/google";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -18,6 +22,62 @@ export default function ArticleSection() {
   const [filteredArticles, setFilteredArticles] = useState<ArticleCardProps[]>(
     []
   );
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const searchRef = useRef<HTMLDivElement | null>(null);
+  const cardsWrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Heading animation
+      if (headingRef.current) {
+        gsap.from(headingRef.current, {
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: "top 85%",
+            toggleActions: "play reverse play reverse",
+          },
+          opacity: 0,
+          y: -30,
+          duration: 1,
+          ease: "power3.out",
+        });
+      }
+
+      // Search bar animation
+      if (searchRef.current) {
+        gsap.from(searchRef.current, {
+          scrollTrigger: {
+            trigger: searchRef.current,
+            start: "top 85%",
+            toggleActions: "play reverse play reverse",
+          },
+          opacity: 0,
+          y: -20,
+          duration: 1,
+          delay: 0.2,
+          ease: "power3.out",
+        });
+      }
+
+      // Cards animation
+      if (cardsWrapperRef.current) {
+        gsap.from(cardsWrapperRef.current.children, {
+          scrollTrigger: {
+            trigger: cardsWrapperRef.current,
+            start: "top 85%",
+            toggleActions: "play reverse play reverse",
+          },
+          opacity: 0,
+          y: 50,
+          duration: 1,
+          stagger: 0.2,
+          ease: "power2.out",
+        });
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   // Filter articles based on search term
   useEffect(() => {
@@ -40,11 +100,12 @@ export default function ArticleSection() {
         {/* Header with search box */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <h2
+            ref={headingRef}
             className={`text-3xl md:text-4xl font-bold text-white ${poppins.variable} mb-4 sm:mb-0`}
           >
             Latest
           </h2>
-          <div className="w-full sm:w-auto">
+          <div className="w-full sm:w-auto" ref={searchRef}>
             <div className="relative">
               <input
                 type="text"
@@ -73,7 +134,7 @@ export default function ArticleSection() {
         </div>
 
         {/* Articles List */}
-        <div className="space-y-4">
+        <div className="space-y-4" ref={cardsWrapperRef}>
           {filteredArticles.map((article) => (
             <ArticleCard
               key={article.id}
