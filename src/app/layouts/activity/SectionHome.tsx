@@ -87,28 +87,37 @@ const SectionHome: React.FC = () => {
     <div ref={sectionRef} className="min-h-screen bg-[#10926C]">
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-20 md:py-48 lg:py-42">
         {/* Header */}
-        <div ref={headerRef} className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <h1 className={`${poppins.variable} text-[#FFF1AA] text-4xl sm:text-5xl lg:text-8xl font-bold mr-4`}>
-              {`WHAT'S NEWS AT`}
-            </h1>
-            <div className="flex items-center justify-center">
+        <div
+          ref={headerRef}
+          className="w-full flex flex-col items-center my-4 md:my-12 px-4"
+        >
+          <div className="relative w-full max-w-2xl flex justify-between items-start">
+            <div className="flex-1 flex flex-col">
+              <h1 className="text-center text-3xl md:text-4xl lg:text-[5rem] font-semibold">
+                <span className="text-yellow-200">{"WHAT'S NEW AT"}</span>
+              </h1>
+              <h1 className="text-center md:text-right px-3 text-2xl md:text-3xl lg:text-4xl font-extrabold">
+                <span className="text-teal-400">SRE PENS</span>
+              </h1>
+            </div>
+
+            <div className="absolute -right-20 top-1/2 transform -translate-y-1/2 hidden md:block">
               <Image
-                width={100}
-                height={100}
-                alt=""
-                src={"/img/icons/signAsk.png"}
-                className="w-14"
+                src="/img/icons/signAsk.png"
+                width={50}
+                height={50}
+                alt="Decoration icon"
+                className="w-10 h-10 md:w-12 md:h-12 lg:w-18 lg:h-18"
               />
             </div>
           </div>
-          <h2 className={`${poppins.variable} text-[#8DD3BF] ml-[30rem] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-8`}>
-            SRE PENS
-          </h2>
         </div>
 
         {/* Search Section */}
-        <div ref={searchRef} className="flex flex-col sm:flex-row sm:justify-start mb-8">
+        <div
+          ref={searchRef}
+          className="flex flex-col sm:flex-row sm:justify-start mb-8"
+        >
           <div className="w-full sm:w-xl sm:max-w-4xl">
             <p className={`text-white text-sm mb-2 ${poppins.variable}`}>
               Tired Scrolling? Try searching!
