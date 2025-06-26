@@ -1,13 +1,14 @@
-// src/layouts/activity/SectionHome.tsx
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import EventCard from "@/app/components/activity/EventCard";
 import { upcomingEvents, type EventData } from "../../../../lib/activityData";
-// import SignAsk from "img/icons/about/union.svg";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -20,6 +21,8 @@ const SectionHome: React.FC = () => {
   const [filteredEvents, setFilteredEvents] = useState<EventData[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const subheadingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     setFilteredEvents(upcomingEvents);
@@ -35,14 +38,49 @@ const SectionHome: React.FC = () => {
     setFilteredEvents(results);
   }, [searchTerm]);
 
+  // Animate header, search, and subheading
   useEffect(() => {
-    if (headerRef.current) {
-      gsap.fromTo(
-        headerRef.current,
-        { opacity: 0, y: -20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
-      );
-    }
+    const ctx = gsap.context(() => {
+      gsap.from(headerRef.current, {
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: "top 90%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        y: -40,
+        duration: 0.8,
+        ease: "power2.out",
+      });
+
+      gsap.from(searchRef.current, {
+        scrollTrigger: {
+          trigger: searchRef.current,
+          start: "top 95%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: "power2.out",
+        delay: 0.2,
+      });
+
+      gsap.from(subheadingRef.current, {
+        scrollTrigger: {
+          trigger: subheadingRef.current,
+          start: "top 95%",
+          toggleActions: "play reverse play reverse",
+        },
+        opacity: 0,
+        y: 20,
+        duration: 0.6,
+        ease: "power2.out",
+        delay: 0.3,
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -51,13 +89,10 @@ const SectionHome: React.FC = () => {
         {/* Header */}
         <div ref={headerRef} className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <h1
-              className={`${poppins.variable} text-[#FFF1AA] text-4xl sm:text-5xl lg:text-8xl font-bold mr-4`}
-            >
+            <h1 className={`${poppins.variable} text-[#FFF1AA] text-4xl sm:text-5xl lg:text-8xl font-bold mr-4`}>
               {`WHAT'S NEWS AT`}
             </h1>
             <div className="flex items-center justify-center">
-              {/* <span className="text-teal-600 font-bold text-xl">?</span> */}
               <Image
                 width={100}
                 height={100}
@@ -67,15 +102,13 @@ const SectionHome: React.FC = () => {
               />
             </div>
           </div>
-          <h2
-            className={`${poppins.variable} text-[#8DD3BF] ml-[30rem] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-8`}
-          >
+          <h2 className={`${poppins.variable} text-[#8DD3BF] ml-[30rem] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-8`}>
             SRE PENS
           </h2>
         </div>
 
-        {/* Search Section - Improved responsive layout */}
-        <div className="flex flex-col sm:flex-row sm:justify-start mb-8">
+        {/* Search Section */}
+        <div ref={searchRef} className="flex flex-col sm:flex-row sm:justify-start mb-8">
           <div className="w-full sm:w-xl sm:max-w-4xl">
             <p className={`text-white text-sm mb-2 ${poppins.variable}`}>
               Tired Scrolling? Try searching!
@@ -108,6 +141,7 @@ const SectionHome: React.FC = () => {
         {/* Upcoming Events Section */}
         <div>
           <h3
+            ref={subheadingRef}
             className={`${poppins.variable} text-3xl font-bold text-gray-800 mb-8`}
           >
             Upcoming Event
