@@ -44,10 +44,26 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
     return () => ctx.revert();
   }, []);
 
+  // Fungsi untuk menyingkat judul jika terlalu panjang
+  const truncateTitle = (text: string, maxLength: number): string => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + "...";
+  };
+
+  // Fungsi untuk menyingkat deskripsi jika terlalu panjang
+  const truncateDescription = (text: string, maxLength: number): string => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + "...";
+  };
+
   return (
     <div
       ref={cardRef}
-      className="relative w-full h-64 overflow-hidden rounded-lg shadow-md"
+      className="relative w-full h-72 overflow-hidden rounded-lg shadow-md"
     >
       <div className="absolute inset-0">
         <Image src={image} alt={title} fill className="object-cover" priority />
@@ -56,8 +72,10 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
 
       <div className="absolute flex inset-0 items-center justify-end sm:pl-72 pl-0">
         <div className="w-2/3 p-4 text-white">
-          <h3 className="sm:text-[2.5rem] text-lg font-bold mb-2">{title}</h3>
-          <p className="text-sm mb-3 line-clamp-3">{description}</p>
+          <h3 className="sm:text-[2.5rem] text-lg font-bold mb-2 leading-10">
+            {truncateTitle(title, 20)}
+          </h3>
+          <p className="text-sm mb-3 line-clamp-3">{truncateDescription(description, 150)}</p>
           <p className="text-xs">{date}</p>
         </div>
       </div>
