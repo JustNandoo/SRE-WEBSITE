@@ -14,39 +14,28 @@ interface EventCardProps {
   index: number;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event, index }) => {
+const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!cardRef.current) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        cardRef.current,
-        {
-          opacity: 0,
-          y: 60,
-          scale: 0.95,
-          willChange: "opacity, transform",
+      gsap.from(cardRef.current, {
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
         },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          delay: index * 0.05,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
+        opacity: 0,
+        y: 40,
+        duration: 1,
+        ease: "power3.out",
+      });
     }, cardRef);
 
     return () => ctx.revert();
-  }, [index]);
+  }, []);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

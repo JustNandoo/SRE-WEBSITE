@@ -63,7 +63,7 @@ const SectionHome: React.FC = () => {
         y: 30,
         duration: 0.8,
         ease: "power2.out",
-        delay: 0.2,
+        delay: 0.1,
       });
 
       gsap.from(subheadingRef.current, {
@@ -76,7 +76,7 @@ const SectionHome: React.FC = () => {
         y: 20,
         duration: 0.6,
         ease: "power2.out",
-        delay: 0.3,
+        delay: 0.1,
       });
     }, sectionRef);
 
