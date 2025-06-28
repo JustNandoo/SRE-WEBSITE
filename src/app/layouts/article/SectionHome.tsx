@@ -9,23 +9,37 @@ import { articleContent } from "../../../../lib/articleData";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Fungsi untuk menyingkat judul jika terlalu panjang
-const truncateTitle = (text: string, maxLength: number): string => {
-  if (text.length <= maxLength) {
-    return text;
-  }
-  return text.substring(0, maxLength) + "...";
-};
+// ===============================
+// 🔤 Tipe Props untuk ArticleCard
+// ===============================
+interface ArticleCardProps {
+  imageSrc: string;
+  title: string;
+  subtitle: string;
+  ctaText: string;
+  ctaLink: string;
+  date?: string;
+}
 
-// Fungsi untuk menyingkat deskripsi jika terlalu panjang
-const truncateDescription = (text: string, maxLength: number): string => {
-  if (text.length <= maxLength) {
-    return text;
-  }
-  return text.substring(0, maxLength) + "...";
-};
+// ===============================
+// 🔧 Fungsi bantu singkatin teks
+// ===============================
+const truncateTitle = (text: string, maxLength: number): string =>
+  text.length <= maxLength ? text : text.substring(0, maxLength) + "...";
 
-const ArticleCard = ({ imageSrc, title, subtitle, ctaText, ctaLink }: any) => (
+const truncateDescription = (text: string, maxLength: number): string =>
+  text.length <= maxLength ? text : text.substring(0, maxLength) + "...";
+
+// ===============================
+// 📦 Komponen Card Artikel
+// ===============================
+const ArticleCard: React.FC<ArticleCardProps> = ({
+  imageSrc,
+  title,
+  subtitle,
+  ctaText,
+  ctaLink,
+}) => (
   <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-lg overflow-hidden shadow-lg">
     <Image src={imageSrc} alt={title} fill className="object-cover" priority />
     <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/70 flex items-center">
@@ -33,7 +47,9 @@ const ArticleCard = ({ imageSrc, title, subtitle, ctaText, ctaLink }: any) => (
         <h3 className="sm:text-[2.5rem] text-lg font-bold mb-2 leading-10">
           {truncateTitle(title, 20)}
         </h3>
-        <p className="text-sm md:text-base mb-4 text-gray-200">{truncateDescription(subtitle, 50)}</p>
+        <p className="text-sm md:text-base mb-4 text-gray-200">
+          {truncateDescription(subtitle, 50)}
+        </p>
         <Link href={ctaLink}>
           <span className="inline-block bg-yellow-400 text-black font-medium px-4 py-2 rounded-full text-sm hover:bg-yellow-500 transition duration-300">
             {ctaText}
@@ -44,15 +60,20 @@ const ArticleCard = ({ imageSrc, title, subtitle, ctaText, ctaLink }: any) => (
   </div>
 );
 
-const SectionHome = () => {
+// ===============================
+// 🔻 Section Utama
+// ===============================
+const SectionHome: React.FC = () => {
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [randomIndex, setRandomIndex] = useState<number>(0);
 
+  // 🔄 Ambil data artikel random
   useEffect(() => {
     setRandomIndex(Math.floor(Math.random() * articleContent.length));
   }, []);
 
+  // 🎞️ GSAP animasi
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (headingRef.current) {
@@ -106,9 +127,9 @@ const SectionHome = () => {
               imageSrc={article.image}
               title={article.title}
               subtitle={article.description}
-              date={article.date}
               ctaText="Read More"
               ctaLink={`/article/${article.id}`}
+              date={article.date}
             />
           </div>
         </div>
