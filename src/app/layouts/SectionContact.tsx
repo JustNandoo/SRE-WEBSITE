@@ -89,7 +89,7 @@ const SectionContact: React.FC = () => {
           className="relative text-[#FFF1AA] text-5xl md:text-7xl font-bold mb-12"
         >
           Connected
-          <span className="absolute top-[35%] -right-[10%] sm:block">
+          <span className="absolute top-[45%] right-[0%] md:top-[50%] md:-right-[8%] lg:top-[35%] lg:-right-[10%]">
             <Image
               ref={balingRef}
               src="/img/icons/UnionBalingIjo.png"
