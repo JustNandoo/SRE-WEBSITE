@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-import EventCard from "@/app/components/activity/EventCard";
+import EventCard from "@/app/components/activity/ActivityCard";
 import { upcomingEvents, type EventData } from "../../../../lib/activityData";
 
 gsap.registerPlugin(ScrollTrigger);

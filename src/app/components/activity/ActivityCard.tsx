@@ -1,79 +1,97 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import { Poppins } from "next/font/google";
-import { ActivityData } from "../../../../lib/activityLatestData";
-import Image from "next/image";
+import { EventData } from "../../../../lib/activityData";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
 interface ActivityCardProps {
-  activity: ActivityData;
-  index: number;
+  event: EventData;
+  index?: number;
 }
 
-const ActivityCard: React.FC<ActivityCardProps> = ({ activity, index }) => {
+const ActivityCard: React.FC<ActivityCardProps> = ({ event }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!cardRef.current) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        cardRef.current,
-        {
-          opacity: 0,
-          x: -40,
-          willChange: "opacity, transform",
+      gsap.from(cardRef.current, {
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
         },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          delay: index * 0.05,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
+        opacity: 0,
+        y: 40,
+        duration: 1,
+        ease: "power3.out",
+      });
     }, cardRef);
 
     return () => ctx.revert();
-  }, [index]);
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+    });
+  };
 
   return (
     <div
       ref={cardRef}
-      className="flex bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 will-change-transform"
+      className="relative overflow-hidden rounded-lg bg-gray-100 hover:shadow-xl transition-all duration-300 will-change-transform"
     >
-      <div className="w-24 h-20 flex-shrink-0">
-        <Image
-          width={100}
-          height={100}
-          src={activity.image}
-          alt={activity.title}
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <div className="flex-1 p-4">
-        <h3 className={`${poppins.variable} font-semibold text-gray-800 text-sm mb-1`}>
-          {activity.title}
-        </h3>
-        <p className={`${poppins.variable} text-xs text-gray-600 line-clamp-2`}>
-          {activity.description}
-        </p>
-      </div>
+      <Link href={`/activity/${event.id}`} className="block">
+        <div className="relative w-full h-64">
+          <Image
+            src={event.image}
+            alt={event.title}
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/50" />
+
+          {/* Badge + Title */}
+          <div className="absolute top-4 left-4 flex items-center z-10">
+            <div className="bg-green-600 text-white font-bold text-xs rounded-full h-8 w-8 p-4 flex items-center justify-center">
+              SRE
+            </div>
+            <h3 className="ml-2 text-white font-bold text-lg line-clamp-1">
+              {event.title}
+            </h3>
+          </div>
+
+          {/* Category */}
+          <div className="absolute bottom-0 right-0 p-2 z-10 text-white/40 text-xl font-bold text-right leading-tight">
+            {event.category.split(" ").map((word, i) => (
+              <React.Fragment key={i}>
+                {word}
+                <br />
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="p-4">
+          <p className="text-blue-900 text-sm mb-2 line-clamp-2">
+            {event.description}
+          </p>
+          <div className="text-xs text-gray-500">
+            {formatDate(event.date)} – {event.time}
+          </div>
+        </div>
+      </Link>
     </div>
   );
 };
