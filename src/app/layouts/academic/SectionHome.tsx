@@ -1,10 +1,11 @@
 "use client";
 
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
-import AcademicCard, {
-  AcademicCardProps,
-} from "../../components/academic/AcademicCard";
+import AcademicCard from "../../components/academic/AcademicCard"; // <- import komponen aja
 import { academicContent } from "../../../../lib/academicData";
+import type { AcademicCardProps } from "../../../../lib/academicData"; // <- ambil tipe datanya dari lib
 import { Poppins } from "next/font/google";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -160,7 +161,8 @@ export default function AcademicSection() {
         </div>
 
         {/* Section Subtitle */}
-        <h2 ref={playlistRef}
+        <h2
+          ref={playlistRef}
           className={`text-white text-lg sm:text-xl font-medium mb-4 sm:mb-6 ${poppins.variable}`}
         >{`'Playlist' for your knowledge`}</h2>
 

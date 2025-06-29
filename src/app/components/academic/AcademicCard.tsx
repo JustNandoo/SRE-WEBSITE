@@ -2,14 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-export interface AcademicCardProps {
-  id: number;
-  title: string;
-  image: string;
-  description: string;
-  category?: string;
-}
+import { AcademicCardProps } from "../../../../lib/academicData";
 
 const AcademicCard: React.FC<AcademicCardProps> = ({
   id,
