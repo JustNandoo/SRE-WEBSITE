@@ -10,30 +10,30 @@ export interface ActivityData {
 export const latestActivities: ActivityData[] = [
   {
     id: "1",
-    title: "Lorem Ipsum",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "https://i.pinimg.com/736x/19/ef/aa/19efaa4a1192466e3fa4c554bee2833e.jpg",
-    date: "2025-06-20"
+    title: "Webinar Nasional: Inovasi dan Implementasi Smart Grid untuk Energi Terbarukan",
+    description: "Sebuah webinar yang membahas tentang perkembangan teknologi smart grid dan perannya dalam mengoptimalkan distribusi dan manajemen energi terbarukan di Indonesia. Acara ini menghadirkan para ahli dari industri dan akademisi.",
+    image: "https://i.pinimg.com/736x/a0/1a/62/a01a62f90c6412d8dcc659385c92ba9e.jpg",
+    date: "2025-06-25"
   },
   {
     id: "2",
-    title: "Lorem Ipsum",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "https://i.pinimg.com/736x/19/ef/aa/19efaa4a1192466e3fa4c554bee2833e.jpg",
+    title: "Pameran Proyek Mahasiswa: Prototipe Pembangkit Listrik Tenaga Surya Efisiensi Tinggi",
+    description: "Pameran ini menampilkan berbagai prototipe dan inovasi dari mahasiswa PENS di bidang energi surya, termasuk panel surya dengan sistem pelacakan otomatis dan inverter cerdas untuk meningkatkan efisiensi energi.",
+    image: "https://i.pinimg.com/736x/a0/1a/62/a01a62f90c6412d8dcc659385c92ba9e.jpg",
     date: "2025-06-19"
   },
   {
     id: "3",
-    title: "Lorem Ipsum",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "https://i.pinimg.com/736x/19/ef/aa/19efaa4a1192466e3fa4c554bee2833e.jpg",
-    date: "2025-06-18"
+    title: "Workshop Desain dan Instalasi Sistem Pembangkit Listrik Tenaga Angin Skala Kecil",
+    description: "Pelatihan praktis bagi mahasiswa dan umum untuk mempelajari dasar-dasar perancangan, instalasi, dan pemeliharaan turbin angin skala kecil untuk aplikasi perumahan atau pedesaan.",
+    image: "https://i.pinimg.com/736x/a0/1a/62/a01a62f90c6412d8dcc659385c92ba9e.jpg",
+    date: "2025-06-12"
   },
   {
     id: "4",
-    title: "Lorem Ipsum",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: "https://i.pinimg.com/736x/19/ef/aa/19efaa4a1192466e3fa4c554bee2833e.jpg",
-    date: "2025-06-17"
+    title: "Kuliah Tamu: Tantangan dan Peluang Pengembangan Energi Panas Bumi di Indonesia",
+    description: "Kuliah bersama praktisi dari industri panas bumi yang mengupas tuntas potensi besar geothermal di Indonesia, serta tantangan teknologi dan regulasi yang dihadapi dalam pengembangannya.",
+    image: "https://i.pinimg.com/736x/a0/1a/62/a01a62f90c6412d8dcc659385c92ba9e.jpg",
+    date: "2025-06-05"
   }
 ];
