@@ -4,6 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { AcademicCardProps } from "../../../../lib/academicData";
 
+// Fungsi untuk menyingkat deskripsi jika terlalu panjang
+const truncateDescription = (text: string, maxLength: number): string => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.substring(0, maxLength) + "...";
+};
+
 const AcademicCard: React.FC<AcademicCardProps> = ({
   id,
   title,
@@ -46,7 +54,7 @@ const AcademicCard: React.FC<AcademicCardProps> = ({
 
         {/* Description Section */}
         <div className="p-4">
-          <p className="text-blue-900 text-sm">{description}</p>
+          <p className="text-blue-900 text-sm">{truncateDescription(description, 60)}</p>
         </div>
       </div>
     </Link>

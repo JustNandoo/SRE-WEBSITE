@@ -18,74 +18,26 @@ export const academicContent: AcademicCardProps[] = [
   },
   {
     id: 2,
-    title: 'Sustainable Agriculture',
-    image: 'https://i.pinimg.com/736x/a6/f8/91/a6f891b8c76bc70d1e9f4293be482230.jpg',
-    description: 'Discover techniques for eco-friendly farming and crop management.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
-    category: 'Sustainable Agriculture'
+    title: 'Climate Crisis',
+    image: 'https://i.pinimg.com/736x/ae/07/88/ae0788f78306106d59443ca0b7686cfa.jpg',
+    description: 'Dampak krisis iklim dan upaya penanggulangannya, khususnya melalui kebijakan dan inisiatif terkait energi terbarukan.',
+    pdfUrl: "https://drive.google.com/file/d/1g-vT_7-hKv46r5McmAwrHOkjgy9wrr4j/preview",
+    category: 'Penelitian'
   },
   {
     id: 3,
-    title: 'Urban Green Spaces',
-    image: 'https://i.pinimg.com/736x/6a/1b/c0/6a1bc0f2324eb0c143533419ad4c86f5.jpg',
-    description: 'The importance of integrating green spaces in modern cities.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
-    category: 'Urban Environment'
-  },
-  {
-    id: 4,
-    title: 'Marine Conservation',
-    image: 'https://i.pinimg.com/736x/ee/6e/27/ee6e27475a7f3a3f3e0026f1604cfde2.jpg',
-    description: 'Preserving marine ecosystems for future generations.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
-    category: 'Marine Conservation'
-  },
-  {
-    id: 5,
-    title: 'Solar Power Innovations',
-    image: 'https://i.pinimg.com/736x/27/e6/23/27e623b6da6cf84ec0e0a43f88d46eb2.jpg',
-    description: 'Innovative solutions for harnessing solar energy worldwide.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
+    title: 'Energy Storage',
+    image: 'https://i.pinimg.com/736x/39/c9/4c/39c94c6e956b2ad3e3e9fb51bf5af061.jpg',
+    description: 'Modul/buku elektronik ini membahas teknologi penyimpanan energi (energy storage), meliputi latar belakang, jenis, manfaat, implementasi, serta tantangan dan peluangnya di Indonesia, terutama dalam konteks energi terbarukan.',
+    pdfUrl: "https://drive.google.com/file/d/1F_ldxIfTWZx8sXSSgf_bQ5Vp8I7hDfz0/preview",
     category: 'Renewable Energy'
   },
   {
-    id: 6,
-    title: 'Clean Water Initiatives',
-    image: 'https://i.pinimg.com/736x/c3/6f/7b/c36f7bde90bcc01acebc1cd27b6d5200.jpg',
-    description: 'Bringing clean water solutions to underdeveloped regions.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
-    category: 'Water Resources'
+    id: 4,
+    title: 'Green Energy & Green Jobs',
+    image: 'https://i.pinimg.com/736x/7b/f9/51/7bf951aac3c712c02cfc8d193713333c.jpg',
+    description: 'Pengembangan green energy dan green jobs di Indonesia merupakan langkah krusial menuju masa depan yang berkelanjutan, meskipun ada tantangan yang perlu diatasi melalui kebijakan kuat dan kolaborasi.',
+    pdfUrl: "https://drive.google.com/file/d/1LCmOMDenfgNnrgRSbGWkgWG1iDvzVjpQ/preview",
+    category: 'Artikel Ilmiah'
   },
-  {
-    id: 7,
-    title: 'Electric Vehicles',
-    image: 'https://i.pinimg.com/736x/7f/e9/fe/7fe9fe542a8efd30b86d52b67d25b3e1.jpg',
-    description: 'How EVs are transforming the future of transportation.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
-    category: 'Transportation'
-  },
-  {
-    id: 8,
-    title: 'Biodiversity Protection',
-    image: 'https://i.pinimg.com/736x/55/e3/b3/55e3b3a2790aa8d41da4c812d6c019f1.jpg',
-    description: 'Efforts to safeguard diverse wildlife species and habitats.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
-    category: 'Biological Diversity'
-  },
-  {
-    id: 9,
-    title: 'Smart Grids Technology',
-    image: 'https://i.pinimg.com/736x/0f/ac/06/0fac06b15d8a05d3d5cf93dba8a7afc1.jpg',
-    description: 'Advancing electricity distribution through smart grids.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
-    category: 'Energy Technology'
-  },
-  {
-    id: 10,
-    title: 'Waste Management Solutions',
-    image: 'https://i.pinimg.com/736x/58/63/72/5863723d182bf3075d5a58c1ad4250c5.jpg',
-    description: 'Creating efficient systems for recycling and waste reduction.',
-    pdfUrl: "https://drive.google.com/file/d/1qkZp_AA0OzOSaS9HiSUjiD023p1OIpFS/preview",
-    category: 'Rubbish Management'
-  }
 ];
