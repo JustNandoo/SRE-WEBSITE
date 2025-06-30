@@ -18,6 +18,14 @@ export const academicContent: AcademicCardProps[] = [
   },
   {
     id: 2,
+    title: 'Green Energy Consulting',
+    image: 'https://i.pinimg.com/736x/c7/ed/cb/c7edcbde497698b360a57a2605b12edc.jpg',
+    description: 'Exploring the latest advancements in wind power technology.',
+    pdfUrl: "https://drive.google.com/file/d/1s8HeBiCtmvgcKa62CFxgpux_hqiq997o/preview",
+    category: 'Renewable Energy'
+  },
+  {
+    id: 3,
     title: 'Climate Crisis',
     image: 'https://i.pinimg.com/736x/ae/07/88/ae0788f78306106d59443ca0b7686cfa.jpg',
     description: 'Dampak krisis iklim dan upaya penanggulangannya, khususnya melalui kebijakan dan inisiatif terkait energi terbarukan.',
@@ -25,7 +33,7 @@ export const academicContent: AcademicCardProps[] = [
     category: 'Penelitian'
   },
   {
-    id: 3,
+    id: 4,
     title: 'Energy Storage',
     image: 'https://i.pinimg.com/736x/39/c9/4c/39c94c6e956b2ad3e3e9fb51bf5af061.jpg',
     description: 'Modul/buku elektronik ini membahas teknologi penyimpanan energi (energy storage), meliputi latar belakang, jenis, manfaat, implementasi, serta tantangan dan peluangnya di Indonesia, terutama dalam konteks energi terbarukan.',
@@ -33,7 +41,7 @@ export const academicContent: AcademicCardProps[] = [
     category: 'Renewable Energy'
   },
   {
-    id: 4,
+    id: 5,
     title: 'Green Energy & Green Jobs',
     image: 'https://i.pinimg.com/736x/7b/f9/51/7bf951aac3c712c02cfc8d193713333c.jpg',
     description: 'Pengembangan green energy dan green jobs di Indonesia merupakan langkah krusial menuju masa depan yang berkelanjutan, meskipun ada tantangan yang perlu diatasi melalui kebijakan kuat dan kolaborasi.',
