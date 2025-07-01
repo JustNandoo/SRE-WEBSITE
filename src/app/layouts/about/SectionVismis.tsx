@@ -38,7 +38,6 @@ export default function Vismis() {
         opacity: 0,
         y: 50,
         duration: 1,
-        delay: 0.2,
         ease: "power3.out",
       });
 
@@ -53,7 +52,6 @@ export default function Vismis() {
         opacity: 0,
         y: 40,
         duration: 0.8,
-        stagger: 0.2,
         ease: "power2.out",
       });
     });
