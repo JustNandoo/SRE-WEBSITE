@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
+import { upcomingEvents } from "../../../../lib/activityData";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -81,6 +82,14 @@ export default function News() {
     return () => ctx.revert();
   }, []);
 
+  // Fungsi untuk menyingkat deskripsi jika terlalu panjang
+  const truncateTitle = (text: string, maxLength: number): string => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + "...";
+  };
+
   return (
     <div
       ref={sectionRef}
@@ -116,28 +125,29 @@ export default function News() {
 
         {/* Boxes */}
         <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((_, idx) => (
+          {upcomingEvents.slice(0, 3).map((event, idx) => (
             <div
-              key={idx}
+              key={event.id}
               ref={(el) => {
                 if (el) cardsRef.current[idx] = el;
               }}
               className="w-full p-6 bg-[#022E21] rounded-[2rem] shadow-xl space-y-5"
             >
-              <div className="flex flex-col -space-y-7 text-[#FFF1AA]">
-                <h1 className="text-[3rem] font-bold">Lorem</h1>
-                <h1 className="text-[3rem] font-bold">Ipsum</h1>
+              <div className="flex flex-col space-y-1 text-[#FFF1AA]">
+                <h1 className="text-2xl font-bold">{truncateTitle(event.title, 46)}</h1>
+                <p className="text-sm text-[#FFF1AA]/80">
+                  {event.category} · {event.date}
+                </p>
               </div>
-              <p className="text-[#FFF1AA]/80">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-                in dui mauris.
+              <p className="text-[#FFF1AA]/80 text-sm line-clamp-3">
+                {event.description}
               </p>
               <Image
-                src="/img/bg/bg1.jpg"
+                src={event.image}
                 width={100}
                 height={100}
-                alt="Decoration icon"
-                className="w-full rounded-[1.5rem]"
+                alt={event.title}
+                className="w-full h-48 object-cover rounded-[1.5rem]"
               />
             </div>
           ))}
@@ -147,7 +157,7 @@ export default function News() {
         <div className="my-20">
           <Link
             ref={buttonRef}
-            href="#"
+            href="/activity"
             className="flex max-w-md mx-auto items-center justify-center py-3 px-6 sm:px-4 md:px-8 rounded-full font-medium text-white bg-[#012e21] border-2 border-[#fff0aa] shadow-lg transition-all hover:shadow-sm"
             onMouseEnter={() => hoverAnimation?.play()}
             onMouseLeave={() => hoverAnimation?.reverse()}
