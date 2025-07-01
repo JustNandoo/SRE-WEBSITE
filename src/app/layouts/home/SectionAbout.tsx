@@ -27,19 +27,6 @@ export default function About() {
 
 useEffect(() => {
   const ctx = gsap.context(() => {
-    // 👇 Scroll animation buat button
-    gsap.from(buttonRef.current, {
-      scrollTrigger: {
-        trigger: buttonRef.current,
-        start: "top 90%",
-        toggleActions: "play reverse play reverse",
-      },
-      opacity: 0,
-      scale: 0,
-      duration: 0.6,
-      ease: "back.out(1.7)",
-    });
-
 
     // Animasi h3 (Hello Energyzens)
     gsap.from(".about-h3", {
@@ -169,19 +156,18 @@ useEffect(() => {
               </h1>
             </div>
             {/* Description */}
-            <p className="about-desc text-gray-800 text-sm sm:text-sm md:text-lg mt-12 text-center leading-relaxed max-w-2xl mx-auto">
-              <span className="font-extrabold">SRE PENS</span> is a{" "}
+            <p className="about-desc text-gray-800 text-sm sm:text-sm md:text-lg mt-12 text-center leading-relaxed max-w-3xl mx-auto">
+              <span className="font-extrabold">Society of Renewable Energy Politeknik Elektronika Negeri Surabaya</span> is a{" "}
               <span className="text-[#134576] font-bold">Student Chapter</span>{" "}
               that pays attention to Renewable Energy issues, accommodates the
-              knowledge of PENS students in Renewable Energy, and is able to
-              implement innovations related to the sustainability of the energy
-              transition.
+              knowledge of Politeknik Elektronika Negeri Surabaya students in Renewable Energy, and is able to
+              implement innovations related to the Sustainability of the Energy Transition
             </p>
           </div>
           {/* button */}
           <Link
             ref={buttonRef}
-            href="#"
+            href="/about"
             className="flex max-w-md mx-auto items-center justify-center py-3 px-6 sm:px-4 md:px-8 rounded-full font-medium text-white bg-[#012e21] border-2 border-[#fff0aa] shadow-lg transition-all hover:shadow-sm"
             onMouseEnter={() => hoverAnimation?.play()}
             onMouseLeave={() => hoverAnimation?.reverse()}
@@ -202,12 +188,12 @@ useEffect(() => {
           </Link>
           <div className="flex flex-col items-center justify-center space-y-2">
             <h4
-              className={`about-h4 text-[#fff1aa] font-extrabold text-2xl md:text-3xl lg:text-4xl text-center mt-32 ${poppins.variable}`}
+              className={`about-h4 text-[#fff1aa] font-extrabold text-2xl md:text-3xl lg:text-4xl text-center mt-32 ${poppins.variable} flex flex-col`}
             >
-              Part of <span className="text-[#022E21]">SRE Indonesia</span>
+              Part of <span className="text-[#022E21]">Society of Renewable Energy Indonesia</span>
             </h4>
             <Link
-              href={"#"}
+              href={"https://www.sre.co.id/"}
               className="about-link text-[#F2C601] font-bold text-md md:text-xl lg:text-2xl underline flex sm:font-semibold items-center justify-center"
             >
               Official Website
