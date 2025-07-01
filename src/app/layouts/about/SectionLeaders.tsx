@@ -170,7 +170,7 @@ const MeetDepartment: React.FC = () => {
             ref={titleRef}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4"
           >
-            Our BoD
+            Our Leaders & Innovators
           </h1>
         </div>
 
