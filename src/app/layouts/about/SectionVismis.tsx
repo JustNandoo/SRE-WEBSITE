@@ -74,7 +74,7 @@ export default function Vismis() {
           />
         </div>
         <p className="text-xl text-[#022E21] tracking-wider">
-          Raise interest and spread insight among Electronic Engineering Polytechnic Institute of Surabaya (EEPIS) students regarding Renewable Energy by developing innovation, exchanging ideas, and facilitating students as active students in the field of Renewable Energy
+          Raise interest and spread insight among Electronic Politeknik Elektronika Negeri Surabaya students regarding Renewable Energy by developing innovation, exchanging ideas, and facilitating students as active students in the field of Renewable Energy
         </p>
       </article>
 
