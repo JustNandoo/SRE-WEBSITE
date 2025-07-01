@@ -29,25 +29,25 @@ const Structure: React.FC = () => {
   }, []);
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-[#F2C601] to-yellow-100 p-5">
-      <div ref={contentRef}>
+    <div className="min-h-screen bg-gradient-to-b from-[#F2C601] to-yellow-100 py-16 px-4">
+      <div className="max-w-7xl mx-auto">
         <div className="flex items-baseline justify-center mb-10">
           <h2 className="text-4xl md:text-5xl lg:text-7xl text-[#10926C] font-bold">
-            Structure
+            Our Structure
           </h2>
         </div>
 
-        <div className="max-w-7xl h-[700px] bg-[#012e21] mx-auto flex items-center justify-center relative rounded-2xl overflow-hidden">
+        <div className="max-w-5xl h-[500px] sm:h-[500px] bg-[#012e21] mx-auto flex items-center justify-center relative rounded-2xl overflow-hidden">
           <Image
-            src="/img/icons/about/Structure.svg"
+            src="/img/icons/about/StructureTwo.svg"
             alt="Structure Diagram"
             fill
             priority
-            className="object-contain w-full h-full p-4 sm:p-10 -rotate-90 sm:rotate-0 transition-transform duration-300 ease-in-out"
+            className="object-contain w-full h-full transition-transform duration-300 ease-in-out"
           />
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

@@ -30,12 +30,11 @@ useEffect(() => {
     }).from(
       imageRef.current,
       {
-        y: 60, // 👈 ini dia
+        y: 60,
         opacity: 0,
         duration: 1,
         ease: "power3.out",
       },
-      "-=0.6"
     );
   }, sectionRef);
 

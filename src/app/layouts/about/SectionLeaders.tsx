@@ -153,7 +153,6 @@ const MeetDepartment: React.FC = () => {
         opacity: 0,
         y: 50,
         duration: 1,
-        stagger: 0.2,
         ease: "power2.out",
       });
     }, containerRef);
@@ -164,14 +163,14 @@ const MeetDepartment: React.FC = () => {
   const duplicatedSlides = [...departments, ...departments];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-100 to-[#134576] py-64 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-100 to-[#134576] py-32 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h1
             ref={titleRef}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4"
           >
-            Meet Our Leaders
+            Our BoD
           </h1>
         </div>
 
