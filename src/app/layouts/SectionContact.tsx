@@ -54,22 +54,27 @@ const SectionContact: React.FC = () => {
     {
       id: "linkedin",
       icon: <FaLinkedin size={24} />,
-      url: "#",
+      url: "https://www.linkedin.com/in/society-of-renewable-energy-politeknik-elektronika-negeri-surabaya",
       label: "LinkedIn",
     },
     {
       id: "instagram",
       icon: <FaInstagram size={24} />,
-      url: "#",
+      url: "https://www.instagram.com/sre_pens",
       label: "Instagram",
     },
     {
       id: "youtube",
       icon: <FaYoutube size={24} />,
-      url: "#",
+      url: "https://youtube.com/@srepoliteknikelektronikanegeri?si=tXAglE9jhuDsm5y1",
       label: "YouTube",
     },
-    { id: "tiktok", icon: <FaTiktok size={24} />, url: "#", label: "TikTok" },
+    {
+      id: "tiktok",
+      icon: <FaTiktok size={24} />,
+      url: "https://vm.tiktok.com/ZSkoG8mrL/",
+      label: "TikTok",
+    },
   ];
 
   return (
