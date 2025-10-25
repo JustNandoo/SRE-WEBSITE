@@ -36,9 +36,16 @@
       "permanent": true
     },
     {
-      "source": "/ANNOUNCEMENTPENERIMAANCSTAFFSRE2025",
-      "destination": "/announcement/",
-      "permanent": true
+      "rewrites": [
+        {
+          "source": "/PENGUMUMANPENERIMAANSTAFFSRE2025",
+          "destination": "/announcement"
+        },
+        {
+          "source": "/PENGUMUMANPENERIMAANSTAFSRE2025/:path*",
+          "destination": "/announcement/:path*"
+        }
+      ]
     }
   ]
 }
