@@ -104,4 +104,5 @@ export const oprecData: OprecData[] = [
   { name: "Najwa Raisya Pratiwi", division: "-", status: "Tidak Lolos" },
   { name: "Aslichah", division: "-", status: "Tidak Lolos" },
   { name: "Syamsid Al Fardhi", division: "-", status: "Tidak Lolos" },
+  { name: "Regia Alia Putri", division: "-", status: "Tidak Lolos" },
 ];
