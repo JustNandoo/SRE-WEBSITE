@@ -1,17 +1,20 @@
-import Home from "@/app/layouts/home/SectionHome";
-import About from "@/app/layouts/home/SectionAbout";
-import Marquee from "@/app/layouts/home/Marquee";
-import News from "@/app/layouts/home/SectionNews";
-import Contact from "@/app/layouts/SectionContact";
+import SmoothScrollProvider from "@/app/components/SmoothScrollProvider";
+import SectionHome from "@/app/layouts/home/SectionHome";
+import SectionAbout from "@/app/layouts/home/SectionAbout";
+import MarqueeContact from "./layouts/home/Marquee";
+import SectionNews from "@/app/layouts/home/SectionNews";
+import SectionContact from "@/app/layouts/SectionContact";
 
 export default function Page() {
   return (
     <div className="relative">
-      <Home />
-      <About />
-      <Marquee />
-      <News />
-      <Contact />
+      <SmoothScrollProvider>
+        <SectionHome />
+        <SectionAbout />
+        <MarqueeContact />
+        <SectionNews />
+        <SectionContact />
+      </SmoothScrollProvider>
     </div>
   );
 }

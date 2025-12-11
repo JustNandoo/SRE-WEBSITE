@@ -1,17 +1,20 @@
 import Hero from "@/app/layouts/about/SectionHero";
 import Vismis from "@/app/layouts/about/SectionVismis";
 import Structure from "@/app/layouts/about/SectionStructure";
-import MeetDepartment from "@/app/layouts/about/SectionLeaders";
+import MeetDepartment from "@/app/layouts/about/SectionMember";
 import Contact from "@/app/layouts/SectionContact";
+import SmoothScrollProvider from "@/app/components/SmoothScrollProvider";
 
 export default function Page() {
   return (
     <div className="relative">
-      <Hero />
-      <Vismis />
-      <Structure />
-      <MeetDepartment />
-      <Contact />
+      <SmoothScrollProvider>
+        <Hero />
+        <Vismis />
+        <Structure />
+        <MeetDepartment />
+        <Contact />
+      </SmoothScrollProvider>
     </div>
   );
 }

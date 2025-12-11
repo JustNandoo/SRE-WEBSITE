@@ -1,150 +1,138 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import type { ArticleContent } from "../../../../lib/articleData";
 import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa";
-
-gsap.registerPlugin(ScrollTrigger);
+import { FaArrowLeft, FaUser, FaCalendarAlt, FaTag } from "react-icons/fa";
+import type { ArticleContent } from "@/lib/articleData";
 
 export default function ArticleDetailContent({
   article,
 }: {
   article: ArticleContent;
 }) {
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const linkRef = useRef<HTMLAnchorElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        titleRef.current,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          delay: 0.1,
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 85%",
-            toggleActions: "play reverse play reverse",
-          },
-        }
-      );
-
-      gsap.fromTo(
-        subtitleRef.current,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          delay: 0.2,
-          scrollTrigger: {
-            trigger: subtitleRef.current,
-            start: "top 85%",
-            toggleActions: "play reverse play reverse",
-          },
-        }
-      );
-
-      gsap.fromTo(
-        contentRef.current,
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          delay: 0.3,
-          scrollTrigger: {
-            trigger: contentRef.current,
-            start: "top 85%",
-            toggleActions: "play reverse play reverse",
-          },
-        }
-      );
-
-      gsap.fromTo(
-        linkRef.current,
-        { x: -50, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: linkRef.current,
-            start: "top 90%",
-            toggleActions: "play reverse play reverse", // ini bikin animasi ulang terus saat scroll
-            scrub: false,
-          },
-        }
-      );
-    });
-
-    return () => ctx.revert();
-  }, []);
+  // Fallback data jika properti tidak ada di tipe ArticleContent
+  const category = (article as any).category || "Article";
+  const date = (article as any).date || "Recent Post";
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0 -z-10 h-[60vh]">
-        <div className="relative w-full h-full">
+    <div
+      className="relative min-h-screen bg-[#f4f4f4]"
+      data-scroll-section
+      // --- BACKGROUND GRID PATTERN ---
+      style={{
+        backgroundImage: `
+          linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)
+        `,
+        backgroundSize: "40px 40px",
+      }}
+    >
+      {/* =========================================================
+          1. HERO IMAGE (PARALLAX)
+      ========================================================= */}
+      <div className="relative w-full h-[60vh] md:h-[75vh] overflow-hidden border-b border-black/5">
+        <div
+          className="absolute inset-0 w-full h-[120%] -top-[10%]"
+          data-scroll
+          data-scroll-speed="-0.5" // Efek Parallax: Gambar bergerak lambat
+        >
           <Image
             src={article.image}
             alt={article.title}
             fill
             priority
-            className="object-cover object-center"
+            className="object-cover"
           />
-          <div className="absolute inset-0 bg-black/30" />
+          {/* Overlay agar teks badge terbaca */}
+          <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-90" />
+        </div>
+
+        {/* Floating Category Badge */}
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <span
+            data-scroll
+            data-scroll-speed="0.2"
+            className="px-6 py-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-white font-mono text-sm uppercase tracking-[0.2em]"
+          >
+            {category}
+          </span>
         </div>
       </div>
 
-      {/* Content Card */}
-      <div className="relative z-10 min-h-screen mx-auto pt-[50vh]">
-        {/* Konten Artikel */}
-        <div className="bg-white shadow-xl rounded-t-2xl sm:rounded-t-[3rem]  px-6 sm:px-10 md:px-14 py-10 sm:py-14 relative">
-          {/* Tombol Back */}
-          <div className="absolute top-6 sm:top-10 left-6 sm:left-10">
-            <Link
-              ref={linkRef}
-              href="/article"
-              className="inline-flex items-center space-x-0 sm:space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200 group bg-white rounded-xl shadow-md border px-4 py-2"
-            >
-              <FaArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-              <span className="text-sm font-medium hidden sm:block">Back</span>
-            </Link>
+      {/* =========================================================
+          2. CONTENT CARD (CLEAN WHITE)
+      ========================================================= */}
+      <div className="relative z-20 px-4 sm:px-6 md:px-10 -mt-20 md:-mt-32 pb-20">
+        <div className="bg-white rounded-[2rem] md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
+          {/* HEADER AREA */}
+          <div className="px-6 py-10 md:px-16 md:py-16 text-center border-b border-gray-100/50 relative z-10">
+            <div className="flex justify-start mb-12">
+              <Link
+                href="/article"
+                className="group inline-flex items-center gap-2 text-[#012e21]/50 hover:text-[#012e21] transition-colors"
+              >
+                <div className="w-10 h-10 rounded-full border border-[#012e21]/10 flex items-center justify-center group-hover:bg-[#012e21] group-hover:text-white transition-all duration-300 bg-gray-50">
+                  <FaArrowLeft className="text-xs" />
+                </div>
+                <span className="text-xs font-bold font-mono uppercase tracking-widest">
+                  Back to Articles
+                </span>
+              </Link>
+            </div>
+
+            {/* Title & Meta (Center) */}
+            <div className="text-center">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#012e21] leading-[1.1] mb-8 tracking-tight">
+                {article.title}
+              </h1>
+
+              <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+                {/* Author */}
+                <div className="flex items-center gap-2 text-[#012e21]/70 bg-gray-50 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-100 shadow-sm transition-transform hover:scale-105">
+                  <FaUser className="text-[#F2C601] text-xs" />
+                  <span className="text-xs font-bold font-mono uppercase tracking-wide">
+                    {article.created_by}
+                  </span>
+                </div>
+
+                {/* Date (Mockup/Real if exists) */}
+                <div className="flex items-center gap-2 text-[#012e21]/70 bg-gray-50 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-100 shadow-sm transition-transform hover:scale-105">
+                  <FaCalendarAlt className="text-[#F2C601] text-xs" />
+                  <span className="text-xs font-bold font-mono uppercase tracking-wide">
+                    {date}
+                  </span>
+                </div>
+
+                {/* Category */}
+                <div className="flex items-center gap-2 text-[#012e21]/70 bg-gray-50 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-100 shadow-sm transition-transform hover:scale-105">
+                  <FaTag className="text-[#F2C601] text-xs" />
+                  <span className="text-xs font-bold font-mono uppercase tracking-wide">
+                    {category}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Judul dan Subtitle */}
-          <div className="text-center my-10">
-            <h1
-              ref={titleRef}
-              className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900"
-            >
-              {article.title}
-            </h1>
-            <p
-              ref={subtitleRef}
-              className="text-sm sm:text-base font-medium text-gray-500 mt-2"
-            >
-              By: {article.created_by}
-            </p>
-          </div>
+          {/* CONTENT BODY */}
+          <div className="px-6 py-10 md:px-16 md:py-20 relative z-10">
+            <div className="max-w-3xl mx-auto">
+              <article className="text-lg md:text-xl text-[#012e21]/80 font-serif leading-relaxed whitespace-pre-line text-justify">
+                {/* First Letter Drop Cap */}
+                <span className="float-left text-5xl md:text-6xl font-black text-[#012e21] mr-3 mt-[-6px] leading-none">
+                  {article.content.charAt(0)}
+                </span>
+                {article.content.slice(1)}
+              </article>
 
-          {/* Isi Artikel */}
-          <div
-            ref={contentRef}
-            className="text-gray-700 leading-relaxed space-y-6 text-justify text-base sm:text-lg"
-          >
-            <p className="whitespace-pre-line">{article.content}</p>
+              {/* Decorative End Mark */}
+              <div className="flex justify-center mt-16 opacity-30 gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#012e21]"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#012e21]"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#012e21]"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

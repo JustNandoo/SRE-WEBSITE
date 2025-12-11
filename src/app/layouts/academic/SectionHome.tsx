@@ -1,32 +1,30 @@
 "use client";
 
-"use client";
-
 import React, { useState, useEffect, useRef } from "react";
-import AcademicCard from "../../components/academic/AcademicCard"; // <- import komponen aja
-import { academicContent } from "../../../../lib/academicData";
-import type { AcademicCardProps } from "../../../../lib/academicData"; // <- ambil tipe datanya dari lib
+import { motion, AnimatePresence } from "framer-motion";
+import AcademicCard from "@/app/components/academic/AcademicCard";
+import { academicContent, AcademicCardProps } from "@/lib/academicData";
 import { Poppins } from "next/font/google";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: "500",
+  weight: ["300", "400", "500", "600", "700"],
 });
+
+const ITEMS_PER_PAGE = 6; // Jumlah kartu per halaman
 
 export default function AcademicSection() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredCards, setFilteredCards] = useState<AcademicCardProps[]>([]);
-  const cardsContainerRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLDivElement>(null);
-  const playlistRef = useRef<HTMLHeadingElement | null>(null);
+  const [filteredCards, setFilteredCards] =
+    useState<AcademicCardProps[]>(academicContent);
 
-  // Filter logic
+  // State Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // Logic Filtering
   useEffect(() => {
     const results = academicContent.filter(
       (card) =>
@@ -36,159 +34,226 @@ export default function AcademicSection() {
           card.category.toLowerCase().includes(searchTerm.toLowerCase()))
     );
     setFilteredCards(results);
+    setCurrentPage(1); // Reset ke halaman 1 setiap kali search berubah
   }, [searchTerm]);
 
-  // Init full data
-  useEffect(() => {
-    setFilteredCards(academicContent);
-  }, []);
+  // Logic Slicing Data (Pagination)
+  const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentItems = filteredCards.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Animasi Header + Search + Cards
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Header Animation
-      if (headerRef.current) {
-        gsap.from(headerRef.current, {
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 90%",
-            toggleActions: "play none none reverse",
-          },
-          opacity: 0,
-          y: 40,
-          duration: 1,
-          ease: "power3.out",
-        });
-      }
+  // Handle Page Change dengan Scroll
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    // Optional: Scroll sedikit ke atas grid saat ganti halaman biar UX enak
+    if (gridRef.current) {
+      gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
-      // Search Animation
-      if (searchRef.current) {
-        gsap.from(searchRef.current, {
-          scrollTrigger: {
-            trigger: searchRef.current,
-            start: "top 90%",
-            toggleActions: "play none none reverse",
-          },
-          opacity: 0,
-          y: 40,
-          duration: 1,
-          delay: 0.2,
-          ease: "power3.out",
-        });
-      }
+  // --- VARIAN ANIMASI ---
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+    exit: { opacity: 0, transition: { duration: 0.2 } },
+  };
 
-      // Playlist Title Animation
-      if (playlistRef.current) {
-        gsap.from(playlistRef.current, {
-          scrollTrigger: {
-            trigger: playlistRef.current,
-            start: "top 85%",
-            toggleActions: "play reverse play reverse",
-          },
-          opacity: 0,
-          x: -40,
-          duration: 1,
-          delay: 0.4,
-          ease: "power3.out",
-        });
-      }
-
-      // Cards Animation
-      const cards = gsap.utils.toArray(".academic-card") as HTMLElement[];
-      gsap.from(cards, {
-        scrollTrigger: {
-          trigger: cardsContainerRef.current,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-        opacity: 0,
-        y: 40,
-        duration: 1,
-        stagger: 0.15,
-        ease: "power2.out",
-      });
-    }, cardsContainerRef);
-
-    return () => ctx.revert();
-  }, [filteredCards]);
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.95,
+      transition: { duration: 0.3 },
+    },
+  };
 
   return (
-    <div className="min-h-screen bg-[#134576]">
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-20 md:py-48 lg:py-32">
-        {/* Heading Section */}
-        <div ref={headerRef} className="mb-8 sm:mb-12 lg:mb-16">
-          <h1
-            className={`text-white text-4xl sm:text-5xl md:text-6xl lg:text-[6rem] font-bold leading-tight flex flex-col ${poppins.variable}`}
+    <section
+      className={`min-h-screen bg-[#134576] relative overflow-hidden ${poppins.variable} pb-32`}
+      data-scroll-section
+    >
+      {/* BACKGROUND DECORATION */}
+      <div
+        className="absolute top-[10%] -left-20 whitespace-nowrap opacity-[0.03] pointer-events-none select-none"
+        data-scroll
+        data-scroll-speed="-2"
+      >
+        <h1 className="text-[25vw] font-black text-white leading-none">
+          ACADEMIC
+        </h1>
+      </div>
+
+      <div className="container mx-auto px-6 md:px-10 py-32 md:py-40 relative z-10">
+        {/* --- HEADER SECTION --- */}
+        <div className="flex flex-col mb-20 md:mb-28">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-3 mb-6"
           >
-            Hello,
-            <br className="md:hidden" />
-            <span className="text-white">Enthusiast!</span>
-          </h1>
+            <div className="w-10 h-0.5 bg-[#F2C601]"></div>
+            <span className="text-[#F2C601] font-mono tracking-widest text-sm uppercase">
+              Knowledge Hub
+            </span>
+          </motion.div>
+
+          <div className="flex flex-col">
+            <h1 className="text-[12vw] md:text-[8rem] font-bold text-white leading-[0.85] tracking-tighter">
+              <span className="block" data-scroll data-scroll-speed="0.2">
+                HELLO,
+              </span>
+            </h1>
+            <h1
+              className="text-[12vw] md:text-[8rem] font-black text-transparent leading-[0.85] tracking-tighter"
+              style={{ WebkitTextStroke: "1px #fff" }}
+            >
+              <span className="block" data-scroll data-scroll-speed="0.1">
+                ENTHUSIAST!
+              </span>
+            </h1>
+          </div>
         </div>
 
-        {/* Search Section */}
+        {/* --- SEARCH BAR --- */}
         <div
-          ref={searchRef}
-          className="flex flex-col sm:flex-row sm:justify-end mb-8"
+          className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 border-b border-white/10 pb-10"
+          ref={gridRef}
         >
-          <div className="w-full sm:w-xl sm:max-w-4xl">
-            <p className={`text-white text-sm mb-2 ${poppins.variable}`}>
-              Tired Scrolling? Try searching!
+          {/* Bagian Kiri: Deskripsi */}
+          <div className="max-w-md">
+            <p className="text-white/60 text-lg font-light leading-relaxed">
+              {`Explore our curated "Playlist" of knowledge. Find resources,
+              workshops, and insights to fuel your renewable energy journey.`}
             </p>
-            <div className="relative">
+          </div>
+
+          {/* Bagian Kanan: Search Input + Resources Found (Dibungkus agar menumpuk vertikal) */}
+          <div className="flex flex-col w-full md:w-auto items-start md:items-end gap-3">
+            {/* 1. Search Input */}
+            <div className="w-full md:w-auto relative group">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
+                <FaSearch className="text-white/40 group-focus-within:text-[#F2C601] transition-colors" />
+              </div>
               <input
                 type="text"
-                placeholder="Keyword..."
-                className="w-full py-2 px-4 pr-10 rounded-full bg-gray-200/80 text-gray-800 focus:outline-none"
+                placeholder="Search topics..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full md:w-[400px] bg-white/5 backdrop-blur-md border border-white/10 rounded-full py-4 pl-12 pr-6 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601]/50 focus:bg-white/10 transition-all duration-300"
               />
-              <button className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                <svg
-                  className="w-5 h-5 text-gray-600"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
+            </div>
+
+            {/* 2. Resources Found (Ditaruh di sini agar tepat di bawah input) */}
+            <div className="px-2">
+              <p className="text-white/40 text-sm font-mono tracking-wide">
+                Showing{" "}
+                <span className="text-[#F2C601] font-bold">
+                  {filteredCards.length > 0 ? indexOfFirstItem + 1 : 0}-
+                  {Math.min(indexOfLastItem, filteredCards.length)}
+                </span>{" "}
+                of {filteredCards.length} resources
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* --- CARDS GRID (WITH ANIMATE PRESENCE FOR PAGINATION) --- */}
+        <div className="min-h-[800px]">
+          {" "}
+          {/* Min-height agar footer tidak naik turun saat loading */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentPage + searchTerm} // Key berubah = trigger ulang animasi
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+            >
+              {currentItems.length > 0 ? (
+                currentItems.map((card) => (
+                  <motion.div
+                    key={card.id}
+                    variants={cardVariants}
+                    layout
+                    className="h-full"
+                  >
+                    <div className="group relative w-full aspect-3/4 bg-[#0f355a] border border-white/5 rounded-4xl overflow-hidden hover:border-[#F2C601]/30 transition-colors duration-500">
+                      <AcademicCard {...card} />
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="col-span-full py-20 text-center"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                  <h3 className="text-2xl text-white/40 font-mono">
+                    No results found.
+                  </h3>
+                </motion.div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* --- PAGINATION CONTROLS (AWWWARDS STYLE) --- */}
+        {totalPages > 1 && (
+          <div className="mt-20 flex justify-center">
+            <div className="flex items-center gap-2 p-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl">
+              {/* Prev Button */}
+              <button
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="w-12 h-12 rounded-full flex items-center justify-center text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+              >
+                <FaChevronLeft />
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center px-4 gap-2 border-x border-white/10 h-8">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      className={`relative w-8 h-8 flex items-center justify-center text-sm font-mono transition-all rounded-full ${
+                        currentPage === page
+                          ? "text-[#012e21] font-bold bg-[#F2C601] scale-110"
+                          : "text-white/50 hover:text-white hover:bg-white/10"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() =>
+                  handlePageChange(Math.min(totalPages, currentPage + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="w-12 h-12 rounded-full flex items-center justify-center text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all"
+              >
+                <FaChevronRight />
               </button>
             </div>
           </div>
-        </div>
-
-        {/* Section Subtitle */}
-        <h2
-          ref={playlistRef}
-          className={`text-white text-lg sm:text-xl font-medium mb-4 sm:mb-6 ${poppins.variable}`}
-        >{`'Playlist' for your knowledge`}</h2>
-
-        {/* Cards Grid */}
-        <div
-          ref={cardsContainerRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
-        >
-          {filteredCards.map((card) => (
-            <div key={card.id} className="academic-card">
-              <AcademicCard {...card} />
-            </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredCards.length === 0 && (
-          <div className="text-center py-6 sm:py-10">
-            <p
-              className={`${poppins.variable} text-white text-base sm:text-lg`}
-            >
-              No matching academic resources found. Try a different search term.
-            </p>
-          </div>
         )}
-      </main>
-    </div>
+      </div>
+    </section>
   );
 }

@@ -1,7 +1,8 @@
 import { use } from "react";
-import { academicContent } from "../../../../../lib/academicData";
+import { academicContent } from "@/lib/academicData";
 import AcademicDetailContent from "@/app/components/academic/AcademicDetailContent";
 import { notFound } from "next/navigation";
+import SmoothScrollProvider from "@/app/components/SmoothScrollProvider";
 
 export default function AcademicDetailPage({
   params,
@@ -12,5 +13,9 @@ export default function AcademicDetailPage({
   const academic = academicContent.find((a) => a.id === Number(id));
   if (!academic || !academic.pdfUrl) notFound();
 
-  return <AcademicDetailContent academic={academic} pdfUrl={academic.pdfUrl} />;
+  return (
+    <SmoothScrollProvider>
+      <AcademicDetailContent academic={academic} pdfUrl={academic.pdfUrl} />
+    </SmoothScrollProvider>
+  );
 }

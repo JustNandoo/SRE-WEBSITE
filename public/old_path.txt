@@ -1,0 +1,49 @@
+{
+  "redirects": [
+    {
+      "source": "/OPRECSTAFF2025",
+      "destination": "https://forms.gle/UWAfVAhbSPC6bQHX8",
+      "permanent": true
+    },
+    {
+      "source": "/SOSIALISASI2025",
+      "destination": "https://forms.gle/hVt8cpctFYsaFgi17",
+      "permanent": true
+    },
+    {
+      "source": "/PPTSOSIALISASI2025",
+      "destination": "https://drive.google.com/file/d/1Z7nZEuOAYR8lXIEpPUl-1cnRfZVPbs7C/view?usp=drive_link",
+      "permanent": true
+    },
+    {
+      "source": "/GUIDEBOOKOPRECTSTAFF2025",
+      "destination": "https://drive.google.com/file/d/1YcPsNusMsaCygtEp9Q2PjI7WQOQO_g-Z/view?usp=drive_link",
+      "permanent": true
+    },
+    {
+      "source": "/TATIBOPRECTSTAFF2025",
+      "destination": "https://drive.google.com/file/d/1EO6jJSmF5Ejn0srXBYwe6FwHR8NbBfCI/view?usp=drive_link",
+      "permanent": true
+    },
+    {
+      "source": "/TWIBBONOPRECTSTAFF2025",
+      "destination": "https://drive.google.com/file/d/1VcR9yyREXuE9oe36hS3NLVD02GPdID7_/view?usp=drive_link",
+      "permanent": true
+    },
+    {
+      "source": "/CAPTIONTWIBBONOPRECT2025",
+      "destination": "https://docs.google.com/document/d/1D4itUgnE4Xyz6OdliLDrCG000ZKT7YW62GFeX_WN28Q/edit?usp=drive_link",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/PENGUMUMANPENERIMAANSTAFFSRE2025",
+      "destination": "/announcement"
+    },
+    {
+      "source": "/PENGUMUMANPENERIMAANSTAFFSRE2025/:path*",
+      "destination": "/announcement/:path*"
+    }
+  ]
+}

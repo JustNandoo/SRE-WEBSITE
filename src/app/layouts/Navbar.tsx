@@ -1,124 +1,151 @@
 "use client";
 
-import "../style/globals.css";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  // AuthButtons jadi dummy redirect ke 404
-  const AuthButtons = () => (
-    <Link
-      href="/404"
-      className="p-2 bg-[#fff0aa]/30 border-2 border-[#fff0aa] rounded-xl shadow-xl backdrop-blur-lg"
-      aria-label="Dummy Login"
+// --- Sub-component Item Menu ---
+const MobileNavLink = ({ title, href, index, closeMenu }: any) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 50 }}
+      transition={{ delay: 0.1 * index, duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 512 512"
-        className="w-6 h-6"
+      <Link 
+        href={href} 
+        onClick={closeMenu} 
+        className="group relative flex items-center gap-4 text-5xl md:text-7xl font-bold tracking-tighter text-[#fff0aa] hover:text-white transition-colors duration-300"
       >
-        <path
-          fill="#012e21"
-          d="M352 96l64 0c17.7 0 32 14.3 32 32v256c0 17.7-14.3 32-32 32h-64c-17.7 0-32 14.3-32 32s14.3 32 32 32h64c53 0 96-43 96-96V128c0-53-43-96-96-96h-64c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h210.7l-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"
-        />
-      </svg>
-    </Link>
-  );
+        <span className="w-3 h-3 rounded-full bg-transparent group-hover:bg-[#fff0aa] transition-colors duration-300 transform scale-0 group-hover:scale-100" />
+        {title}
+      </Link>
+    </motion.div>
+  )
+}
+
+export default function NavbarSRE() {
+  const [isActive, setIsActive] = useState(false);
+  const menuItems = ["Home", "About", "Academic", "Activity", "Article", "Contact"];
 
   return (
-    <nav className="fixed w-full top-5 z-50">
-      <div className="mx-2 space-y-3 lg:mx-5 md:mx-3 sm:mx-2">
-        <div className="p-1 px-4 mx-auto bg-[#fff0aa]/70 border-3 border-[#fff0aa]/20 rounded-full max-w-7xl sm:px-6 lg:px-8 backdrop-blur-lg">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <Link href="/" className="flex items-center space-x-3">
-                <Image
-                  className="dark:invert"
-                  src="/logo/svg/sreLogoOne.svg"
-                  alt="Logo SRE PENS"
-                  width={180}
-                  height={38}
-                  priority
-                />
-              </Link>
-            </div>
+    <>
+      <motion.header
+        id="navbar"
+        className={`
+          fixed z-50 
+          left-1/2 -translate-x-1/2  /* KUNCI: Selalu center horizontal */
+          flex justify-between items-center 
+          px-6 md:px-8
+          border border-transparent
+          
+          /* Animasi perubahan bentuk */
+          transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]
 
-            {/* Navigation Links - Desktop */}
-            <div className="hidden space-x-6 md:flex">
-              {["Home", "About", "Academic", "Article", "Activity", "Contact"].map(
-                (item) => (
-                  <Link
-                    key={item}
-                    href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                    className="relative hover:underline font-bold tracking-wide text-[#012e21]"
-                  >
-                    {item}
-                  </Link>
-                )
-              )}
-            </div>
-
-            {/* Auth Button - Desktop */}
-            <div className="items-center hidden space-x-4 md:flex">
-              <AuthButtons />
-            </div>
-
-            {/* Mobile Section */}
-            <div className="flex items-center space-x-2 md:hidden">
-              <div className="items-center md:hidden space-x-4 flex">
-                <AuthButtons />
-              </div>
-              <button
-                onClick={toggleMenu}
-                type="button"
-                className="p-2 bg-[#fff0aa]/30 border-2 border-[#fff0aa] rounded-xl shadow-xl backdrop-blur-lg"
-                aria-controls="mobile-menu"
-                aria-expanded={isMenuOpen}
-              >
-                {isMenuOpen ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="w-6 h-6">
-                    <path
-                      fill="#012e21"
-                      d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8-9.5 45.1-4.1L192 306l135.4 162.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"
-                    />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-6 h-6">
-                    <path
-                      fill="#012e21"
-                      d="M0 96C0 78.3 14.3 64 32 64h384c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zm0 160c0-17.7 14.3-32 32-32h384c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zm448 160c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h384c17.7 0 32 14.3 32 32z"
-                    />
-                  </svg>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={`transform transition-all duration-500 ease-in-out backdrop-blur-lg bg-opacity-75 p-2 rounded-xl bg-[#fff0aa]/70 mt-5 border-4 border-[#fff0aa]/30 mx-2 ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          } overflow-hidden md:hidden`}
-        id="mobile-menu"
+          /* 
+             LOGIC OVERRIDE:
+             Jika isActive (Menu Buka) -> Paksa style transparan & full width (!important)
+             Jika Tidak -> Gunakan class default (yang nanti dimanipulasi Locomotive Scroll)
+          */
+          ${
+            isActive
+              ? "!w-full !top-0 !bg-transparent !rounded-none !shadow-none !py-6 !border-transparent delay-0"
+              : "w-full top-0 py-6 bg-transparent rounded-none"
+          }
+        `}
       >
-        <div className="px-2 pt-2 pb-3 space-y-3 sm:px-3">
-          {["Home", "About", "Academic", "Activity", "Article", "Contact"].map((item) => (
-            <Link
-              key={item}
-              href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-              className="relative block px-4 py-2 font-medium text-[#012e21] hover:border-2 hover:border-[#fff0aa] rounded-xl"
-            >
-              {item}
-            </Link>
-          ))}
+        {/* LOGO */}
+        <div className="z-50">
+          <Link href="/">
+            <div className={`relative transition-all duration-300 ${isActive ? "opacity-0" : "opacity-100"}`}>
+              <Image
+                src="/logo/svg/sreLogoOne.svg"
+                alt="SRE Logo"
+                width={120} 
+                height={40}
+                className="object-contain brightness-0 invert"
+                priority
+              />
+            </div>
+          </Link>
         </div>
-      </div>
-    </nav>
+
+        {/* TOMBOL MENU (BURGER) */}
+        <div className="z-50">
+          <button
+            onClick={() => setIsActive(!isActive)}
+            className={`
+              relative flex items-center justify-center gap-3 px-4 py-2 rounded-full 
+              transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group
+              ${
+                isActive
+                  ? "bg-[#fff0aa] text-[#012e21]" 
+                  : "bg-[#fff0aa]/10 border border-[#fff0aa]/20 text-[#fff0aa] hover:bg-[#fff0aa] hover:text-[#012e21]" 
+              }
+            `}
+          >
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest hidden sm:block overflow-hidden h-4 w-12 text-center">
+              <motion.div animate={{ y: isActive ? -16 : 0 }} className="flex flex-col items-center">
+                <span className="block h-4 leading-4">Menu</span>
+                <span className="block h-4 leading-4">Close</span>
+              </motion.div>
+            </span>
+
+            {/* Icon Burger Lines */}
+            <div className={`relative w-5 h-2.5 flex flex-col justify-between items-end transition-transform duration-300 ${isActive ? "rotate-45" : ""}`}>
+              <span className={`h-[1.5px] w-full bg-current transition-all duration-300 ${isActive ? "rotate-90 translate-y-1" : ""}`} />
+              <span className={`h-[1.5px] w-full bg-current transition-all duration-300 ${isActive ? "rotate-0 -translate-y-1" : "w-2/3 group-hover:w-full"}`} />
+            </div>
+          </button>
+        </div>
+      </motion.header>
+
+      {/* --- FULLSCREEN OVERLAY MENU --- */}
+      <AnimatePresence mode="wait">
+        {isActive && (
+          <motion.div
+            initial={{ y: "-100%" }}
+            animate={{ y: "0%" }}
+            exit={{ y: "-100%" }}
+            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 bg-[#012e21] flex flex-col justify-center items-center"
+          >
+             {/* Background Decoration (Glow) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#fff0aa] opacity-5 rounded-full blur-3xl pointer-events-none" />
+
+            {/* List Menu */}
+            <div className="relative z-10 flex flex-col items-start justify-center space-y-2 md:space-y-4">
+              <p className="text-[#fff0aa]/50 text-xs md:text-sm uppercase tracking-[0.2em] mb-4 ml-1">Navigation</p>
+              {menuItems.map((item, index) => (
+                <MobileNavLink 
+                    key={item} 
+                    title={item} 
+                    href={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
+                    index={index} 
+                    closeMenu={() => setIsActive(false)} 
+                />
+              ))}
+            </div>
+            
+            {/* Footer Menu */}
+            <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                transition={{ delay: 0.8, duration: 0.5 }} 
+                className="absolute bottom-10 w-full px-10 flex justify-between items-end text-[#fff0aa]"
+            >
+               <div className="text-xs md:text-sm leading-relaxed opacity-60">
+                 <p>Society of Renewable Energy</p><p>PENS Surabaya</p>
+               </div>
+               <div className="flex gap-4 text-xs md:text-sm font-medium">
+                 <a href="#">Instagram</a><a href="#">LinkedIn</a>
+               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

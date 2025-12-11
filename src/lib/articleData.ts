@@ -1,5 +1,5 @@
 // lib/articleData.ts
-import { ArticleCardProps } from "../src/app/components/article/ArticleCard";
+import { ArticleCardProps } from "@/app/components/article/ArticleCard";
 
 export interface ArticleContent extends ArticleCardProps {
   content: string;

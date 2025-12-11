@@ -1,130 +1,194 @@
 "use client";
 
-import { Poppins } from "next/font/google";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import React, { useEffect, useRef } from "react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
+import "locomotive-scroll/dist/locomotive-scroll.css";
 
-gsap.registerPlugin(ScrollTrigger);
+// --- VARIAN ANIMASI ---
+const slideUp = {
+  hidden: { y: "110%" },
+  visible: (i: number) => ({
+    y: "0%",
+    transition: { duration: 1, ease: [0.76, 0, 0.24, 1], delay: i * 0.1 },
+  }),
+};
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: "100",
-});
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 1, delay: 1.5 } },
+};
 
-export default function Home() {
-  const line1Ref = useRef<HTMLSpanElement>(null);
-  const line2Ref = useRef<HTMLSpanElement>(null);
-  const line3Ref = useRef<HTMLSpanElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const iconRef = useRef<HTMLImageElement>(null);
-  const petikRef = useRef<HTMLImageElement>(null);
+export default function SectionHome() {
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // --- LOGIC LOCOMOTIVE SCROLL ---
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".home-hero",
-          start: "top 70%",
-          toggleActions: "play reverse play reverse",
-        },
+    let scroll: any;
+    const initScroll = async () => {
+      const LocomotiveScroll = (await import("locomotive-scroll")).default;
+      scroll = new LocomotiveScroll({
+        el: document.querySelector("[data-scroll-container]") || undefined,
+        smooth: true,
+        multiplier: 1,
+        class: "is-reveal",
       });
-
-      tl.from([line1Ref.current, line2Ref.current, line3Ref.current], {
-        opacity: 0,
-        y: 50,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "power3.out",
-      })
-        .fromTo(
-          iconRef.current,
-          { scale: 0, opacity: 0, rotate: 0 },
-          {
-            scale: 1,
-            opacity: 1,
-            rotate: 360,
-            duration: 1.2,
-            ease: "back.out(1.7)",
-          },
-          "-=0.5"
-        )
-        .fromTo(
-          petikRef.current,
-          { scale: 0, opacity: 0 },
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.6,
-            ease: "back.out(1.7)",
-          },
-          "-=0.8"
-        )
-        .from(
-          subtitleRef.current,
-          {
-            opacity: 0,
-            y: 20,
-            duration: 1,
-            ease: "power2.out",
-          },
-          "-=0.3"
-        );
-    });
-
-    return () => ctx.revert();
+    };
+    initScroll();
+    return () => {
+      if (scroll) scroll.destroy();
+    };
   }, []);
 
   return (
-    <div className="relative h-screen flex items-center justify-center">
-      {/* Background */}
-      <div className="absolute w-full h-full brightness-50 bg-[url('/img/bg/bg1.jpg')] bg-cover bg-fixed bg-center"></div>
-
-      {/* Content */}
-      <div
-        className={`home-hero relative flex flex-col items-center text-center text-white ${poppins.variable} pt-24`}
-      >
-        <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-8xl font-extrabold">
-          <span ref={line1Ref} className="block">
-            Society of
-          </span>
-
-          <span ref={line2Ref} className="relative inline-block">
-            Renewable{" "}
-            <Image
-              ref={iconRef}
-              src="/img/icons/Union.svg"
-              alt="icon"
-              height={100}
-              width={150}
-              className="absolute h-auto -right-[15%] sm:left-[90%] md:left-[90%] -top-[45%] sm:-top-[70%] md:-top-[50%] w-14 sm:w-20 lg:w-26"
-            />
-          </span>
-
-          <br />
-
-          <span ref={line3Ref} className="relative inline-block">
-            <Image
-              ref={petikRef}
-              src="/img/icons/UnionPetik.png"
-              alt="petik"
-              height={100}
-              width={60}
-              className="absolute -left-[12%] sm:-left-[12%] top-[40%] sm:top-[45%] md:top-[25%] lg:-left-[10%] lg:top-[55%] w-8 md:w-12"
-            />
-            Energy
-          </span>
-        </h1>
-
-        <p
-          ref={subtitleRef}
-          className="sm:text-sm md:text-lg mt-10 sm:mt-12 md:mt-16 font-extrabold tracking-wide"
+    <section
+      ref={containerRef}
+      className="relative w-full h-dvh overflow-hidden bg-[#012e21] text-[#fff0aa]"
+      data-scroll-section
+    >
+      {/* =========================================
+          LAYER 1: BACKGROUND
+         ========================================= */}
+      <div className="absolute inset-0 z-0">
+        <div
+          data-scroll
+          data-scroll-speed="-0.5"
+          className="relative w-full h-[120%] -top-[10%]"
         >
-          Politeknik Elektronika Negeri Surabaya
-        </p>
+          <Image
+            src="/img/bg/bg1.jpg"
+            alt="SRE Background"
+            fill
+            priority
+            className="object-cover opacity-50 grayscale-20"
+          />
+        </div>
+        <div className="absolute inset-0 bg-linear-to-t from-[#012e21] via-[#012e21]/40 to-transparent z-10" />
       </div>
-    </div>
+
+      {/* =========================================
+          LAYER 2: CONTENT WRAPPER
+         ========================================= */}
+      <div
+        data-scroll
+        data-scroll-speed="0.2"
+        className="relative z-20 w-full h-full flex flex-col justify-between px-6 md:px-12 lg:px-20 py-8 md:py-12"
+      >
+        {/* --- TOP HEADER --- */}
+        <div className="flex justify-between items-start mt-20 md:mt-24 border-b border-[#fff0aa]/20 pb-6">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            className="hidden md:block text-xs uppercase tracking-[0.2em] font-medium opacity-70"
+          >
+            Surabaya, Indonesia
+          </motion.div>
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            className="text-right text-xs uppercase tracking-[0.2em] font-medium opacity-70 ml-auto"
+          >
+            Est. 2020
+          </motion.div>
+        </div>
+
+        {/* --- MAIN TYPOGRAPHY --- */}
+        <div className="flex flex-col justify-center w-full relative -mt-10 md:mt-0">
+          {/* BARIS 1: SOCIETY OF + ICON (Diam) */}
+          <div className="flex items-baseline gap-2 md:gap-4 overflow-hidden">
+            <motion.h1
+              custom={0}
+              variants={slideUp}
+              initial="hidden"
+              animate="visible"
+              className="text-[13vw] lg:text-[10vw] leading-[0.85] font-semibold uppercase tracking-tighter text-white"
+            >
+              Society
+            </motion.h1>
+
+            <motion.span
+              variants={fadeIn}
+              initial="hidden"
+              animate="visible"
+              className="font-serif italic text-2xl md:text-4xl lg:text-5xl opacity-80 -translate-y-2 md:-translate-y-4"
+            >
+              of
+            </motion.span>
+          </div>
+
+          {/* BARIS 2: RENEWABLE (Icon dihapus dari sini) */}
+          <div className="flex items-center overflow-hidden w-full">
+            <div className="overflow-hidden">
+              <motion.h1
+                custom={1}
+                variants={slideUp}
+                initial="hidden"
+                animate="visible"
+                className="text-[13vw] lg:text-[10vw] leading-[0.85] font-bold uppercase tracking-tighter text-[#fff0aa]"
+              >
+                Renewable
+              </motion.h1>
+            </div>
+          </div>
+
+          {/* BARIS 3: ICON PETIK + ENERGY */}
+          <div className="flex justify-end md:justify-start md:ml-[15vw] relative overflow-hidden">
+            <motion.h1
+              custom={2}
+              variants={slideUp}
+              initial="hidden"
+              animate="visible"
+              className="text-[13vw] lg:text-[10vw] leading-[0.85] font-bold uppercase tracking-tighter text-white relative pl-8 md:pl-16"
+            >
+              {/* Petik Decoration (Pindah Kiri) */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.2, type: "spring" }}
+                className="absolute -top-2 -left-2 md:-top-6 md:left-0.5 w-8 md:w-16"
+              >
+                <Image
+                  src="/img/icons/UnionPetik.png"
+                  width={80}
+                  height={80}
+                  alt="quote"
+                  className="object-contain"
+                />
+              </motion.div>
+              Energy
+            </motion.h1>
+          </div>
+        </div>
+
+        {/* --- FOOTER --- */}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 pb-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5, duration: 0.8 }}
+            className="max-w-xs md:max-w-md text-sm leading-relaxed opacity-80"
+          >
+            <p>
+              Student Organization at{" "}
+              <strong className="text-white">PENS Surabaya</strong>
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2 }}
+            className="hidden md:flex items-center gap-4"
+          >
+            <span className="text-[10px] uppercase tracking-widest opacity-50">
+              Scroll
+            </span>
+            <div className="h-px w-12 bg-white/30" />
+          </motion.div>
+        </div>
+      </div>
+    </section>
   );
 }

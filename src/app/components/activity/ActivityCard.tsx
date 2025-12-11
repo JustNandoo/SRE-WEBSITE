@@ -1,98 +1,99 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-import { EventData } from "../../../../lib/activityData";
-
-gsap.registerPlugin(ScrollTrigger);
+import { FaClock, FaArrowRight } from "react-icons/fa";
+import { EventData } from "@/lib/activityData"; // Sesuaikan path import
 
 interface ActivityCardProps {
   event: EventData;
   index?: number;
 }
 
-const ActivityCard: React.FC<ActivityCardProps> = ({ event }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!cardRef.current) return;
-
-    const ctx = gsap.context(() => {
-      gsap.from(cardRef.current, {
-        scrollTrigger: {
-          trigger: cardRef.current,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-        opacity: 0,
-        y: 40,
-        duration: 1,
-        ease: "power3.out",
-      });
-    }, cardRef);
-
-    return () => ctx.revert();
-  }, []);
-
+const ActivityCard: React.FC<ActivityCardProps> = ({ event, index }) => {
+  // Helper: Format Tanggal (Memisahkan Hari dan Bulan)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "short",
-    });
+    const day = date.toLocaleDateString("en-GB", { day: "2-digit" });
+    const month = date.toLocaleDateString("en-GB", { month: "short" });
+    return { day, month };
   };
 
+  const { day, month } = formatDate(event.date);
+
   return (
-    <div
-      ref={cardRef}
-      className="relative overflow-hidden rounded-lg bg-gray-100 hover:shadow-xl transition-all duration-300 will-change-transform"
-    >
-      <Link href={`/activity/${event.id}`} className="block">
-        <div className="relative w-full h-64">
+    <Link href={`/activity/${event.id}`} className="block h-full w-full group">
+      <div className="relative h-full min-h-[400px] w-full overflow-hidden rounded-[2rem] bg-[#012e21] border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[#F2C601]/20">
+        {/* --- 1. BACKGROUND IMAGE (Zoom & Grayscale Effect) --- */}
+        <div className="absolute inset-0 w-full h-full">
           <Image
             src={event.image}
             alt={event.title}
             fill
-            className="object-cover"
-            priority
+            className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110 grayscale group-hover:grayscale-0"
           />
-          <div className="absolute inset-0 bg-black/50" />
+        </div>
 
-          {/* Badge + Title */}
-          <div className="absolute top-4 left-4 flex items-center z-10">
-            <div className="bg-green-600 text-white font-bold text-xs rounded-full h-8 w-8 p-4 flex items-center justify-center">
-              SRE
+        {/* --- 2. GRADIENT OVERLAY --- */}
+        {/* Gelap di bawah agar teks terbaca, transisi opacity saat hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#012e21] via-[#012e21]/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+
+        {/* --- 3. TOP CONTENT (Date & Index) --- */}
+        <div className="absolute top-5 left-5 right-5 flex justify-between items-start z-10">
+          {/* Date Badge (Calendar Style) */}
+          <div className="flex flex-col items-center justify-center bg-white/10 backdrop-blur-md border border-white/20 rounded-xl w-14 h-16 text-white group-hover:bg-[#F2C601] group-hover:text-[#012e21] group-hover:border-[#F2C601] transition-colors duration-300">
+            <span className="text-[10px] font-bold uppercase tracking-wider leading-none mb-1">
+              {month}
+            </span>
+            <span className="text-2xl font-black leading-none">{day}</span>
+          </div>
+
+          {/* Index Number (Editorial Decoration) */}
+          {index !== undefined && (
+            <span className="text-white/20 font-black text-5xl font-mono leading-none select-none">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+          )}
+        </div>
+
+        {/* --- 4. BOTTOM CONTENT (Info & Reveal) --- */}
+        <div className="absolute bottom-0 left-0 w-full p-6 z-20 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+          {/* Category Tag & Time */}
+          <div className="flex items-center gap-3 mb-3">
+            <span className="px-3 py-1 rounded-full bg-[#F2C601] text-[#012e21] text-[10px] font-bold uppercase tracking-widest">
+              {event.category}
+            </span>
+            <div className="flex items-center gap-1.5 text-white/80 text-xs font-mono">
+              <FaClock className="text-[#F2C601]" />
+              <span>{event.time}</span>
             </div>
-            <h3 className="ml-2 text-white font-bold text-lg line-clamp-1">
-              {event.title}
-            </h3>
           </div>
 
-          {/* Category */}
-          <div className="absolute bottom-0 right-0 p-2 z-10 text-white/40 text-xl font-bold text-right leading-tight">
-            {event.category.split(" ").map((word, i) => (
-              <React.Fragment key={i}>
-                {word}
-                <br />
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
+          {/* Title */}
+          <h3 className="text-2xl font-black text-white leading-[1.1] mb-2 group-hover:text-[#F2C601] transition-colors duration-300 line-clamp-2">
+            {event.title}
+          </h3>
 
-        {/* Description */}
-        <div className="p-4">
-          <p className="text-blue-900 text-sm mb-2 line-clamp-2">
-            {event.description}
-          </p>
-          <div className="text-xs text-gray-500">
-            {formatDate(event.date)} – {event.time}
+          {/* Description (Slide Up Reveal) */}
+          <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100">
+            <div className="overflow-hidden">
+              <p className="text-white/70 text-sm font-light leading-relaxed pt-2 line-clamp-2 mb-4">
+                {event.description}
+              </p>
+
+              {/* Action Button */}
+              <div className="flex items-center gap-2 text-white text-xs font-bold uppercase tracking-widest group/btn">
+                See Details
+                <span className="bg-white/20 p-1.5 rounded-full group-hover/btn:bg-[#F2C601] group-hover/btn:text-[#012e21] transition-colors duration-300">
+                  <FaArrowRight className="group-hover/btn:-rotate-45 transition-transform duration-300" />
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 };
 

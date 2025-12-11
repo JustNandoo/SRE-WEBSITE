@@ -1,183 +1,194 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
-import { upcomingEvents } from "../../../../lib/activityData";
+import { motion } from "framer-motion";
+import localFont from "next/font/local";
+import { Poppins } from "next/font/google";
+import { upcomingEvents } from "@/lib/activityData"; 
 
-gsap.registerPlugin(ScrollTrigger);
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+});
 
-export default function News() {
-  const buttonRef = useRef<HTMLAnchorElement | null>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement[]>([]);
-  const sectionRef = useRef<HTMLDivElement>(null);
+const akira = localFont({
+  src: "../../fonts/Akira.otf",
+  variable: "--font-akira",
+  display: "swap",
+});
 
-  const [hoverAnimation, setHoverAnimation] = useState<gsap.core.Tween | null>(
-    null
-  );
+// --- ANIMATION VARIANTS YANG LEBIH AMAN ---
+// Kita ganti teknik masking dengan Fade Up agar teks pasti muncul
+const fadeUp = {
+  hidden: { opacity: 0, y: 60 }, // Mulai dari bawah sedikit
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
 
-  useEffect(() => {
-    if (buttonRef.current) {
-      const animation = gsap.to(buttonRef.current, {
-        scale: 1.05,
-        y: -3,
-        boxShadow: "0px 12px 0px 0px rgba(1,46,33, 50%)",
-        ease: "power2.out",
-        duration: 0.2,
-        paused: true,
-      });
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
 
-      setHoverAnimation(animation);
-    }
-  }, []);
+const cardVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] },
+  },
+};
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Header Animation
-      gsap.from(headerRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play reverse play reverse",
-        },
-        opacity: 0,
-        y: -50,
-        duration: 1,
-        ease: "power2.out",
-      });
-
-      // Cards Animation
-      gsap.from(cardsRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play reverse play reverse",
-        },
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        ease: "power2.out",
-        stagger: 0.2,
-      });
-
-      // Button Animation
-      gsap.from(buttonRef.current, {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          toggleActions: "play reverse play reverse",
-        },
-        opacity: 0,
-        scale: 0.8,
-        y: 30,
-        duration: 0.8,
-        ease: "back.out(1.7)",
-        delay: 0.5,
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  // Fungsi untuk menyingkat deskripsi jika terlalu panjang
-  const truncateTitle = (text: string, maxLength: number): string => {
-    if (text.length <= maxLength) {
-      return text;
-    }
-    return text.substring(0, maxLength) + "...";
-  };
+export default function SectionNews() {
+  const truncateTitle = (text: string, maxLength: number): string =>
+    text.length <= maxLength ? text : text.substring(0, maxLength) + "...";
 
   return (
-    <div
-      ref={sectionRef}
-      className="relative h-full bg-[url('/img/bg/bg2.png')] bg-cover bg-fixed bg-center"
+    <section
+      data-scroll-section
+      // Hapus z-index custom, gunakan default stacking context
+      // Pastikan 'relative' tetap ada agar layout stabil
+      className={`relative py-24 md:py-32 bg-[#012e21] text-[#fff0aa] ${poppins.variable} ${akira.variable}`}
     >
-      <div className="mx-auto h-full flex flex-col items-center px-4 py-8">
-        {/* Header section */}
-        <div
-          ref={headerRef}
-          className="w-full flex flex-col items-center mb-4 md:mb-12 px-4"
-        >
-          <div className="relative w-full max-w-md flex justify-between items-start">
-            <div className="flex-1 flex flex-col">
-              <h1 className="text-center text-3xl md:text-4xl lg:text-[3.5rem] font-semibold">
-                <span className="text-yellow-200">{"WHAT'S NEW AT"}</span>
-              </h1>
-              <h1 className="text-center md:text-right px-3 text-3xl md:text-4xl lg:text-5xl font-extrabold">
-                <span className="text-teal-400">SRE PENS</span>
-              </h1>
-            </div>
+      {/* Decorative Background Lines */}
+      <div className="absolute inset-0 w-full h-full border-t border-[#fff0aa]/10 pointer-events-none">
+        <div className="absolute left-1/4 h-full w-1 bg-[#fff0aa]/5"></div>
+        <div className="absolute left-2/4 h-full w-1 bg-[#fff0aa]/5"></div>
+        <div className="absolute left-3/4 h-full w-1 bg-[#fff0aa]/5"></div>
+      </div>
 
-            <div className="absolute -right-20 top-1/2 transform -translate-y-1/2 hidden md:block">
-              <Image
-                src="/img/icons/signAsk.png"
-                width={50}
-                height={50}
-                alt="Decoration icon"
-                className="w-10 h-10 md:w-12 md:h-12 lg:w-18 lg:h-18"
-              />
-            </div>
+      <div className="relative container mx-auto px-6 md:px-10 lg:px-20 flex flex-col items-center">
+        
+        {/* --- HEADER --- */}
+        <div className="w-full mb-20 md:mb-32 flex flex-col items-start">
+          
+          {/* Small Tag */}
+          {/* Hapus overflow-hidden di sini agar tidak terpotong */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }} // Trigger saat 50% terlihat
+            variants={fadeUp}
+            className="flex items-center gap-3 mb-4"
+          >
+            <span className="w-3 h-3 bg-[#134576] rounded-full animate-pulse"></span>
+            <span className="font-poppins text-[#fff0aa] font-bold tracking-[0.3em] uppercase text-sm md:text-base">
+              Recent Updates
+            </span>
+          </motion.div>
+
+          {/* MAIN TITLE */}
+          <div className="flex flex-col w-full">
+            {/* 
+               PERBAIKAN UTAMA:
+               1. Hapus div wrapper dengan overflow-hidden.
+               2. Terapkan animasi langsung ke H2.
+               3. Gunakan leading-normal atau leading-tight agar font Akira tidak terpotong vertikal.
+            */}
+            <motion.h2
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              variants={fadeUp}
+              className="font-akira text-[10vw] md:text-[8vw] leading-tight text-[#fff0aa] uppercase drop-shadow-2xl"
+            >
+              WHAT'S NEW
+            </motion.h2>
+
+            <motion.h2
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              variants={fadeUp}
+              // Tambahkan margin left responsive
+              className="font-akira text-[10vw] md:text-[8vw] leading-tight text-[#fff0aa]/80 uppercase md:ml-24"
+            >
+              AT SRE PENS
+            </motion.h2>
           </div>
         </div>
 
-        {/* Boxes */}
-        <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
-          {upcomingEvents.slice(0, 3).map((event, idx) => (
-            <div
+        {/* --- NEWS GRID --- */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
+        >
+          {upcomingEvents.slice(0, 3).map((event) => (
+            <motion.div
               key={event.id}
-              ref={(el) => {
-                if (el) cardsRef.current[idx] = el;
-              }}
-              className="w-full p-6 bg-[#022E21] rounded-[2rem] shadow-xl space-y-5"
+              variants={cardVariants}
+              className="group relative flex flex-col h-full border border-[#fff0aa]/20 hover:border-[#fff0aa] transition-colors duration-500 bg-[#012e21]"
             >
-              <div className="flex flex-col space-y-1 text-[#FFF1AA]">
-                <h1 className="text-2xl font-bold">{truncateTitle(event.title, 46)}</h1>
-                <p className="text-sm text-[#FFF1AA]/80">
-                  {event.category} · {event.date}
-                </p>
+              {/* Image Container */}
+              <div className="relative w-full aspect-4/3 overflow-hidden border-b border-[#fff0aa]/20">
+                <div className="absolute inset-0 bg-[#134576]/0 group-hover:bg-[#134576]/20 z-10 transition-colors duration-500 mix-blend-overlay"></div>
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  fill
+                  className="object-cover transition-all duration-700 ease-in-out grayscale group-hover:grayscale-0 group-hover:scale-110"
+                />
+                <div className="absolute top-4 left-4 z-20 bg-[#fff0aa] text-[#012e21] px-3 py-1 text-xs font-akira tracking-wider">
+                  {event.category}
+                </div>
               </div>
-              <p className="text-[#FFF1AA]/80 text-sm line-clamp-3">
-                {event.description}
-              </p>
-              <Image
-                src={event.image}
-                width={100}
-                height={100}
-                alt={event.title}
-                className="w-full h-48 object-cover rounded-[1.5rem]"
-              />
-            </div>
-          ))}
-        </div>
 
-        {/* button */}
-        <div className="my-20">
+              {/* Content */}
+              <div className="p-6 md:p-8 flex flex-col grow justify-between group-hover:bg-[#fff0aa] transition-colors duration-500">
+                <div className="space-y-4">
+                  <p className="font-poppins text-xs tracking-widest text-[#fff0aa]/60 group-hover:text-[#012e21]/60 transition-colors">
+                    {event.date}
+                  </p>
+                  <h3 className="font-poppins text-xl md:text-2xl font-semibold leading-tight text-[#fff0aa] group-hover:text-[#012e21] transition-colors duration-500">
+                    {truncateTitle(event.title, 50)}
+                  </h3>
+                  <p className="font-poppins text-sm font-light text-[#fff0aa]/70 line-clamp-3 group-hover:text-[#012e21]/70 transition-colors">
+                    {event.description}
+                  </p>
+                </div>
+                <div className="mt-8 flex justify-end">
+                  <div className="w-10 h-10 border border-[#fff0aa]/30 rounded-full flex items-center justify-center group-hover:border-[#012e21]/30 transition-colors">
+                    <svg className="w-4 h-4 text-[#fff0aa] group-hover:text-[#012e21] transform -rotate-45 group-hover:rotate-0 transition-all duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* --- BUTTON SECTION --- */}
+        <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="mt-20 w-full flex justify-center"
+        >
           <Link
-            ref={buttonRef}
             href="/activity"
-            className="flex max-w-md mx-auto items-center justify-center py-3 px-6 sm:px-4 md:px-8 rounded-full font-medium text-white bg-[#012e21] border-2 border-[#fff0aa] shadow-lg transition-all hover:shadow-sm"
-            onMouseEnter={() => hoverAnimation?.play()}
-            onMouseLeave={() => hoverAnimation?.reverse()}
+            className="group relative inline-flex items-center gap-4 py-4 px-2"
           >
-            See More Activity
-            <svg
-              className="w-5 h-5 ml-2 -mr-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
+            <span className="font-akira text-[#fff0aa] text-lg hover:text-[#134576] transition-colors duration-300">
+              View All Activity
+            </span>
+            <span className="w-12 h-px bg-[#fff0aa] group-hover:w-20 transition-all duration-300"></span>
           </Link>
-        </div>
+        </motion.div>
+
       </div>
-    </div>
+    </section>
   );
 }

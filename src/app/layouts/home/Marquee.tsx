@@ -1,59 +1,88 @@
-"use client"
+"use client";
 
-import React, { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { Poppins } from "next/font/google";
+import { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+  useMotionValue,
+  useVelocity,
+  useAnimationFrame
+} from "framer-motion";
+import { wrap } from "@motionone/utils";
+import localFont from "next/font/local";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: "500",
+// Pastikan file Akira.otf benar-benar ada di folder public/fonts atau src/fonts
+// Sesuaikan path "../.." ini dengan struktur foldermu
+const akira = localFont({
+  src: "../../fonts/Akira.otf", 
+  variable: "--font-akira",
+  display: "swap", // Penting: agar teks muncul dulu walaupun font belum load
 });
 
+interface ParallaxProps {
+  children: string;
+  baseVelocity: number;
+}
 
-export default function MarqueeContact() {
-  const marqueeRef = useRef<HTMLDivElement>(null);
+function ParallaxText({ children, baseVelocity = 100 }: ParallaxProps) {
+  const baseX = useMotionValue(0);
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(scrollVelocity, {
+    damping: 50,
+    stiffness: 400
+  });
 
-  useEffect(() => {
-    const marquee = marqueeRef.current;
-    if (marquee) {
-      const totalWidth = marquee.scrollWidth;
-      gsap.fromTo(
-        marquee,
-        { x: 0 },
-        {
-          x: -totalWidth / 5,
-          duration: 50,
-          repeat: -1,
-          ease: "linear",
-          modifiers: {
-            x: (x) => `${parseFloat(x) % totalWidth}px`,
-          },
-        }
-      );
+  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], {
+    clamp: false
+  });
+
+  // Range wrap disesuaikan (-20% sampai -45%) agar looping mulus
+  const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
+
+  const directionFactor = useRef<number>(1);
+
+  useAnimationFrame((t, delta) => {
+    let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
+
+    if (velocityFactor.get() < 0) {
+      directionFactor.current = -1;
+    } else if (velocityFactor.get() > 0) {
+      directionFactor.current = 1;
     }
-  }, []);
+
+    moveBy += directionFactor.current * moveBy * velocityFactor.get();
+    baseX.set(baseX.get() + moveBy);
+  });
 
   return (
-    <main className="z-10 bg-[#012e21] py-2">
-      <div
-        className="flex items-center justify-center"
-        style={{ width: "100%" }}
+    <div className="parallax overflow-hidden m-0 whitespace-nowrap flex flex-nowrap w-full">
+      <motion.div 
+        className="scroller font-akira text-[8vw] md:text-[6vw] uppercase font-bold flex whitespace-nowrap gap-10" 
+        style={{ x }}
       >
-        {/* marquee area */}
-        <div className="overflow-hidden">
-          <div ref={marqueeRef} className="flex space-x-4 whitespace-nowrap">
-            {Array.from({ length: 10 }).map((_, index) => (
-              <div
-                key={index}
-                className={`italic ${poppins.variable} font-bold tracking-wide text-center text-[36px] text-[#fff0aa]`}
-              >
-                ● Go Green and Achieve Net Zero Future ● SRE PENS
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </main>
+        <span className="block mr-10">{children}</span>
+        <span className="block mr-10">{children}</span>
+        <span className="block mr-10">{children}</span>
+        <span className="block mr-10">{children}</span>
+      </motion.div>
+    </div>
   );
-};
+}
+
+export default function Marquee() {
+  return (
+    <section 
+      // Jika marquee tetap tidak muncul, coba hapus 'data-scroll-section' ini dulu
+      data-scroll-section 
+      className={`relative z-30 w-full bg-[#012e21] border-y border-[#fff0aa] overflow-hidden ${akira.variable}`}
+    >
+      {/* Background Container */}
+      <div className="flex flex-col gap-2 py-2 md:py-6 text-[#fff0aa]">
+         <ParallaxText baseVelocity={2}>SRE PENS • Go Green • Go Innovation</ParallaxText>
+      </div>
+    </section>
+  );
+}

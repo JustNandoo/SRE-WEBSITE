@@ -1,218 +1,204 @@
 "use client";
-// import Image from "next/image";
+
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 
-gsap.registerPlugin(ScrollTrigger);
-
+// --- FONTS ---
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: "500",
+  weight: ["300", "400", "500", "600"],
 });
 
 const akira = localFont({
   src: "../../fonts/Akira.otf",
+  variable: "--font-akira",
 });
 
-export default function About() {
-  const buttonRef = useRef<HTMLAnchorElement | null>(null);
-  const [hoverAnimation, setHoverAnimation] = useState<gsap.core.Tween | null>(
-    null
-  );
+// --- ANIMATION VARIANTS ---
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
 
-useEffect(() => {
-  const ctx = gsap.context(() => {
+const textReveal = {
+  hidden: { y: "110%" },
+  visible: {
+    y: "0%",
+    transition: {
+      duration: 1,
+      ease: [0.76, 0, 0.24, 1],
+    },
+  },
+};
 
-    // Animasi h3 (Hello Energyzens)
-    gsap.from(".about-h3", {
-      scrollTrigger: {
-        trigger: ".about-h3",
-        start: "top 80%",
-        toggleActions: "play reverse play reverse",
-      },
-      opacity: 0,
-      scale: 0.8,
-      duration: 0.6,
-      ease: "power2.out",
-    });
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 1, delay: 0.5 },
+  },
+};
 
-    // h2 (About)
-    gsap.from(".about-h2", {
-      scrollTrigger: {
-        trigger: ".about-h2",
-        start: "top 80%",
-        toggleActions: "play reverse play reverse",
-      },
-      opacity: 0,
-      x: -100,
-      duration: 0.6,
-      ease: "power3.out",
-    });
+const lineAnim = {
+  hidden: { scaleX: 0, originX: 0 },
+  visible: {
+    scaleX: 1,
+    transition: { duration: 1.5, ease: "circOut" },
+  },
+};
 
-    // h1 (SRE PENS)
-    gsap.from(".about-h1", {
-      scrollTrigger: {
-        trigger: ".about-h1",
-        start: "top 80%",
-        toggleActions: "play reverse play reverse",
-      },
-      opacity: 0,
-      x: -100,
-      duration: 0.6,
-      ease: "power3.out",
-    });
-
-    // Paragraf
-    gsap.from(".about-desc", {
-      scrollTrigger: {
-        trigger: ".about-desc",
-        start: "top 85%",
-        toggleActions: "play reverse play reverse",
-      },
-      opacity: 0,
-      y: 50,
-      duration: 0.6,
-      ease: "power2.out",
-    });
-
-    // Tombol
-    gsap.from(buttonRef.current, {
-      scrollTrigger: {
-        trigger: buttonRef.current,
-        start: "top 90%",
-        toggleActions: "play reverse play reverse",
-      },
-      opacity: 0,
-      scale: 0,
-      duration: 0.6,
-      ease: "back.out(1.7)",
-    });
-
-    // h4 dan link (Official Website)
-    gsap.from([".about-h4", ".about-link"], {
-      scrollTrigger: {
-        trigger: ".about-h4",
-        start: "top 85%",
-        toggleActions: "play reverse play reverse",
-      },
-      opacity: 0,
-      y: 40,
-      stagger: 0.15,
-      duration: 0.5,
-      ease: "power2.out",
-    });
-  });
-
-  if (buttonRef.current) {
-    const animation = gsap.to(buttonRef.current, {
-      scale: 1.05,
-      y: -3,
-      boxShadow: "0px 12px 0px 0px rgba(1,46,33, 0.5)",
-      ease: "power2.out",
-      duration: 0.2,
-      paused: true,
-    });
-
-    setHoverAnimation(animation);
-  }
-
-  return () => ctx.revert(); // clean up saat komponen unmount
-}, []);
-
+export default function SectionAbout() {
   return (
-    <div>
-      {/* // bg back */}
-      <div
-        className={`absolute inset-0 -z-10 bg-[url('/img/bg/bg1.jpg')] brightness-50 bg-cover bg-fixed bg-center`}
-      ></div>
-      {/* bg front */}
-      <div className="realtive space-y-10 rounded-t-[5vw] bg-[url('/img/bg/bg4.png')] bg-cover bg-fixed bg-center">
-        <div className="px-4 pt-4 pb-32 lg:px-12 md:px-6 sm:px-4 space-y-10">
-          <div className="mt-5">
-            {/* slogan welcome */}
-            <h3
-              className={`about-h3 text-green-700 font-bold text-lg sm:text-2xl md:text-3xl text-center ${poppins.variable}`}
-            >
-              ★Hello, Energyzens!★
-            </h3>
-            {/* heading */}
-            <div className="flex flex-col leading-none mt-10">
-              {/* h2 tetap di kiri */}
-              <h2
-                className={`about-h2 self-start text-[#022E21] font-extrabold text-lg text-[2rem] md:text-[3rem] lg:text-[4rem] ${poppins.variable}`}
-              >
-                About
-              </h2>
-              {/* h1 berada di tengah */}
-              <h1
-                className={`about-h1 self-center text-green-700 font-extrabold text-[5.45rem] md:text-[6.9rem] lg:text-[10rem] xl:text-[11.55rem] ${akira.className}`}
-              >
-                SRE <span className="text-[#134576]">PENS</span>
-              </h1>
-            </div>
-            {/* Description */}
-            <p className="about-desc text-gray-800 text-sm sm:text-sm md:text-lg mt-12 text-center leading-relaxed max-w-3xl mx-auto">
-              <span className="font-extrabold">Society of Renewable Energy Politeknik Elektronika Negeri Surabaya</span> is a{" "}
-              <span className="text-[#134576] font-bold">Student Chapter</span>{" "}
-              that pays attention to Renewable Energy issues, accommodates the
-              knowledge of Politeknik Elektronika Negeri Surabaya students in Renewable Energy, and is able to
-              implement innovations related to the Sustainability of the Energy Transition
-            </p>
+    <section
+      data-scroll-section
+      // KEMBALI KE WARNA ORIGINAL: bg-[#fff0aa]
+      className={`relative w-full rounded-t-[3rem] -mt-8 bg-[#fff0aa] text-[#012e21] overflow-hidden ${poppins.variable} ${akira.variable}`}
+    >
+      {/* 
+        =========================================
+        BACKGROUND LAYER
+        ========================================= 
+      */}
+      {/* Parallax Image */}
+      <div className="absolute top-0 left-0 w-full h-[120%] -z-10 overflow-hidden">
+        <div
+          data-scroll
+          data-scroll-speed="-0.3"
+          className="relative w-full h-full bg-[url('/img/bg/bg4.png')] bg-cover bg-center opacity-20 mix-blend-multiply"
+        ></div>
+      </div>
+      
+      {/* Gradient Overlay untuk Blending (Cream to Transparent) */}
+      <div className="absolute inset-0 bg-linear-to-b from-[#fff0aa] via-transparent to-[#fff0aa]/80 pointer-events-none z-0" />
+
+      {/* 
+        =========================================
+        CONTENT CONTAINER
+        ========================================= 
+      */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-10%" }}
+        className="relative z-10 px-6 py-24 md:px-10 lg:px-20 lg:py-32 flex flex-col min-h-screen justify-between"
+      >
+        
+        {/* --- HEADER: TOP SECTION --- */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-20">
+          {/* Small Tag */}
+          <div className="overflow-hidden">
+            <motion.div variants={textReveal} className="flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-[#134576] animate-pulse"></span>
+              <span className="font-poppins uppercase tracking-widest text-xs md:text-sm font-bold text-[#134576]">
+                Who We Are
+              </span>
+            </motion.div>
           </div>
-          {/* button */}
-          <Link
-            ref={buttonRef}
-            href="/about"
-            className="flex max-w-md mx-auto items-center justify-center py-3 px-6 sm:px-4 md:px-8 rounded-full font-medium text-white bg-[#012e21] border-2 border-[#fff0aa] shadow-lg transition-all hover:shadow-sm"
-            onMouseEnter={() => hoverAnimation?.play()}
-            onMouseLeave={() => hoverAnimation?.reverse()}
-          >
-            More About SRE PENS
-            <svg
-              className="w-5 h-5 ml-2 -mr-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-          </Link>
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <h4
-              className={`about-h4 text-[#fff1aa] font-extrabold text-2xl md:text-3xl lg:text-4xl text-center mt-32 ${poppins.variable} flex flex-col`}
-            >
-              Part of <span className="text-[#022E21]">Society of Renewable Energy Indonesia</span>
-            </h4>
-            <Link
-              href={"https://www.sre.co.id/"}
-              className="about-link text-[#F2C601] font-bold text-md md:text-xl lg:text-2xl underline flex sm:font-semibold items-center justify-center"
-            >
-              Official Website
-              <svg
-                className="w-5 h-5 ml-2 -mr-1 mt-2"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </Link>
+
+          {/* Sub-heading */}
+          <div className="overflow-hidden mt-4 md:mt-0 max-w-xs md:text-right">
+             <motion.p variants={textReveal} className="font-poppins text-sm text-[#012e21]/70 leading-relaxed font-medium">
+               Establishing a sustainable future through student innovation.
+             </motion.p>
           </div>
         </div>
-      </div>
-    </div>
+
+        {/* --- SEPARATOR LINE --- */}
+        <motion.div 
+          variants={lineAnim} 
+          className="w-full h-0.5 bg-[#012e21]/20 mb-10 md:mb-16"
+        />
+
+        {/* --- MAIN TYPOGRAPHY (BIG TITLE) --- */}
+        <div className="relative mb-16 md:mb-24">
+          {/* Baris 1: ABOUT (Hijau Tua) */}
+          <div className="overflow-hidden leading-[0.85]">
+            <motion.h2
+              variants={textReveal}
+              className="font-akira text-[14vw] md:text-[11vw] text-[#012e21] uppercase"
+            >
+              About
+            </motion.h2>
+          </div>
+          
+          {/* Baris 2: SRE PENS (Biru Tua) */}
+          <div className="overflow-hidden leading-[0.85] flex md:justify-end">
+            <motion.h1
+              variants={textReveal}
+              // Menggunakan warna biru aksen (#134576) agar kontras dengan background cream
+              className="font-akira text-[14vw] md:text-[11vw] text-[#134576] uppercase"
+            >
+              SRE PENS
+            </motion.h1>
+          </div>
+        </div>
+
+        {/* --- GRID CONTENT --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-start">
+          
+          {/* Column Left: Visual / Catchphrase */}
+          <div className="lg:col-span-4 flex flex-col justify-between h-full">
+            <div className="overflow-hidden">
+              <motion.h3 
+                variants={textReveal} 
+                className="font-poppins text-2xl md:text-3xl font-semibold leading-tight text-[#134576]"
+              >
+                "Empowering Energy Transition."
+              </motion.h3>
+            </div>
+            
+            {/* Part Of Badge */}
+            <motion.div 
+              variants={fadeIn}
+              className="mt-10 lg:mt-auto pt-10 border-t border-[#012e21]/20"
+            >
+              <p className="text-xs uppercase tracking-widest text-[#012e21]/60 mb-2 font-bold">Member of</p>
+              <Link 
+                href="https://sre.co.id" 
+                target="_blank"
+                className="font-akira text-sm md:text-lg text-[#012e21] hover:text-[#134576] transition-colors flex items-center gap-2 group"
+              >
+                SRE INDONESIA
+                <svg className="w-4 h-4 transform group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Column Right: Paragraph & Button */}
+          <div className="lg:col-span-8">
+            <motion.div 
+              variants={fadeIn} 
+              data-scroll 
+              data-scroll-speed="0.5"
+            >
+              <p className="font-poppins text-lg md:text-xl lg:text-2xl leading-relaxed text-[#012e21]/80 font-medium mb-10">
+                <strong className="text-[#012e21] font-extrabold">Society of Renewable Energy PENS</strong> is a Student Chapter dedicated to accelerating the understanding and implementation of <span className="underline decoration-[#134576] decoration-2 underline-offset-4 text-[#134576]">Renewable Energy</span>. 
+                <br /><br />
+                We bridge the gap between academic knowledge and real-world application, fostering innovations that drive the <span className="text-[#134576] font-bold">Sustainability of the Energy Transition</span>.
+              </p>
+
+              {/* Huge Action Button (Warna Original: Dark Green Button + Cream Text) */}
+              <Link href="/about" className="group relative inline-flex items-center justify-between w-full md:w-auto bg-[#012e21] text-[#fff0aa] rounded-full px-8 py-6 md:px-12 md:py-8 overflow-hidden transition-all hover:bg-[#024431] shadow-xl hover:shadow-2xl">
+                 <span className="relative z-10 font-akira text-lg md:text-xl tracking-wide group-hover:tracking-widest transition-all duration-500">
+                   Discover More
+                 </span>
+                 <div className="relative z-10 ml-6 w-10 h-10 md:w-12 md:h-12 border border-[#fff0aa]/30 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:bg-[#fff0aa] group-hover:text-[#012e21] transition-all duration-500">
+                    <svg className="w-5 h-5 transform -rotate-45 group-hover:rotate-0 transition-transform duration-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"></path></svg>
+                 </div>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+
+      </motion.div>
+    </section>
   );
 }
