@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// PERBAIKAN 1: Import tipe 'Variants'
 import { motion, AnimatePresence, Variants } from "framer-motion";
 
 export default function SubPreloader({ isActive }: { isActive: boolean }) {
@@ -18,7 +17,9 @@ export default function SubPreloader({ isActive }: { isActive: boolean }) {
 
   // --- SETTINGAN DURASI ---
   const DURATION = 1.2;
-  const EASE = [0.76, 0, 0.24, 1];
+  // PERBAIKAN: Definisikan tipe EASE secara eksplisit sebagai Tuple [n, n, n, n]
+  const EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
+
   const slideUp: Variants = {
     initial: { top: "100vh" },
     enter: {
