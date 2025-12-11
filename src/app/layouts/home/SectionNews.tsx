@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+// PERBAIKAN 1: Import tipe 'Variants'
+import { motion, Variants } from "framer-motion";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
 import { upcomingEvents } from "@/lib/activityData"; 
@@ -19,10 +20,11 @@ const akira = localFont({
   display: "swap",
 });
 
-// --- ANIMATION VARIANTS YANG LEBIH AMAN ---
-// Kita ganti teknik masking dengan Fade Up agar teks pasti muncul
-const fadeUp = {
-  hidden: { opacity: 0, y: 60 }, // Mulai dari bawah sedikit
+// --- ANIMATION VARIANTS (Explicitly Typed) ---
+// PERBAIKAN 2: Tambahkan tipe ': Variants' pada setiap objek animasi
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 60 },
   visible: {
     opacity: 1,
     y: 0,
@@ -30,7 +32,7 @@ const fadeUp = {
   },
 };
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -38,7 +40,7 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
     opacity: 1,
@@ -54,8 +56,6 @@ export default function SectionNews() {
   return (
     <section
       data-scroll-section
-      // Hapus z-index custom, gunakan default stacking context
-      // Pastikan 'relative' tetap ada agar layout stabil
       className={`relative py-24 md:py-32 bg-[#012e21] text-[#fff0aa] ${poppins.variable} ${akira.variable}`}
     >
       {/* Decorative Background Lines */}
@@ -71,11 +71,10 @@ export default function SectionNews() {
         <div className="w-full mb-20 md:mb-32 flex flex-col items-start">
           
           {/* Small Tag */}
-          {/* Hapus overflow-hidden di sini agar tidak terpotong */}
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }} // Trigger saat 50% terlihat
+            viewport={{ once: true, amount: 0.5 }}
             variants={fadeUp}
             className="flex items-center gap-3 mb-4"
           >
@@ -87,12 +86,6 @@ export default function SectionNews() {
 
           {/* MAIN TITLE */}
           <div className="flex flex-col w-full">
-            {/* 
-               PERBAIKAN UTAMA:
-               1. Hapus div wrapper dengan overflow-hidden.
-               2. Terapkan animasi langsung ke H2.
-               3. Gunakan leading-normal atau leading-tight agar font Akira tidak terpotong vertikal.
-            */}
             <motion.h2
               initial="hidden"
               whileInView="visible"
@@ -100,7 +93,7 @@ export default function SectionNews() {
               variants={fadeUp}
               className="font-akira text-[10vw] md:text-[8vw] leading-tight text-[#fff0aa] uppercase drop-shadow-2xl"
             >
-              WHAT'S NEW
+              WHAT&apos;S NEW
             </motion.h2>
 
             <motion.h2
@@ -108,7 +101,6 @@ export default function SectionNews() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
               variants={fadeUp}
-              // Tambahkan margin left responsive
               className="font-akira text-[10vw] md:text-[8vw] leading-tight text-[#fff0aa]/80 uppercase md:ml-24"
             >
               AT SRE PENS
@@ -132,6 +124,8 @@ export default function SectionNews() {
             >
               {/* Image Container */}
               <div className="relative w-full aspect-4/3 overflow-hidden border-b border-[#fff0aa]/20">
+                {/* PERBAIKAN 3: Typo 'bg-linear-to-t' diganti 'bg-gradient-to-t' jika ada, 
+                    tapi di sini menggunakan bg color biasa jadi aman. */}
                 <div className="absolute inset-0 bg-[#134576]/0 group-hover:bg-[#134576]/20 z-10 transition-colors duration-500 mix-blend-overlay"></div>
                 <Image
                   src={event.image}

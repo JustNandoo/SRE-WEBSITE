@@ -34,7 +34,7 @@ export default function SectionHome() {
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 -z-10 bg-[url('/img/bg/bg1.jpg')] bg-cover bg-center bg-fixed brightness-50"></div>
-      <div className="absolute inset-0 bg-black/40 -z-[5]" />
+      <div className="absolute inset-0 bg-black/40 -z-5" />
 
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-32 text-white">
         {/* Header */}
@@ -81,7 +81,7 @@ export default function SectionHome() {
           <div className="w-full max-w-2xl mx-auto mb-6 px-2">
             <div className="bg-red-900/40 border-2 border-red-500 rounded-xl p-6 backdrop-blur-sm">
               <div className="flex items-start gap-4">
-                <div className="bg-red-500 rounded-full p-2 flex-shrink-0">
+                <div className="bg-red-500 rounded-full p-2 shrink-0">
                   <X size={22} className="text-white" />
                 </div>
                 <div>
@@ -101,12 +101,12 @@ export default function SectionHome() {
         {/* Result */}
         {selected && (
           <div className="w-full max-w-3xl mx-auto px-2">
-            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl shadow-2xl overflow-hidden border-4 border-green-500">
+            <div className="bg-linear-to-br from-slate-900 to-slate-800 rounded-3xl shadow-2xl overflow-hidden border-4 border-green-500">
               <div
                 className={`${
                   selected.status === "Lolos"
-                    ? "bg-gradient-to-r from-green-600 to-emerald-600"
-                    : "bg-gradient-to-r from-gray-600 to-gray-700"
+                    ? "bg-linear-to-r from-green-600 to-emerald-600"
+                    : "bg-linear-to-r from-gray-600 to-gray-700"
                 } px-6 py-6`}
               >
                 <div className="flex items-center justify-between">

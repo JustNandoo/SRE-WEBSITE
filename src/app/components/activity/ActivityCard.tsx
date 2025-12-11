@@ -24,7 +24,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ event, index }) => {
 
   return (
     <Link href={`/activity/${event.id}`} className="block h-full w-full group">
-      <div className="relative h-full min-h-[400px] w-full overflow-hidden rounded-[2rem] bg-[#012e21] border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[#F2C601]/20">
+      <div className="relative h-full min-h-[400px] w-full overflow-hidden rounded-4xl bg-[#012e21] border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[#F2C601]/20">
         {/* --- 1. BACKGROUND IMAGE (Zoom & Grayscale Effect) --- */}
         <div className="absolute inset-0 w-full h-full">
           <Image
@@ -37,7 +37,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ event, index }) => {
 
         {/* --- 2. GRADIENT OVERLAY --- */}
         {/* Gelap di bawah agar teks terbaca, transisi opacity saat hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#012e21] via-[#012e21]/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#012e21] via-[#012e21]/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
 
         {/* --- 3. TOP CONTENT (Date & Index) --- */}
         <div className="absolute top-5 left-5 right-5 flex justify-between items-start z-10">

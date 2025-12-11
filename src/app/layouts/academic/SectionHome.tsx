@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+// PERBAIKAN 1: Import tipe 'Variants'
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import AcademicCard from "@/app/components/academic/AcademicCard";
 import { academicContent, AcademicCardProps } from "@/lib/academicData";
 import { Poppins } from "next/font/google";
@@ -14,6 +15,32 @@ const poppins = Poppins({
 });
 
 const ITEMS_PER_PAGE = 6; // Jumlah kartu per halaman
+
+// --- VARIAN ANIMASI (Explicitly Typed) ---
+// PERBAIKAN 2: Tambahkan tipe ': Variants'
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+  exit: { opacity: 0, transition: { duration: 0.2 } },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.95,
+    transition: { duration: 0.3 },
+  },
+};
 
 export default function AcademicSection() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,31 +77,6 @@ export default function AcademicSection() {
     if (gridRef.current) {
       gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  };
-
-  // --- VARIAN ANIMASI ---
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-    exit: { opacity: 0, transition: { duration: 0.2 } },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      transition: { duration: 0.3 },
-    },
   };
 
   return (
@@ -132,8 +134,8 @@ export default function AcademicSection() {
           {/* Bagian Kiri: Deskripsi */}
           <div className="max-w-md">
             <p className="text-white/60 text-lg font-light leading-relaxed">
-              {`Explore our curated "Playlist" of knowledge. Find resources,
-              workshops, and insights to fuel your renewable energy journey.`}
+              Explore our curated &quot;Playlist&quot; of knowledge. Find resources,
+              workshops, and insights to fuel your renewable energy journey.
             </p>
           </div>
 
@@ -169,8 +171,6 @@ export default function AcademicSection() {
 
         {/* --- CARDS GRID (WITH ANIMATE PRESENCE FOR PAGINATION) --- */}
         <div className="min-h-[800px]">
-          {" "}
-          {/* Min-height agar footer tidak naik turun saat loading */}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentPage + searchTerm} // Key berubah = trigger ulang animasi

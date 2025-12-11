@@ -20,7 +20,7 @@ const MemberCard = ({ member }: { member: Member }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}
       transition={{ duration: 0.6 }}
-      className="group relative w-full aspect-[3/4] overflow-hidden rounded-2xl bg-[#012e21]"
+      className="group relative w-full aspect-3/4 overflow-hidden rounded-2xl bg-[#012e21]"
     >
       {/* BACKGROUND IMAGE */}
       {/* Logic: Foto berwarna jika tombol diklik (isOpen) ATAU di-hover */}
@@ -34,7 +34,7 @@ const MemberCard = ({ member }: { member: Member }) => {
       />
       
       {/* GRADIENT OVERLAY (Agar teks terbaca) */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#012e21] via-transparent to-transparent opacity-90" />
+      <div className="absolute inset-0 bg-linear-to-t from-[#012e21] via-transparent to-transparent opacity-90" />
       
       {/* --- TOMBOL TOGGLE SOCIAL MEDIA (POJOK KANAN ATAS) --- */}
       <div className="absolute top-3 right-3 z-20 flex flex-col items-end gap-2">
@@ -83,7 +83,7 @@ const MemberCard = ({ member }: { member: Member }) => {
                     <Link 
                       href={member.socials.instagram} 
                       target="_blank" 
-                      className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+                      className="w-10 h-10 rounded-full bg-linear-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform"
                     >
                         <FaInstagram size={18} />
                     </Link>
@@ -99,7 +99,7 @@ const MemberCard = ({ member }: { member: Member }) => {
             {member.name}
         </p>
         <div className="flex items-center gap-2 mt-2">
-            <span className="w-8 h-[1px] bg-[#fff0aa]/50"></span>
+            <span className="w-8 h-px bg-[#fff0aa]/50"></span>
             <p className="text-white/70 text-xs uppercase tracking-widest font-mono">
                 {member.role}
             </p>

@@ -49,7 +49,7 @@ export default function AcademicDetailContent({
           />
           {/* Overlay agar teks badge terbaca */}
           <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-80" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent opacity-80" />
         </div>
 
         {/* Floating Category Badge */}
@@ -69,7 +69,7 @@ export default function AcademicDetailContent({
       ========================================================= */}
       <div className="relative z-20 px-4 sm:px-6 md:px-10 -mt-20 md:-mt-32 pb-20">
         {/* The White Card */}
-        <div className="bg-white rounded-[2rem] md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
+        <div className="bg-white rounded-4xl md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
           {/* HEADER AREA */}
           <div className="px-6 py-10 md:px-16 md:py-16 text-center">
             {/* Back Button (Left Aligned) */}
@@ -113,7 +113,7 @@ export default function AcademicDetailContent({
                     <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
                     <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
                   </div>
-                  <div className="h-4 w-[1px] bg-gray-200 mx-1"></div>
+                  <div className="h-4 w-px bg-gray-200 mx-1"></div>
                   <div className="flex items-center gap-2 text-gray-400">
                     <FaFilePdf className="text-red-500 text-xs" />
                     <span className="text-[10px] md:text-xs font-mono uppercase tracking-wide">
@@ -125,7 +125,7 @@ export default function AcademicDetailContent({
               </div>
 
               {/* Iframe Area */}
-              <div className="relative w-full aspect-[3/4] md:aspect-video bg-gray-50">
+              <div className="relative w-full aspect-3/4 md:aspect-video bg-gray-50">
                 <iframe
                   src={pdfUrl}
                   className="w-full h-full"

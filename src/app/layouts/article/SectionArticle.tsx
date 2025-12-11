@@ -33,7 +33,7 @@ export default function ArticleSection() {
     >
       {/* Background Decor */}
       <div
-        className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#134576] to-transparent pointer-events-none"
+        className="absolute top-0 left-0 w-full h-[500px] bg-linear-to-b from-[#134576] to-transparent pointer-events-none"
         data-scroll
         data-scroll-speed="-0.5"
       />

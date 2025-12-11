@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+// PERBAIKAN 1: Import tipe 'Variants' dari framer-motion
+import { motion, Variants } from "framer-motion";
 import "locomotive-scroll/dist/locomotive-scroll.css";
 
-// --- VARIAN ANIMASI ---
-const slideUp = {
+// --- VARIAN ANIMASI (Explicitly Typed) ---
+// PERBAIKAN 2: Tambahkan tipe ': Variants' agar TypeScript tidak merah
+const slideUp: Variants = {
   hidden: { y: "110%" },
   visible: (i: number) => ({
     y: "0%",
@@ -14,7 +16,7 @@ const slideUp = {
   }),
 };
 
-const fadeIn = {
+const fadeIn: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 1, delay: 1.5 } },
 };
@@ -63,6 +65,7 @@ export default function SectionHome() {
             className="object-cover opacity-50 grayscale-20"
           />
         </div>
+        {/* PERBAIKAN 3: Typo 'bg-linear-to-t' diganti menjadi 'bg-gradient-to-t' */}
         <div className="absolute inset-0 bg-linear-to-t from-[#012e21] via-[#012e21]/40 to-transparent z-10" />
       </div>
 

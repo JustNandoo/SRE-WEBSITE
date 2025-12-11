@@ -37,7 +37,7 @@ export default function ActivityDetailContent({ activity }: { activity: EventDat
             className="object-cover"
           />
           <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-90" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent opacity-90" />
         </div>
 
         {/* Floating Category Badge */}
@@ -58,7 +58,7 @@ export default function ActivityDetailContent({ activity }: { activity: EventDat
       <div className="relative z-20 px-4 sm:px-6 md:px-10 -mt-20 md:-mt-32 pb-20">
         
         {/* The White Card (Polos & Bersih) */}
-        <div className="bg-white rounded-[2rem] md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
+        <div className="bg-white rounded-4xl md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
            
            {/* HEADER AREA */}
            <div className="px-6 py-10 md:px-16 md:py-16 border-b border-gray-100/50 relative z-10">
@@ -103,7 +103,7 @@ export default function ActivityDetailContent({ activity }: { activity: EventDat
            {/* CONTENT BODY */}
            <div className="px-6 py-10 md:px-16 md:py-20 relative z-10">
               <div className="max-w-3xl mx-auto">
-                 <p className="text-lg md:text-xl text-[#012e21]/80 font-serif leading-relaxed whitespace-pre-line text-justify first-letter:text-5xl first-letter:font-black first-letter:text-[#012e21] first-letter:float-left first-letter:mr-3 first-letter:mt-[-6px]">
+                 <p className="text-lg md:text-xl text-[#012e21]/80 font-serif leading-relaxed whitespace-pre-line text-justify first-letter:text-5xl first-letter:font-black first-letter:text-[#012e21] first-letter:float-left first-letter:mr-3 first-letter:-mt-1.5">
                     {activity.content}
                  </p>
                  

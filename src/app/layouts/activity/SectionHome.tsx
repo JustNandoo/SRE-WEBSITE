@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+// PERBAIKAN 1: Import tipe 'Variants'
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Poppins } from "next/font/google";
 import { FaSearch } from "react-icons/fa";
 import EventCard from "@/app/components/activity/ActivityCard";
@@ -29,8 +30,9 @@ export default function SectionHome() {
     setFilteredEvents(results);
   }, [searchTerm]);
 
-  // Framer Motion Variants
-  const containerVariants = {
+  // Framer Motion Variants (Explicitly Typed)
+  // PERBAIKAN 2: Tambahkan tipe ': Variants' pada objek animasi
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -38,7 +40,7 @@ export default function SectionHome() {
     },
   };
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
@@ -74,7 +76,7 @@ export default function SectionHome() {
             transition={{ duration: 0.8 }}
             className="flex items-center gap-3 mb-6"
           >
-            <div className="w-10 h-[2px] bg-[#F2C601]"></div>
+            <div className="w-10 h-0.5 bg-[#F2C601]"></div>
             <span className="text-[#F2C601] font-mono tracking-widest text-sm uppercase">
               Agenda & Activities
             </span>
@@ -90,7 +92,7 @@ export default function SectionHome() {
                 className="text-[10vw] md:text-[7rem] font-bold text-white leading-[0.9] tracking-tighter"
               >
                 <span className="block" data-scroll data-scroll-speed="0.2">
-                  WHAT'S NEW AT
+                  WHAT&apos;S NEW AT
                 </span>
               </motion.h1>
             </div>

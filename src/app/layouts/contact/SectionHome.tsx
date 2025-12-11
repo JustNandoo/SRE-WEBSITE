@@ -14,7 +14,7 @@ const poppins = Poppins({
 
 // --- SUB-COMPONENT: NOISE TEXTURE ---
 const NoiseOverlay = () => (
-  <div className="fixed inset-0 pointer-events-none z-[50] opacity-[0.03] mix-blend-overlay">
+  <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03] mix-blend-overlay">
     <svg className="w-full h-full">
       <filter id="noiseFilter">
         <feTurbulence
@@ -111,13 +111,13 @@ export default function ContactForm() {
                 </div>
 
                 <h2 className="text-3xl md:text-5xl font-bold leading-tight mb-6">
-                  Let's start a <br />
+                  {`Let's start a `}<br />
                   <span className="text-[#F2C601]">Conversation.</span>
                 </h2>
 
                 <p className="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-sm">
-                  Whether you have a question, a project proposal, or just want
-                  to say hi, we're here to listen.
+                  {`Whether you have a question, a project proposal, or just want
+                  to say hi, we're here to listen.`}
                 </p>
 
                 {/* Socials Area */}

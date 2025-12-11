@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll } from "framer-motion"; // Hapus useTransform karena tidak dipakai
 import { latestActivities } from "@/lib/activityLatestData";
 import ActivityLatestCard from "@/app/components/activity/ActivityLatestCard";
 import { Poppins } from "next/font/google";
@@ -15,12 +15,12 @@ const poppins = Poppins({
 export default function SectionLatest() {
   const containerRef = useRef(null);
 
-  const { scrollYProgress } = useScroll({
+  // useScroll tetap dibutuhkan untuk logic scroll (jika ada parallax lain)
+  // Tapi scaleY dihapus karena tidak digunakan di JSX
+  useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
-
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
     <div

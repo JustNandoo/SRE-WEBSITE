@@ -1,14 +1,22 @@
 // lib/articleData.ts
 import { ArticleCardProps } from "@/app/components/article/ArticleCard";
 
+// --- 1. DEFINISI TIPE DATA ---
+
+// Export 'Article' agar bisa dipakai di component SectionHome
+export type Article = ArticleContent;
+
 export interface ArticleContent extends ArticleCardProps {
+  author: string;
   content: string;
   created_by: string;
+  date: string; // Kita buat wajib ada agar tampilan tidak kosong
 }
 
 export const articleContent: ArticleContent[] = [
   {
     id: 1,
+    author: "SRE PENS",
     title:
       "PLTS Terapung Cirata: Energi Bersih di Atas Waduk Terbesar se-Asia Tenggara",
     image:
@@ -16,6 +24,7 @@ export const articleContent: ArticleContent[] = [
     description:
       "Presiden Joko Widodo meresmikan Pembangkit Listrik Tenaga Surya (PLTS) Terapung Cirata di Kabupaten Purwakarta, sebagai PLTS terapung terbesar di Asia Tenggara.",
     created_by: "Kementerian Komunikasi dan Informatika",
+    date: "09 Nov 2023", // Data tanggal ditambahkan
     content: `PURWAKARTA, JAWA BARAT – Indonesia mengambil langkah monumental dalam transisi menuju energi bersih dengan peresmian Pembangkit Listrik Tenaga Surya (PLTS) Terapung Cirata oleh Presiden Joko Widodo. Proyek yang berlokasi di atas hamparan Waduk Cirata, Jawa Barat, ini tidak hanya menjadi sebuah instalasi energi, tetapi juga simbol kemajuan teknologi dan ambisi iklim nasional, dengan kapasitas terpasang mencapai 192 Megawatt peak (MWp) yang menjadikannya sebagai PLTS terapung terbesar di kawasan Asia Tenggara.
 
 Dalam sambutannya, Presiden Joko Widodo menyatakan bahwa peresmian ini adalah sebuah hari yang bersejarah bagi pembangunan energi baru terbarukan (EBT) di Indonesia. "Hari ini adalah bukti nyata bahwa kita mampu membangun fasilitas energi terbarukan berskala besar. Kita berhasil memanfaatkan potensi Waduk Cirata tidak hanya untuk tenaga air, tetapi juga untuk tenaga surya, tanpa mengorbankan lahan produktif. Ini adalah lompatan besar menuju target Net Zero Emission kita," tegas Presiden.
@@ -26,12 +35,14 @@ Dibangun di atas 200 hektare permukaan air waduk, PLTS Terapung Cirata diproyeks
   },
   {
     id: 2,
+    author: "SRE PENS",
     title: "Finlandia Memperkenalkan 'Baterai Pasir' Pertama di Dunia",
     image:
       "https://i.pinimg.com/736x/37/f8/fb/37f8fbbec2c9897af99d7bcc504ab4bb.jpg",
     description:
       "Sebuah perusahaan di Finlandia telah memasang baterai pasir komersial pertama di dunia yang dapat menyimpan energi hijau selama berbulan-bulan.",
     created_by: "BBC News",
+    date: "05 Jul 2022", // Data tanggal ditambahkan
     content: `KANKAANPÄÄ, FINLANDIA – Di tengah tantangan global untuk menemukan cara yang andal dan terjangkau dalam menyimpan energi terbarukan, sebuah perusahaan rintisan asal Finlandia, Polar Night Energy, berhasil menciptakan terobosan yang revolusioner. Mereka telah meluncurkan sistem 'baterai pasir' pertama di dunia yang beroperasi secara komersial, menawarkan solusi cerdas untuk salah satu masalah terbesar dalam transisi energi: intermittency atau sifat tidak menentu dari tenaga surya dan angin.
 
 Teknologi inovatif ini bekerja dengan prinsip yang sangat sederhana namun efektif. Sistem ini menggunakan sebuah silo baja besar yang diisi dengan ratusan ton pasir berkualitas rendah—material yang melimpah dan murah. Ketika surplus listrik dari panel surya atau turbin angin tersedia dengan harga murah, energi tersebut digunakan untuk memanaskan pasir hingga suhu mencapai 500°C. Silo yang terinsulasi dengan baik ini mampu menyimpan energi panas tersebut dengan tingkat efisiensi tinggi selama berbulan-bulan, layaknya sebuah termos raksasa.
@@ -44,6 +55,7 @@ Dengan biaya instalasi yang rendah dan dampak lingkungan yang minimal, inovasi '
   },
   {
     id: 3,
+    author: "SRE PENS",
     title:
       "Para Ilmuwan Pecahkan Rekor Dunia untuk Efisiensi Sel Surya Perovskite",
     image:
@@ -51,6 +63,7 @@ Dengan biaya instalasi yang rendah dan dampak lingkungan yang minimal, inovasi '
     description:
       "Para peneliti telah mengembangkan sel surya perovskite yang lebih stabil dan efisien, membuka jalan bagi energi surya yang lebih terjangkau.",
     created_by: "EurekAlert!",
+    date: "12 Apr 2024", // Data tanggal ditambahkan
     content: `BERLIN, JERMAN – Sebuah pencapaian monumental dalam perlombaan menuju energi bersih telah berhasil diraih. Tim ilmuwan gabungan dari beberapa institusi riset terkemuka di Eropa telah mengumumkan terobosan baru dengan menciptakan sel surya tandem perovskite-silikon yang berhasil memecahkan rekor dunia efisiensi konversi daya, mencapai 33,9%. Angka ini bukan sekadar statistik, melainkan sebuah loncatan besar yang berpotensi mendefinisikan ulang masa depan energi surya dan mempercepat transisi energi global.
 
 Sel surya tandem perovskite-silikon telah lama dianggap sebagai 'cawan suci' dalam teknologi fotovoltaik. Teknologi ini menggabungkan keandalan sel surya silikon konvensional dengan kemampuan penyerapan cahaya superior dari material perovskite. Secara sederhana, sel tandem ini bekerja dalam dua lapisan: lapisan perovskite di bagian atas menangkap foton berenergi tinggi (cahaya biru), sementara lapisan silikon di bawahnya menangkap foton berenergi lebih rendah (cahaya merah) yang melewatinya. Kombinasi ini memungkinkan sel untuk mengubah spektrum cahaya matahari yang lebih luas menjadi listrik, melampaui batas teoretis sel silikon tunggal.

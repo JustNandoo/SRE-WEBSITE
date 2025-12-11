@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,7 +17,7 @@ const poppins = Poppins({
 
 // --- SUB-COMPONENT: NOISE OVERLAY ---
 const NoiseOverlay = () => (
-  <div className="fixed inset-0 pointer-events-none z-[50] opacity-[0.04] mix-blend-overlay">
+  <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] mix-blend-overlay">
     <svg className="w-full h-full">
       <filter id="noiseFilter">
         <feTurbulence
@@ -52,7 +52,7 @@ const FeaturedArticle = ({ article }: { article: Article }) => {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#022321] via-[#022321]/50 to-transparent opacity-90" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#022321] via-[#022321]/50 to-transparent opacity-90" />
       </div>
 
       {/* 2. CONTENT */}
@@ -244,7 +244,7 @@ const SectionHome: React.FC = () => {
                 className="col-span-full py-32 text-center"
               >
                 <h3 className="text-2xl text-white/30 font-serif italic">
-                  No articles found matching "{searchTerm}".
+                  {`No articles found matching "${searchTerm}".`}
                 </h3>
               </motion.div>
             )}

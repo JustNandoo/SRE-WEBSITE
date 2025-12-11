@@ -45,7 +45,7 @@ export default function ArticleDetailContent({
           />
           {/* Overlay agar teks badge terbaca */}
           <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-90" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent opacity-90" />
         </div>
 
         {/* Floating Category Badge */}
@@ -64,7 +64,7 @@ export default function ArticleDetailContent({
           2. CONTENT CARD (CLEAN WHITE)
       ========================================================= */}
       <div className="relative z-20 px-4 sm:px-6 md:px-10 -mt-20 md:-mt-32 pb-20">
-        <div className="bg-white rounded-[2rem] md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
+        <div className="bg-white rounded-4xl md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
           {/* HEADER AREA */}
           <div className="px-6 py-10 md:px-16 md:py-16 text-center border-b border-gray-100/50 relative z-10">
             <div className="flex justify-start mb-12">
@@ -120,7 +120,7 @@ export default function ArticleDetailContent({
             <div className="max-w-3xl mx-auto">
               <article className="text-lg md:text-xl text-[#012e21]/80 font-serif leading-relaxed whitespace-pre-line text-justify">
                 {/* First Letter Drop Cap */}
-                <span className="float-left text-5xl md:text-6xl font-black text-[#012e21] mr-3 mt-[-6px] leading-none">
+                <span className="float-left text-5xl md:text-6xl font-black text-[#012e21] mr-3 -mt-1.5 leading-none">
                   {article.content.charAt(0)}
                 </span>
                 {article.content.slice(1)}

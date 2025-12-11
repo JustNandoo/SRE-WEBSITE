@@ -23,7 +23,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   
   return (
     <Link href={`/article/${id}`} className="block h-full w-full group cursor-pointer">
-      <div className="relative h-[450px] w-full overflow-hidden rounded-[2rem] bg-[#012e21] border border-white/5 shadow-xl transition-all duration-500 hover:shadow-[#F2C601]/20">
+      <div className="relative h-[450px] w-full overflow-hidden rounded-4xl bg-[#012e21] border border-white/5 shadow-xl transition-all duration-500 hover:shadow-[#F2C601]/20">
         
         {/* --- 1. BACKGROUND IMAGE (Zoom & Grayscale Effect) --- */}
         <div className="absolute inset-0 w-full h-full">
@@ -38,7 +38,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
 
         {/* --- 2. GRADIENT OVERLAY --- */}
         {/* Gelap di bawah agar teks terbaca, transisi opacity saat hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#012e21] via-[#012e21]/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#012e21] via-[#012e21]/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity duration-300" />
 
         {/* --- 3. TOP CONTENT (Date Badge) --- */}
         <div className="absolute top-5 left-5 z-10">
