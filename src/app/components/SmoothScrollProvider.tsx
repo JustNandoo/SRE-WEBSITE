@@ -24,8 +24,13 @@ export default function SmoothScrollProvider({ children }: Props) {
           lerp: 0.08, // Smoothness level
           multiplier: 1,
           class: "is-reveal",
-          smartphone: { smooth: true },
-          tablet: { smooth: true },
+          smartphone: {
+            smooth: true,
+          },
+          tablet: {
+            smooth: true,
+            breakpoint: 0,
+          },
         });
 
         scrollRef.current = scrollInstance;
@@ -43,29 +48,48 @@ export default function SmoothScrollProvider({ children }: Props) {
 
             if (scrollY > 50) {
               // --- STATE: SCROLLED (Kapsul Melayang) ---
-              navbar.classList.remove("w-full", "top-0", "py-6", "bg-transparent", "rounded-none", "border-transparent");
-              
-              navbar.classList.add(
-                "w-[90%]",           
-                "md:w-[70%]",        
-                "top-5",             
-                "py-3",              
-                "rounded-full",      
-                "bg-[#012e21]/80",   
-                "backdrop-blur-md",  
-                "shadow-2xl",        
-                "border-white/10"    
+              navbar.classList.remove(
+                "w-full",
+                "top-0",
+                "py-6",
+                "bg-transparent",
+                "rounded-none",
+                "border-transparent"
               );
-              
+
+              navbar.classList.add(
+                "w-[90%]",
+                "md:w-[70%]",
+                "top-5",
+                "py-3",
+                "rounded-full",
+                "bg-[#012e21]/80",
+                "backdrop-blur-md",
+                "shadow-2xl",
+                "border-white/10"
+              );
             } else {
               // --- STATE: TOP (Default Full Width) ---
               navbar.classList.remove(
-                "w-[90%]", "md:w-[70%]", "top-5", "py-3", 
-                "rounded-full", "bg-[#012e21]/80", "backdrop-blur-md", 
-                "shadow-2xl", "border-white/10"
+                "w-[90%]",
+                "md:w-[70%]",
+                "top-5",
+                "py-3",
+                "rounded-full",
+                "bg-[#012e21]/80",
+                "backdrop-blur-md",
+                "shadow-2xl",
+                "border-white/10"
               );
 
-              navbar.classList.add("w-full", "top-0", "py-6", "bg-transparent", "rounded-none", "border-transparent");
+              navbar.classList.add(
+                "w-full",
+                "top-0",
+                "py-6",
+                "bg-transparent",
+                "rounded-none",
+                "border-transparent"
+              );
             }
           }
         });
