@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Search, Check, X, Phone } from "lucide-react";
-import { oprecData, type OprecData } from "../../../../lib/dataOprec";
+import { oprecData, type OprecData } from "@/lib/dataOprec";
 
 export default function SectionHome() {
   const [searchTerm, setSearchTerm] = useState("");
