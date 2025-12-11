@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 // PERBAIKAN 1: Import tipe 'Variants' dari framer-motion
 import { motion, Variants } from "framer-motion";
@@ -23,25 +23,6 @@ const fadeIn: Variants = {
 
 export default function SectionHome() {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // --- LOGIC LOCOMOTIVE SCROLL ---
-  useEffect(() => {
-    let scroll: any;
-    const initScroll = async () => {
-      const LocomotiveScroll = (await import("locomotive-scroll")).default;
-      scroll = new LocomotiveScroll({
-        el: document.querySelector("[data-scroll-container]") || undefined,
-        smooth: true,
-        multiplier: 1,
-        class: "is-reveal",
-      });
-    };
-    initScroll();
-    return () => {
-      if (scroll) scroll.destroy();
-    };
-  }, []);
-
   return (
     <section
       ref={containerRef}
