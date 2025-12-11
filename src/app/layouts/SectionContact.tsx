@@ -4,7 +4,8 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaLinkedin, FaInstagram, FaYoutube, FaTiktok, FaArrowRight } from "react-icons/fa";
-import { motion } from "framer-motion";
+// PERBAIKAN 1: Import tipe 'Variants'
+import { motion, Variants } from "framer-motion";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
 
@@ -16,12 +17,14 @@ const poppins = Poppins({
 });
 
 const akira = localFont({
-  src: "../fonts/Akira.otf", // Pastikan path sesuai
+  src: "../fonts/Akira.otf", // Pastikan path ini sesuai dengan struktur folder kamu
   variable: "--font-akira",
+  display: "swap",
 });
 
-// --- ANIMATION VARIANTS ---
-const fadeUp = {
+// --- ANIMATION VARIANTS (Explicitly Typed) ---
+// PERBAIKAN 2: Tambahkan tipe ': Variants'
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
     opacity: 1,
@@ -30,7 +33,7 @@ const fadeUp = {
   },
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -90,6 +93,7 @@ const SectionContact: React.FC = () => {
           fill
           className="object-cover grayscale"
         />
+        {/* PERBAIKAN 3: Typo 'bg-linear-to-t' diganti 'bg-gradient-to-t' */}
         <div className="absolute inset-0 bg-linear-to-t from-[#012e21] via-[#012e21]/40 to-[#012e21]/80" />
       </div>
 
@@ -115,7 +119,7 @@ const SectionContact: React.FC = () => {
                 className="font-akira text-[11vw] leading-[0.85] uppercase flex flex-col"
             >
                 <motion.span variants={fadeUp} className="block">
-                    LET'S GET
+                    LET&apos;S GET
                 </motion.span>
                 <motion.span variants={fadeUp} className="block text-[#134576] drop-shadow-lg">
                     CONNECTED
