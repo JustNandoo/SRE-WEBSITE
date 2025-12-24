@@ -48,14 +48,6 @@ const fadeIn: Variants = {
   },
 };
 
-const lineAnim: Variants = {
-  hidden: { scaleX: 0, originX: 0 },
-  visible: {
-    scaleX: 1,
-    transition: { duration: 1.5, ease: "circOut" },
-  },
-};
-
 export default function SectionAbout() {
   return (
     <section
@@ -71,7 +63,7 @@ export default function SectionAbout() {
         />
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-[#fff0aa] via-transparent to-[#fff0aa]/80 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-linear-to-b from-[#fff0aa] via-transparent to-[#fff0aa]/80 pointer-events-none z-0" />
 
       {/* ================= CONTENT ================= */}
       <MotionSwitch
@@ -105,12 +97,6 @@ export default function SectionAbout() {
             </MotionSwitch>
           </div>
         </div>
-
-        {/* ---------- SEPARATOR ---------- */}
-        <MotionSwitch
-          variants={lineAnim}
-          className="w-full h-0.5 bg-[#012e21]/20 mb-10 md:mb-16"
-        />
 
         {/* ---------- TITLE ---------- */}
         <div className="relative mb-16 md:mb-24">
