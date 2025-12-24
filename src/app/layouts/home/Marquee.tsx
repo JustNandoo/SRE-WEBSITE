@@ -8,81 +8,123 @@ import {
   useTransform,
   useMotionValue,
   useVelocity,
-  useAnimationFrame
+  useAnimationFrame,
 } from "framer-motion";
 import { wrap } from "@motionone/utils";
 import localFont from "next/font/local";
 
-// Pastikan file Akira.otf benar-benar ada di folder public/fonts atau src/fonts
-// Sesuaikan path "../.." ini dengan struktur foldermu
+// ================= FONT =================
 const akira = localFont({
-  src: "../../fonts/Akira.otf", 
+  src: "../../fonts/Akira.otf",
   variable: "--font-akira",
-  display: "swap", // Penting: agar teks muncul dulu walaupun font belum load
+  display: "swap",
 });
 
+// ================= TYPES =================
 interface ParallaxProps {
   children: string;
   baseVelocity: number;
 }
 
-function ParallaxText({ children, baseVelocity = 100 }: ParallaxProps) {
+// ================= DESKTOP (lg+) =================
+function ParallaxTextDesktop({ children, baseVelocity }: ParallaxProps) {
   const baseX = useMotionValue(0);
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
   const smoothVelocity = useSpring(scrollVelocity, {
     damping: 50,
-    stiffness: 400
+    stiffness: 400,
   });
 
-  const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], {
-    clamp: false
-  });
+  const velocityFactor = useTransform(
+    smoothVelocity,
+    [0, 1000],
+    [0, 5],
+    { clamp: false }
+  );
 
-  // Range wrap disesuaikan (-20% sampai -45%) agar looping mulus
   const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
+  const directionFactor = useRef(1);
 
-  const directionFactor = useRef<number>(1);
-
-  useAnimationFrame((t, delta) => {
+  useAnimationFrame((_, delta) => {
     let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
 
-    if (velocityFactor.get() < 0) {
-      directionFactor.current = -1;
-    } else if (velocityFactor.get() > 0) {
-      directionFactor.current = 1;
-    }
+    if (velocityFactor.get() < 0) directionFactor.current = -1;
+    else if (velocityFactor.get() > 0) directionFactor.current = 1;
 
     moveBy += directionFactor.current * moveBy * velocityFactor.get();
     baseX.set(baseX.get() + moveBy);
   });
 
   return (
-    <div className="parallax overflow-hidden m-0 whitespace-nowrap flex flex-nowrap w-full">
-      <motion.div 
-        className="scroller font-akira text-[8vw] md:text-[6vw] uppercase font-bold flex whitespace-nowrap gap-10" 
+    <div className="overflow-hidden whitespace-nowrap w-full">
+      <motion.div
         style={{ x }}
+        className="font-akira text-[6vw] uppercase font-bold flex gap-10 whitespace-nowrap"
       >
-        <span className="block mr-10">{children}</span>
-        <span className="block mr-10">{children}</span>
-        <span className="block mr-10">{children}</span>
-        <span className="block mr-10">{children}</span>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <span key={i} className="mr-10">
+            {children}
+          </span>
+        ))}
       </motion.div>
     </div>
   );
 }
 
+// ================= MOBILE / TABLET =================
+function ParallaxTextMobile({ children }: { children: string }) {
+  return (
+    <div className="overflow-hidden whitespace-nowrap w-full">
+      <div className="marquee-track font-akira text-[8vw] uppercase font-bold flex gap-10">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <span key={i} className="mr-10">
+            {children}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ================= MAIN COMPONENT =================
 export default function Marquee() {
   return (
-    <section 
-      // Jika marquee tetap tidak muncul, coba hapus 'data-scroll-section' ini dulu
-      data-scroll-section 
-      className={`relative z-30 w-full bg-[#012e21] border-y border-[#fff0aa] overflow-hidden ${akira.variable}`}
+    <section
+      data-scroll-section
+      className={`relative z-30 w-full bg-[#012e21] border-y border-[#fff0aa] overflow-hidden text-[#fff0aa] ${akira.variable}`}
     >
-      {/* Background Container */}
-      <div className="flex flex-col gap-2 py-2 md:py-6 text-[#fff0aa]">
-         <ParallaxText baseVelocity={2}>SRE PENS • Go Green • Go Innovation</ParallaxText>
+      <div className="py-2 md:py-6">
+        {/* MOBILE & TABLET */}
+        <div className="block lg:hidden">
+          <ParallaxTextMobile>
+            SRE PENS • Go Green • Go Innovation
+          </ParallaxTextMobile>
+        </div>
+
+        {/* DESKTOP */}
+        <div className="hidden lg:block">
+          <ParallaxTextDesktop baseVelocity={2}>
+            SRE PENS • Go Green • Go Innovation
+          </ParallaxTextDesktop>
+        </div>
       </div>
+
+      {/* CSS KEYFRAMES */}
+      <style jsx>{`
+        .marquee-track {
+          animation: marquee 18s linear infinite;
+        }
+
+        @keyframes marquee {
+          from {
+            transform: translateX(0%);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
     </section>
   );
 }

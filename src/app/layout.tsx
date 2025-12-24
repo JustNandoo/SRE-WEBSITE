@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./style/globals.css";
 import NavbarWrapper from "@/app/components/NavbarWrapper";
 import CustomScrollbar from "./components/CustomScrollbar";
+import SmoothScrollProvider from "./components/SmoothScrollProvider";
 
 // IMPORT KEDUANYA (Initial & Transition)
 // import Preloader from "@/app/components/ui/Preloader";
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <main className="antialiased">
+          <SmoothScrollProvider>
           {/* <Preloader /> */}
           {/* <PreloaderWrapper /> */}
           <CustomScrollbar />
@@ -29,6 +31,7 @@ export default function RootLayout({
             <NavbarWrapper />
             {children}
           </div>
+          </SmoothScrollProvider>
         </main>
       </body>
     </html>

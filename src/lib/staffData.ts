@@ -20,6 +20,20 @@ export interface Division {
 }
 
 export const staffData: Division[] = [
+  // 1. Paling atas dengan ID "01"
+  {
+    id: "spv", 
+    division: "The Supervisor",
+    description: "Providing strategic guidance, wisdom, and mentorship to ensure the organization's growth and stability.",
+    members: [
+      {
+        name: "Dr. Ir. Nu Rhahida Arini, S.T., M.T.",
+        role: "Supervisor (Pembina)",
+        img: "/img/photo/bu-arini.png",
+        socials: { linkedin: "#", instagram: "#" }
+      },
+    ]
+  },
   {
     id: "exec",
     division: "Executive Board",

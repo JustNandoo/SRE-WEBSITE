@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useRef } from "react";
-// PERBAIKAN 1: Import tipe 'Variants'
-import { motion, useInView, Variants } from "framer-motion";
+import { Variants } from "framer-motion";
+import MotionSwitch from "@/app/components/MotionSwitch";
 
-// --- DATA STRUKTUR ORGANISASI ---
+// ================= DATA =================
 const divisions = [
-  // 1. ADVISOR
   {
     id: "01",
     title: "Advisor",
@@ -17,7 +16,6 @@ const divisions = [
     textClass: "text-[#fff0aa]",
     iconColor: "opacity-80",
   },
-  // 2. PRESIDENT & VP
   {
     id: "02",
     title: "President & Vice President",
@@ -28,7 +26,6 @@ const divisions = [
     textClass: "text-[#012e21]",
     iconColor: "opacity-100",
   },
-  // 3. SECRETARY
   {
     id: "03",
     title: "Secretary",
@@ -39,7 +36,6 @@ const divisions = [
     textClass: "text-[#fff0aa]",
     iconColor: "opacity-60",
   },
-  // 4. TREASURER
   {
     id: "04",
     title: "Treasurer",
@@ -50,7 +46,6 @@ const divisions = [
     textClass: "text-[#fff0aa]",
     iconColor: "opacity-60",
   },
-  // 5. FINANCE
   {
     id: "05",
     title: "Finance",
@@ -61,7 +56,6 @@ const divisions = [
     textClass: "text-[#fff0aa]",
     iconColor: "opacity-60",
   },
-  // 6. STRATEGIC RESOURCE MANAGEMENT
   {
     id: "06",
     title: "Strategic Resource Management",
@@ -72,7 +66,6 @@ const divisions = [
     textClass: "text-[#fff0aa]",
     iconColor: "opacity-60",
   },
-  // 7. PROJECT MANAGEMENT
   {
     id: "07",
     title: "Project Management",
@@ -83,7 +76,6 @@ const divisions = [
     textClass: "text-[#fff0aa]",
     iconColor: "opacity-60",
   },
-  // 8. CREATIVE MEDIA
   {
     id: "08",
     title: "Creative Media",
@@ -96,50 +88,60 @@ const divisions = [
   },
 ];
 
-// PERBAIKAN 2: Tambahkan tipe ': Variants' pada objek animasi
+// ================= ANIMATION =================
 const cardVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
-  visible: {
+  visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] },
-  },
+    transition: {
+      duration: 0.8,
+      ease: [0.2, 0.65, 0.3, 0.9],
+      delay: i * 0.1,
+    },
+  }),
 };
 
 export default function Structure() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, margin: "-100px" });
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   return (
     <section
-      ref={ref}
+      ref={sectionRef}
       className="relative min-h-screen bg-[#012e21] py-24 px-4 md:px-10 overflow-hidden"
       data-scroll-section
     >
-      {/* BACKGROUND DECORATION (PARALLAX) */}
+      {/* ================= BACKGROUND GRID ================= */}
       <div
-        className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none"
+        className="absolute inset-0 opacity-10 pointer-events-none"
         data-scroll
         data-scroll-speed="-0.5"
       >
-        <div className="w-full h-full bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-size-[4rem_4rem]"></div>
+        <div className="w-full h-full bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-size-[4rem_4rem]" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* --- HEADER --- */}
+        {/* ================= HEADER ================= */}
         <div className="mb-16 md:mb-24 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-          <div className="overflow-hidden">
-            <motion.h2
-              initial={{ y: "100%" }}
-              animate={isInView ? { y: 0 } : { y: "100%" }}
-              transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
-              data-scroll
-              data-scroll-speed="0.2"
-              className="text-5xl md:text-7xl lg:text-8xl font-black text-[#F2C601] uppercase tracking-tighter leading-[0.9]"
-            >
-              Our <br /> Structure
-            </motion.h2>
-          </div>
+          <MotionSwitch
+            as="h2"
+            variants={{
+              hidden: { y: "100%" },
+              visible: {
+                y: 0,
+                transition: { duration: 1, ease: [0.76, 0, 0.24, 1] },
+              },
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            data-scroll
+            data-scroll-speed="0.2"
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-[#F2C601] uppercase tracking-tighter leading-[0.9]"
+          >
+            Our <br /> Structure
+          </MotionSwitch>
+
           <div
             className="max-w-md text-[#fff0aa]/80 text-sm md:text-base font-light"
             data-scroll
@@ -152,39 +154,39 @@ export default function Structure() {
           </div>
         </div>
 
-        {/* --- BENTO GRID LAYOUT --- */}
+        {/* ================= GRID ================= */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {divisions.map((item, i) => (
-            <motion.div
+            <MotionSwitch
               key={item.id}
               custom={i}
               variants={cardVariants}
               initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              transition={{ delay: i * 0.1 }}
+              whileInView="visible"
+              viewport={{ once: true }}
               whileHover={{ scale: 0.98 }}
               className={`
-                ${item.colSpan} 
-                ${item.bgClass} 
+                ${item.colSpan}
+                ${item.bgClass}
                 ${item.textClass}
                 relative p-6 md:p-8 rounded-3xl border
                 flex flex-col justify-between min-h-[200px]
                 group transition-colors duration-500 cursor-default
               `}
             >
-              {/* Top: Number & Arrow */}
+              {/* TOP */}
               <div className="flex justify-between items-start mb-4">
                 <span
                   className={`font-mono text-xs border border-current px-2 py-1 rounded-full ${item.iconColor}`}
                 >
                   {item.id}
                 </span>
-                <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-1">
+                <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
                   ↗
                 </span>
               </div>
 
-              {/* Bottom: Title, Role & Desc */}
+              {/* BOTTOM */}
               <div>
                 <span className="block text-xs uppercase tracking-widest opacity-70 mb-2 font-medium">
                   {item.role}
@@ -196,7 +198,7 @@ export default function Structure() {
                   {item.desc}
                 </p>
               </div>
-            </motion.div>
+            </MotionSwitch>
           ))}
         </div>
       </div>

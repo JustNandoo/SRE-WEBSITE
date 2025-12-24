@@ -3,26 +3,23 @@
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import Link from "next/link";
-// PERBAIKAN 1: Import tipe 'Variants' dari framer-motion
-import { motion, Variants } from "framer-motion";
+import { Variants } from "framer-motion";
+import MotionSwitch from "@/app/components/MotionSwitch";
 
-// --- FONTS ---
+// ================= FONTS =================
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
 });
 
-// Pastikan file font ada di path ini, jika tidak build akan error
 const akira = localFont({
   src: "../../fonts/Akira.otf",
   variable: "--font-akira",
-  display: "swap", // Best practice untuk font loading
+  display: "swap",
 });
 
-// --- ANIMATION VARIANTS (Explicitly Typed) ---
-// PERBAIKAN 2: Tambahkan tipe ': Variants' pada setiap objek animasi
-
+// ================= VARIANTS =================
 const containerVariants: Variants = {
   hidden: {},
   visible: {
@@ -65,110 +62,101 @@ export default function SectionAbout() {
       data-scroll-section
       className={`relative w-full rounded-t-[3rem] -mt-8 bg-[#fff0aa] text-[#012e21] overflow-hidden ${poppins.variable} ${akira.variable}`}
     >
-      {/* =========================================
-        BACKGROUND LAYER
-        ========================================= 
-      */}
-      {/* Parallax Image */}
+      {/* ================= BACKGROUND ================= */}
       <div className="absolute top-0 left-0 w-full h-[120%] -z-10 overflow-hidden">
         <div
           data-scroll
           data-scroll-speed="-0.3"
           className="relative w-full h-full bg-[url('/img/bg/bg4.png')] bg-cover bg-center opacity-20 mix-blend-multiply"
-        ></div>
+        />
       </div>
 
-      {/* Gradient Overlay */}
-      {/* PERBAIKAN 3: Typo 'bg-linear-to-b' diganti menjadi 'bg-gradient-to-b' */}
-      <div className="absolute inset-0 bg-linear-to-b from-[#fff0aa] via-transparent to-[#fff0aa]/80 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#fff0aa] via-transparent to-[#fff0aa]/80 pointer-events-none z-0" />
 
-      {/* =========================================
-        CONTENT CONTAINER
-        ========================================= 
-      */}
-      <motion.div
+      {/* ================= CONTENT ================= */}
+      <MotionSwitch
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-10%" }}
         className="relative z-10 px-6 py-24 md:px-10 lg:px-20 lg:py-32 flex flex-col min-h-screen justify-between"
       >
-        {/* --- HEADER: TOP SECTION --- */}
+        {/* ---------- HEADER ---------- */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-20">
-          {/* Small Tag */}
           <div className="overflow-hidden">
-            <motion.div
+            <MotionSwitch
               variants={textReveal}
               className="flex items-center space-x-2"
             >
-              <span className="w-2 h-2 rounded-full bg-[#134576] animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-[#134576] animate-pulse" />
               <span className="font-poppins uppercase tracking-widest text-xs md:text-sm font-bold text-[#134576]">
                 Who We Are
               </span>
-            </motion.div>
+            </MotionSwitch>
           </div>
 
-          {/* Sub-heading */}
           <div className="overflow-hidden mt-4 md:mt-0 max-w-xs md:text-right">
-            <motion.p
+            <MotionSwitch
+              as="p"
               variants={textReveal}
               className="font-poppins text-sm text-[#012e21]/70 leading-relaxed font-medium"
             >
               Establishing a sustainable future through student innovation.
-            </motion.p>
+            </MotionSwitch>
           </div>
         </div>
 
-        {/* --- SEPARATOR LINE --- */}
-        <motion.div
+        {/* ---------- SEPARATOR ---------- */}
+        <MotionSwitch
           variants={lineAnim}
           className="w-full h-0.5 bg-[#012e21]/20 mb-10 md:mb-16"
         />
 
-        {/* --- MAIN TYPOGRAPHY (BIG TITLE) --- */}
+        {/* ---------- TITLE ---------- */}
         <div className="relative mb-16 md:mb-24">
-          {/* Baris 1: ABOUT */}
           <div className="overflow-hidden leading-[0.85]">
-            <motion.h2
+            <MotionSwitch
+              as="h2"
               variants={textReveal}
-              className="font-akira text-[14vw] md:text-[11vw] text-[#012e21] uppercase"
+              className="font-akira font-bold text-[14vw] md:text-[11vw] text-[#012e21] uppercase"
             >
               About
-            </motion.h2>
+            </MotionSwitch>
           </div>
 
-          {/* Baris 2: SRE PENS */}
           <div className="overflow-hidden leading-[0.85] flex md:justify-end">
-            <motion.h1
+            <MotionSwitch
+              as="h1"
               variants={textReveal}
-              className="font-akira text-[14vw] md:text-[11vw] text-[#134576] uppercase"
+              className="font-akira font-bold text-[14vw] md:text-[11vw] text-[#134576] uppercase"
             >
               SRE PENS
-            </motion.h1>
+            </MotionSwitch>
           </div>
         </div>
 
-        {/* --- GRID CONTENT --- */}
+        {/* ---------- GRID CONTENT ---------- */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-start">
-          {/* Column Left: Visual / Catchphrase */}
+          {/* LEFT */}
           <div className="lg:col-span-4 flex flex-col justify-between h-full">
             <div className="overflow-hidden">
-              <motion.h3
+              <MotionSwitch
+                as="h3"
                 variants={textReveal}
                 className="font-poppins text-2xl md:text-3xl font-semibold leading-tight text-[#134576]"
               >
                 &quot;Empowering Energy Transition.&quot;
-              </motion.h3>
+              </MotionSwitch>
             </div>
 
-            {/* Part Of Badge */}
-            <motion.div
+            <MotionSwitch
               variants={fadeIn}
               className="mt-10 lg:mt-auto pt-10 border-t border-[#012e21]/20"
             >
               <p className="text-xs uppercase tracking-widest text-[#012e21]/60 mb-2 font-bold">
                 Member of
               </p>
+
               <Link
                 href="https://sre.co.id"
                 target="_blank"
@@ -186,15 +174,19 @@ export default function SectionAbout() {
                     strokeLinejoin="round"
                     strokeWidth="2"
                     d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  ></path>
+                  />
                 </svg>
               </Link>
-            </motion.div>
+            </MotionSwitch>
           </div>
 
-          {/* Column Right: Paragraph & Button */}
+          {/* RIGHT */}
           <div className="lg:col-span-8">
-            <motion.div variants={fadeIn} data-scroll data-scroll-speed="0.5">
+            <MotionSwitch
+              variants={fadeIn}
+              data-scroll
+              data-scroll-speed="0.5"
+            >
               <p className="font-poppins text-lg md:text-xl lg:text-2xl leading-relaxed text-[#012e21]/80 font-medium mb-10">
                 <strong className="text-[#012e21] font-extrabold">
                   Society of Renewable Energy PENS
@@ -215,7 +207,6 @@ export default function SectionAbout() {
                 .
               </p>
 
-              {/* Action Button */}
               <Link
                 href="/about"
                 className="group relative inline-flex items-center justify-between w-full md:w-auto bg-[#012e21] text-[#fff0aa] rounded-full px-8 py-6 md:px-12 md:py-8 overflow-hidden transition-all hover:bg-[#024431] shadow-xl hover:shadow-2xl"
@@ -223,20 +214,21 @@ export default function SectionAbout() {
                 <span className="relative z-10 font-akira text-lg md:text-xl tracking-wide group-hover:tracking-widest transition-all duration-500">
                   Discover More
                 </span>
+
                 <div className="relative z-10 ml-6 w-10 h-10 md:w-12 md:h-12 border border-[#fff0aa]/30 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:bg-[#fff0aa] group-hover:text-[#012e21] transition-all duration-500">
                   <svg
                     className="w-5 h-5 transform -rotate-45 group-hover:rotate-0 transition-transform duration-500"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
-                    <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"></path>
+                    <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" />
                   </svg>
                 </div>
               </Link>
-            </motion.div>
+            </MotionSwitch>
           </div>
         </div>
-      </motion.div>
+      </MotionSwitch>
     </section>
   );
 }

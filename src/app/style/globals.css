@@ -24,13 +24,13 @@ html,
 body {
   /* Hati-hati: overflow: hidden mematikan scroll native. 
      Pastikan Locomotive Scroll (JS) sudah aktif. */
-  overflow: hidden !important; 
+  overflow: hidden !important;
   width: 100%;
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  
+
   /* Tambahan untuk memastikan native scrollbar hilang di semua browser */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
@@ -46,7 +46,7 @@ html::-webkit-scrollbar {
 .c-scrollbar {
   position: fixed !important;
   right: 0 !important; /* Tempel ke kanan mentok */
-  top: 0 !important;   /* Tempel ke atas mentok */
+  top: 0 !important; /* Tempel ke atas mentok */
   bottom: 0 !important; /* Tempel ke bawah mentok */
   width: 3px !important; /* Sangat tipis (2px - 4px) */
   height: 100vh !important;
@@ -61,20 +61,38 @@ html::-webkit-scrollbar {
   width: 100% !important;
   border-radius: 0 !important; /* Kotak, bukan kapsul, agar menyatu */
   opacity: 1 !important; /* Selalu terlihat solid */
-  
+
   /* FITUR KEREN: Warna otomatis kontras (Putih di Gelap, Hitam di Terang) */
-  mix-blend-mode: difference; 
-  
+  mix-blend-mode: difference;
+
   /* Tidak perlu cursor grab karena pointer-events: none di parent */
 }
 
 /* C. HILANGKAN INTERAKSI (Tetap Tipis) */
 /* Kita override efek hover agar tidak melebar */
 .c-scrollbar:hover {
-  width: 3px !important; 
+  width: 3px !important;
   background-color: transparent !important;
 }
 
 .c-scrollbar:hover .c-scrollbar_thumb {
   background-color: #1b1b1b !important;
+}
+
+/* Text stroke utility */
+.text-stroke {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: #fff0aa;
+
+  cursor: pointer;
+
+  /* Fokus ke properti yang relevan */
+  transition:
+    -webkit-text-fill-color 700s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-text-stroke-color 700s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.text-stroke:hover {
+  -webkit-text-fill-color: #fff0aa;
 }

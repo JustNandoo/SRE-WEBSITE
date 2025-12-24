@@ -46,7 +46,7 @@ export default function SectionHome() {
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-3 leading-tight">
             Open Recruitment <br />
-            <span className="text-green-300">SRE PENS 2025</span>
+            <span className="text-green-300">SRE PENS 2024</span>
           </h1>
           <p className="text-green-100 text-base md:text-lg">
             Society of Renewable Energy – Politeknik Elektronika Negeri Surabaya
@@ -122,7 +122,7 @@ export default function SectionHome() {
                   )}
                 </div>
                 <p className="text-green-100 text-sm mt-2">
-                  Open Recruitment SRE PENS 2025
+                  Open Recruitment SRE PENS 2024
                 </p>
               </div>
 
@@ -202,7 +202,7 @@ export default function SectionHome() {
               </div>
               <p className="text-white text-lg leading-relaxed">
                 Masukkan nama lengkap kamu untuk melihat hasil seleksi  
-                Open Recruitment SRE PENS 2025
+                Open Recruitment SRE PENS 2024
               </p>
             </div>
           </div>

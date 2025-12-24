@@ -13,7 +13,7 @@ export const upcomingEvents: EventData[] = [
   {
     id: "1",
     title: "Seminar Nasional: Smart Grid & IoT untuk Ketahanan Energi Indonesia 2045",
-    date: "2025-08-16",
+    date: "2024-08-16",
     time: "08:30 - 16:00 WIB",
     category: "Seminar",
     description: "Mengupas tuntas integrasi teknologi Smart Grid dan Internet of Things (IoT) untuk mewujudkan sistem kelistrikan nasional yang andal, efisien, dan berkelanjutan.",
@@ -46,7 +46,7 @@ Menyongsong Indonesia Emas 2045, transisi menuju energi bersih dan berkelanjutan
 * **Mahasiswa PENS:** Rp 75.000
 * **Mahasiswa Umum:** Rp 100.000
 * **Umum/Profesional:** Rp 250.000
-* **Link Pendaftaran:** [https://pens.ac.id/seminar-smartgrid2025](https://pens.ac.id/seminar-smartgrid2025)
+* **Link Pendaftaran:** [https://pens.ac.id/seminar-smartgrid2024](https://pens.ac.id/seminar-smartgrid2024)
 * **Fasilitas:** Sertifikat digital, materi seminar, makan siang, coffee break, dan networking session.
 `,
     image: "https://i.pinimg.com/736x/a0/1a/62/a01a62f90c6412d8dcc659385c92ba9e.jpg"
@@ -54,7 +54,7 @@ Menyongsong Indonesia Emas 2045, transisi menuju energi bersih dan berkelanjutan
   {
     id: "2",
     title: "Workshop Intensif: Desain dan Instalasi PLTS Atap untuk Hunian",
-    date: "2025-09-06",
+    date: "2024-09-06",
     time: "09:00 - 17:00 WIB",
     category: "Workshop",
     description: "Pelatihan langsung untuk merancang, menghitung kebutuhan, dan memahami standar keamanan instalasi Pembangkit Listrik Tenaga Surya (PLTS) Atap.",
@@ -80,7 +80,7 @@ Seiring meningkatnya kesadaran akan energi bersih dan biaya listrik yang terus n
 6.  **Sesi Praktik:** Hands-on perakitan komponen dasar di Laboratorium Energi Terbarukan PENS.
 
 ### Investasi
-* **Early Bird (s/d 20 Agustus 2025):** Rp 450.000
+* **Early Bird (s/d 20 Agustus 2024):** Rp 450.000
 * **Harga Normal:** Rp 550.000
 * **Terbatas hanya untuk 30 peserta.**
 
@@ -95,14 +95,14 @@ Seiring meningkatnya kesadaran akan energi bersih dan biaya listrik yang terus n
   },
   {
     id: "3",
-    title: "PENS Energy Innovation Challenge 2025",
-    date: "2025-10-18",
+    title: "PENS Energy Innovation Challenge 2024",
+    date: "2024-10-18",
     time: "09:00 - Selesai",
     category: "Kompetisi",
     description: "Ajang kompetisi inovasi bagi mahasiswa tingkat nasional untuk menciptakan solusi nyata dalam bidang efisiensi energi dan energi terbarukan.",
     content: `
 ### Tentang Kompetisi
-**PENS Energy Innovation Challenge (PENS-EIC) 2025** adalah sebuah kompetisi yang diselenggarakan oleh Himpunan Mahasiswa Teknik Energitika PENS untuk menantang para inovator muda dari seluruh Indonesia. Tema tahun ini adalah **"Inovasi Energi Terbarukan untuk Kemandirian Komunitas Lokal"**. Kami mengundang mahasiswa untuk merancang dan mempresentasikan ide-ide brilian yang dapat diimplementasikan untuk membantu desa, komunitas pesisir, atau area terpencil dalam memenuhi kebutuhan energi mereka secara mandiri dan berkelanjutan.
+**PENS Energy Innovation Challenge (PENS-EIC) 2024** adalah sebuah kompetisi yang diselenggarakan oleh Himpunan Mahasiswa Teknik Energitika PENS untuk menantang para inovator muda dari seluruh Indonesia. Tema tahun ini adalah **"Inovasi Energi Terbarukan untuk Kemandirian Komunitas Lokal"**. Kami mengundang mahasiswa untuk merancang dan mempresentasikan ide-ide brilian yang dapat diimplementasikan untuk membantu desa, komunitas pesisir, atau area terpencil dalam memenuhi kebutuhan energi mereka secara mandiri dan berkelanjutan.
 
 ### Kategori Lomba
 1.  **Rancang Bangun Teknologi:** Pembuatan prototipe perangkat keras (misal: turbin mikrohidro piko, sistem monitoring energi berbasis IoT, kompor biomassa efisiensi tinggi).
@@ -110,10 +110,10 @@ Seiring meningkatnya kesadaran akan energi bersih dan biaya listrik yang terus n
 3.  **Studi dan Perencanaan Sistem:** Konsep perencanaan sistem energi terbarukan terintegrasi untuk sebuah kawasan studi kasus.
 
 ### Linimasa Kompetisi
-* **Pendaftaran dan Pengumpulan Proposal:** 1 Juli - 31 Agustus 2025
-* **Pengumuman Finalis:** 20 September 2025
-* **Technical Meeting:** 11 Oktober 2025
-* **Grand Final & Pameran Prototipe:** 18 Oktober 2025 di Hall Gedung Pascasarjana PENS
+* **Pendaftaran dan Pengumpulan Proposal:** 1 Juli - 31 Agustus 2024
+* **Pengumuman Finalis:** 20 September 2024
+* **Technical Meeting:** 11 Oktober 2024
+* **Grand Final & Pameran Prototipe:** 18 Oktober 2024 di Hall Gedung Pascasarjana PENS
 
 ### Dewan Juri
 * Dosen Ahli dari PENS dan Institut Teknologi Sepuluh Nopember (ITS)
@@ -134,7 +134,7 @@ Informasi lebih lanjut dan buku panduan dapat diunduh di website resmi Himpunan 
   {
     id: "4",
     title: "Guest Lecture: The Future of Green Hydrogen",
-    date: "2025-11-05",
+    date: "2024-11-05",
     time: "13:30 - 15:30 WIB",
     category: "Kuliah Tamu",
     description: "Kuliah tamu eksklusif bersama pakar internasional mengenai potensi, tantangan, dan teknologi di balik ekonomi hidrogen hijau.",
@@ -163,7 +163,7 @@ Acara ini gratis dan terbuka untuk umum, namun diwajibkan melakukan registrasi t
 * **Lokasi:** Auditorium Gedung Pascasarjana, Kampus PENS Surabaya
 * **Mode:** Hybrid (Luring terbatas & Daring via Zoom)
 * **Link Registrasi:** [https://pens.ac.id/guest-lecture-hydrogen](https://pens.ac.id/guest-lecture-hydrogen)
-* **Pendaftaran ditutup pada 1 November 2025 atau jika kuota telah terpenuhi.**
+* **Pendaftaran ditutup pada 1 November 2024 atau jika kuota telah terpenuhi.**
 `,
     image: "https://i.pinimg.com/736x/76/32/7d/76327d3b6c8bee75a6f294816575b1b0.jpg"
   }
