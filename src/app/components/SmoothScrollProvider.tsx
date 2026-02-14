@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, ReactNode } from "react";
-import { usePathname } from "next/navigation"; // TAMBAHAN PENTING
+import { usePathname } from "next/navigation";
 import "locomotive-scroll/dist/locomotive-scroll.css";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 export default function SmoothScrollProvider({ children }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<any>(null);
-  const pathname = usePathname(); // Hook untuk mendeteksi perubahan URL
+  const pathname = usePathname();
 
   // --- EFFECT 1: RESET SCROLL SAAT PINDAH HALAMAN ---
   useEffect(() => {
@@ -20,18 +20,13 @@ export default function SmoothScrollProvider({ children }: Props) {
 
     // 2. Reset Locomotive Scroll (Desktop)
     if (scrollRef.current) {
-      // update(): Hitung ulang tinggi halaman baru
       scrollRef.current.update();
-      
-      // scrollTo(0): Paksa scroll visual kembali ke paling atas
-      // duration: 0 & disableLerp: true agar instan tanpa animasi lambat
       scrollRef.current.scrollTo(0, { duration: 0, disableLerp: true });
     }
-  }, [pathname]); // Dijalankan setiap kali pathname berubah
+  }, [pathname]);
 
   // --- EFFECT 2: INISIALISASI SCROLL ---
   useEffect(() => {
-    // Definisi Logic Navbar
     const handleNavbarTransform = (scrollY: number) => {
       const navbar = document.getElementById("navbar");
       if (!navbar || navbar.classList.contains("nav-open")) return;
@@ -57,8 +52,7 @@ export default function SmoothScrollProvider({ children }: Props) {
         };
         window.addEventListener("scroll", onNativeScroll);
         
-        // Panggil sekali di awal untuk set state navbar yang benar saat refresh di tengah halaman
-        onNativeScroll();
+        onNativeScroll(); // Initial check
 
         return () => window.removeEventListener("scroll", onNativeScroll);
       } else {
@@ -72,17 +66,19 @@ export default function SmoothScrollProvider({ children }: Props) {
             lerp: 0.08,
             multiplier: 1,
             class: "is-reveal",
-            // Matikan total di mobile/tablet
-            smartphone: { smooth: false },
-            tablet: { smooth: false },
-            // Penting: Reset native scroll agar tidak konflik
+            // PERBAIKAN DI SINI: Tambahkan 'breakpoint: 0'
+            smartphone: { 
+              smooth: false
+            },
+            tablet: { 
+              smooth: false, 
+              breakpoint: 0 // Wajib ada untuk TypeScript
+            },
             resetNativeScroll: true 
           });
 
           scrollRef.current = scrollInstance;
 
-          // Resize observer untuk memantau perubahan konten dinamis (misal gambar loading lambat)
-          // Ini mencegah halaman "terpotong" di tengah
           const resizeObserver = new ResizeObserver(() => {
             scrollInstance.update();
           });
@@ -108,7 +104,7 @@ export default function SmoothScrollProvider({ children }: Props) {
       });
       if (scrollInstance) scrollInstance.destroy();
     };
-  }, []); // Hanya jalan sekali saat mount (karena logic pathname dipisah di effect atas)
+  }, []);
 
   return (
     <div
