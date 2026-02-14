@@ -68,7 +68,8 @@ export default function SmoothScrollProvider({ children }: Props) {
             class: "is-reveal",
             // PERBAIKAN DI SINI: Tambahkan 'breakpoint: 0'
             smartphone: { 
-              smooth: false
+              smooth: false,
+              breakpoint: 0 // Wajib ada untuk TypeScript
             },
             tablet: { 
               smooth: false, 
