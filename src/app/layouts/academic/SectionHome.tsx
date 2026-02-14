@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-// PERBAIKAN 1: Import tipe 'Variants'
-import { motion, AnimatePresence, Variants } from "framer-motion";
 import AcademicCard from "@/app/components/academic/AcademicCard";
 import { academicContent, AcademicCardProps } from "@/lib/academicData";
 import { Poppins } from "next/font/google";
@@ -15,32 +13,6 @@ const poppins = Poppins({
 });
 
 const ITEMS_PER_PAGE = 6; // Jumlah kartu per halaman
-
-// --- VARIAN ANIMASI (Explicitly Typed) ---
-// PERBAIKAN 2: Tambahkan tipe ': Variants'
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-  exit: { opacity: 0, transition: { duration: 0.2 } },
-};
-
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.95,
-    transition: { duration: 0.3 },
-  },
-};
 
 export default function AcademicSection() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -98,16 +70,12 @@ export default function AcademicSection() {
       <div className="container mx-auto px-6 md:px-10 py-32 md:py-40 relative z-10">
         {/* --- HEADER SECTION --- */}
         <div className="flex flex-col mb-20 md:mb-28">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 mb-6"
-          >
+          <div className="flex items-center gap-3 mb-6 transition-all duration-700 ease-out translate-y-0 opacity-100">
             <div className="w-10 h-0.5 bg-[#F2C601]"></div>
             <span className="text-[#F2C601] font-mono tracking-widest text-sm uppercase">
               Knowledge Hub
             </span>
-          </motion.div>
+          </div>
 
           <div className="flex flex-col">
             <h1 className="text-[12vw] md:text-[8rem] font-bold text-white leading-[0.85] tracking-tighter">
@@ -139,7 +107,7 @@ export default function AcademicSection() {
             </p>
           </div>
 
-          {/* Bagian Kanan: Search Input + Resources Found (Dibungkus agar menumpuk vertikal) */}
+          {/* Bagian Kanan: Search Input + Resources Found */}
           <div className="flex flex-col w-full md:w-auto items-start md:items-end gap-3">
             {/* 1. Search Input */}
             <div className="w-full md:w-auto relative group">
@@ -155,7 +123,7 @@ export default function AcademicSection() {
               />
             </div>
 
-            {/* 2. Resources Found (Ditaruh di sini agar tepat di bawah input) */}
+            {/* 2. Resources Found */}
             <div className="px-2">
               <p className="text-white/40 text-sm font-mono tracking-wide">
                 Showing{" "}
@@ -169,43 +137,25 @@ export default function AcademicSection() {
           </div>
         </div>
 
-        {/* --- CARDS GRID (WITH ANIMATE PRESENCE FOR PAGINATION) --- */}
+        {/* --- CARDS GRID --- */}
         <div className="min-h-[800px]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPage + searchTerm} // Key berubah = trigger ulang animasi
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-            >
-              {currentItems.length > 0 ? (
-                currentItems.map((card) => (
-                  <motion.div
-                    key={card.id}
-                    variants={cardVariants}
-                    layout
-                    className="h-full"
-                  >
-                    <div className="group relative w-full aspect-3/4 bg-[#0f355a] border border-white/5 rounded-4xl overflow-hidden hover:border-[#F2C601]/30 transition-colors duration-500">
-                      <AcademicCard {...card} />
-                    </div>
-                  </motion.div>
-                ))
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="col-span-full py-20 text-center"
-                >
-                  <h3 className="text-2xl text-white/40 font-mono">
-                    No results found.
-                  </h3>
-                </motion.div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {currentItems.length > 0 ? (
+              currentItems.map((card) => (
+                <div key={card.id} className="h-full">
+                  <div className="group relative w-full aspect-[3/4] bg-[#0f355a] border border-white/5 rounded-[2rem] overflow-hidden hover:border-[#F2C601]/30 transition-colors duration-500">
+                    <AcademicCard {...card} />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full py-20 text-center animate-pulse">
+                <h3 className="text-2xl text-white/40 font-mono">
+                  No results found.
+                </h3>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* --- PAGINATION CONTROLS (AWWWARDS STYLE) --- */}

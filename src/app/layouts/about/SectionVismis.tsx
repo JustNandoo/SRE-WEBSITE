@@ -2,10 +2,8 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { Variants } from "framer-motion";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
-import MotionSwitch from "@/app/components/MotionSwitch";
 import {
   MissionCardWrapper,
   MissionCard,
@@ -35,30 +33,6 @@ const NoiseOverlay = () => (
     </svg>
   </div>
 );
-
-// ================= VARIANTS =================
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { y: 100, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 1,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
 
 export default function Vismis() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -99,26 +73,13 @@ export default function Vismis() {
             </h2>
           </div>
 
-          <MotionSwitch
-            variants={{
-              hidden: { opacity: 0, y: 50 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                transition: { duration: 0.8, ease: "circOut" },
-              },
-            }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-10%" }}
-            className="max-w-5xl"
-          >
+          <div className="max-w-5xl">
             <p className="font-poppins text-2xl lg:text-4xl font-medium leading-relaxed tracking-tight text-[#022E21]">
               &ldquo;Raise interest and spread insight regarding Renewable Energy
               by developing innovation, exchanging ideas, and facilitating
               active student participation.&rdquo;
             </p>
-          </MotionSwitch>
+          </div>
         </div>
       </div>
 
@@ -142,53 +103,41 @@ export default function Vismis() {
           </h2>
         </div>
 
-        <MotionSwitch
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-        >
+        {/* Mission Cards Grid */}
+        <div className="w-full">
           <MissionCardWrapper>
             {[
               {
                 img: "math.gif",
                 title: "Education",
-                text:
-                  "Disseminating knowledge and implementing the development of renewable energy that is green and sustainable.",
+                text: "Disseminating knowledge and implementing the development of renewable energy that is green and sustainable.",
               },
               {
                 img: "eco-earth.gif",
                 title: "Environment",
-                text:
-                  "Reducing the impact of conventional energy, preserving culture, and protecting the Earth.",
+                text: "Reducing the impact of conventional energy, preserving culture, and protecting the Earth.",
               },
               {
                 img: "wind-turbine.gif",
                 title: "Technology",
-                text:
-                  "Developing cutting-edge innovations to increase the capacity and benefits of renewable energy.",
+                text: "Developing cutting-edge innovations to increase the capacity and benefits of renewable energy.",
               },
               {
                 img: "renewable-energy.gif",
                 title: "Law",
-                text:
-                  "Supporting the transition from conventional energy to green energy to achieve Indonesia's net zero emission target.",
+                text: "Supporting the transition from conventional energy to green energy to achieve Indonesia's net zero emission target.",
               },
             ].map((item, i) => (
-              <MotionSwitch
-                key={i}
-                variants={itemVariants}
-                className="w-full"
-              >
+              <div key={i} className="w-full">
                 <MissionCard
                   imgPath={item.img}
                   heading={item.title}
                   text={item.text}
                 />
-              </MotionSwitch>
+              </div>
             ))}
           </MissionCardWrapper>
-        </MotionSwitch>
+        </div>
       </div>
     </section>
   );

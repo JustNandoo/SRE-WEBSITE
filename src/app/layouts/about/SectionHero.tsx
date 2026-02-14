@@ -3,8 +3,6 @@
 import React from "react";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
-import { Variants } from "framer-motion";
-import MotionSwitch from "@/app/components/MotionSwitch";
 
 // ================= FONTS =================
 const poppins = Poppins({
@@ -18,19 +16,6 @@ const akira = localFont({
   variable: "--font-akira",
   display: "swap",
 });
-
-// ================= VARIANTS =================
-const revealAnim: Variants = {
-  hidden: { y: "100%" },
-  visible: (i: number) => ({
-    y: "0%",
-    transition: {
-      duration: 1.2,
-      ease: [0.22, 1, 0.36, 1],
-      delay: i * 0.1,
-    },
-  }),
-};
 
 export default function Hero() {
   return (
@@ -67,37 +52,20 @@ export default function Hero() {
         <div className="flex flex-col font-black tracking-tighter leading-[0.8] uppercase select-none">
           {/* ABOUT */}
           <div className="overflow-hidden">
-            <MotionSwitch
-              as="h1"
-              custom={0}
-              variants={revealAnim}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
+            <h1
               data-scroll
               data-scroll-speed="0.2"
               className="font-akira text-[18vw] md:text-[16vw] mb-3 text-stroke text-[#fff0aa] hover:text-[#fff0aa] transition-colors duration-700"
             >
               ABOUT
-            </MotionSwitch>
+            </h1>
           </div>
 
           {/* US + BADGE */}
           <div className="relative flex items-center justify-between mt-4 md:-mt-8">
             {/* Spinning Badge (Desktop only) */}
-            <MotionSwitch
-              className="hidden md:flex relative items-center justify-center w-32 h-32 md:w-48 md:h-48 rounded-full border border-[#fff0aa]/30 ml-10"
-              variants={{
-                hidden: { scale: 0, opacity: 0 },
-                visible: {
-                  scale: 1,
-                  opacity: 1,
-                  transition: { delay: 0.8, duration: 1 },
-                },
-              }}
-              initial="hidden"
-              animate="visible"
-            >
+            <div className="hidden md:flex relative items-center justify-center w-32 h-32 md:w-48 md:h-48 rounded-full border border-[#fff0aa]/30 ml-10 transition-all duration-1000 ease-out opacity-100 scale-100">
+              {/* Spinning Text SVG */}
               <div className="absolute inset-0 animate-[spin_10s_linear_infinite]">
                 <svg
                   viewBox="0 0 100 100"
@@ -115,24 +83,20 @@ export default function Hero() {
                   </text>
                 </svg>
               </div>
+              
+              {/* Center Dot */}
               <div className="w-2 h-2 bg-[#fff0aa] rounded-full" />
-            </MotionSwitch>
+            </div>
 
             {/* US */}
             <div className="overflow-hidden text-right flex-1">
-              <MotionSwitch
-                as="h1"
-                custom={1}
-                variants={revealAnim}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
+              <h1
                 data-scroll
                 data-scroll-speed="0.1"
                 className="font-akira text-[18vw] md:text-[16vw] text-[#fff0aa]"
               >
                 US.
-              </MotionSwitch>
+              </h1>
             </div>
           </div>
         </div>
@@ -146,27 +110,14 @@ export default function Hero() {
             </span>
           </div>
 
-          <MotionSwitch
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                transition: { delay: 0.5, duration: 0.8 },
-              },
-            }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="md:col-span-8"
-          >
+          <div className="md:col-span-8">
             <p className="font-poppins text-xl md:text-3xl leading-snug font-light text-[#fff0aa]">
               <span className="font-bold">SRE PENS</span> is more than just a
               student chapter. We are a catalyst for change, bridging the gap
               between academic knowledge and real-world renewable energy
               application.
             </p>
-          </MotionSwitch>
+          </div>
         </div>
       </div>
     </section>

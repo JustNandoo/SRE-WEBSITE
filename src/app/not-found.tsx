@@ -3,45 +3,59 @@
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
-import { FaArrowLeft, FaBolt } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 
 export default function NotFound() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLHeadingElement>(null);
+  const marqueeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Entrance Animation
+      // 1. Entrance Animation (Glitch Effect)
       const tl = gsap.timeline();
 
-      tl.from(".sre-element", {
-        y: 50,
+      // --- PERBAIKAN DI SINI ---
+      // Logika dibalik: Mulai dari Dark (#012e21) -> Flash ke Cream (#fff0aa) -> Kembali Dark
+      // Ini mencegah layar putih penuh saat pertama load.
+      tl.fromTo(containerRef.current, 
+        { backgroundColor: "#012e21" }, // Start: Dark Green
+        { 
+          backgroundColor: "#fff0aa", // Flash: Cream
+          duration: 0.08, // Sangat cepat (strobe effect)
+          ease: "none", 
+          repeat: 5, // Berkedip 5 kali
+          yoyo: true // Kembali ke warna awal
+        }
+      );
+
+      // Reveal Elements
+      tl.from(".sre-reveal", {
+        y: 100,
         opacity: 0,
         duration: 1,
         stagger: 0.1,
-        ease: "power3.out",
-      })
-      .from(".circuit-line", {
-        scaleX: 0,
-        opacity: 0,
-        duration: 1.5,
-        ease: "expo.out",
-      }, "-=0.8");
+        ease: "power4.out",
+      }, "-=0.5"); // Mulai sedikit lebih awal berbarengan dengan akhir flash
 
-      // 2. Mouse Parallax untuk Angka 404
+      // 2. Diagonal Marquee Animation
+      gsap.to(".marquee-inner", {
+        xPercent: -50,
+        repeat: -1,
+        duration: 20,
+        ease: "linear",
+      });
+
+      // 3. Mouse Interaction (Magnetic Button & Distort)
       const handleMouseMove = (e: MouseEvent) => {
-        if (!textRef.current) return;
         const { clientX, clientY } = e;
-        const { innerWidth, innerHeight } = window;
-        
-        const xPos = (clientX / innerWidth - 0.5) * 2;
-        const yPos = (clientY / innerHeight - 0.5) * 2;
+        const xPos = (clientX / window.innerWidth - 0.5) * 20;
+        const yPos = (clientY / window.innerHeight - 0.5) * 20;
 
-        gsap.to(textRef.current, {
-          x: xPos * -40, 
-          y: yPos * -40, 
-          duration: 1.2,
-          ease: "power2.out",
+        gsap.to(".interactive-layer", {
+          x: xPos,
+          y: yPos,
+          duration: 1,
+          ease: "power2.out"
         });
       };
 
@@ -58,102 +72,110 @@ export default function NotFound() {
   return (
     <div
       ref={containerRef}
-      // Background SRE Green (#012e21)
-      className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#012e21] text-[#fff0aa]"
+      // Pastikan bg awal di class adalah Dark Green agar tidak ada flash putih dari CSS
+      className="relative h-screen w-full overflow-hidden bg-[#012e21] text-[#fff0aa] font-sans"
     >
-      {/* --- BACKGROUND NOISE --- */}
-      <div className="absolute inset-0 z-20 pointer-events-none opacity-[0.07] mix-blend-overlay">
+      {/* --- NOISE TEXTURE (Essential for Awwwards look) --- */}
+      <div className="absolute inset-0 z-50 pointer-events-none opacity-[0.08] mix-blend-overlay">
         <svg className="w-full h-full">
-          <filter id="noiseFilterSRE">
+          <filter id="noise">
             <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
           </filter>
-          <rect width="100%" height="100%" filter="url(#noiseFilterSRE)" />
+          <rect width="100%" height="100%" filter="url(#noise)" />
         </svg>
       </div>
 
-      {/* --- BACKGROUND GIANT 404 (Parallax) --- */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none">
-        <h1
-          ref={textRef}
-          // Warna teks besar dibuat sangat transparan agar menyatu dengan background
-          className="font-goldman font-black text-[30vw] md:text-[40vw] leading-none tracking-tighter text-[#fff0aa] opacity-[0.03] whitespace-nowrap"
-        >
-          404
-        </h1>
+      {/* --- BACKGROUND DIAGONAL MARQUEE (Kinetic Typography) --- */}
+      <div 
+        ref={marqueeRef}
+        className="absolute inset-0 flex flex-col justify-center items-center opacity-10 pointer-events-none select-none overflow-hidden rotate-[-15deg] scale-150 z-0"
+      >
+        {/* Baris Marquee Berulang */}
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="marquee-row w-[200vw] flex whitespace-nowrap overflow-hidden my-2">
+             <div className="marquee-inner flex gap-8 font-goldman font-black text-[8vw] uppercase leading-none text-transparent stroke-text" style={{ WebkitTextStroke: "2px #fff0aa" }}>
+                <span>System Failure 404</span>
+                <span>•</span>
+                <span>Energy Void</span>
+                <span>•</span>
+                <span>System Failure 404</span>
+                <span>•</span>
+                <span>Energy Void</span>
+             </div>
+          </div>
+        ))}
       </div>
 
-      {/* --- DECORATIVE CIRCUIT LINES (Engineering Vibe) --- */}
-      {/* Garis Horizontal Atas */}
-      <div className="circuit-line absolute top-24 left-0 w-1/3 h-px bg-[#fff0aa]/20 hidden md:block" />
-      <div className="circuit-line absolute top-23 left-1/3 w-2 h-2 bg-[#fff0aa]/40 rounded-full hidden md:block" />
-      
-      {/* Garis Vertikal Kanan */}
-      <div className="circuit-line absolute bottom-0 right-24 w-px h-1/3 bg-[#fff0aa]/20 hidden md:block" />
-      <div className="circuit-line absolute bottom-[33%] right-[93px] w-2 h-2 bg-[#fff0aa]/40 rounded-full hidden md:block" />
-
-
-      {/* --- MAIN CONTENT --- */}
-      <div className="relative z-30 flex flex-col items-center text-center px-6 max-w-2xl">
+      {/* --- FOREGROUND CONTENT (Split Layout) --- */}
+      <div className="relative z-30 h-full w-full grid grid-cols-1 lg:grid-cols-2 p-6 md:p-12 interactive-layer">
         
-        {/* Animated Icon (Disconnected Power) */}
-        <div className="sre-element mb-6 relative">
-            <div className="absolute inset-0 bg-[#fff0aa] blur-2xl opacity-20 animate-pulse rounded-full"></div>
-            <FaBolt className="text-5xl md:text-7xl text-[#fff0aa] drop-shadow-[0_0_15px_rgba(255,240,170,0.5)]" />
+        {/* LEFT: Technical Data (Industrial Look) */}
+        <div className="flex flex-col justify-between h-full order-2 lg:order-1 mt-5 lg:mt-10 md:mt-0">
+           
+           {/* Header Info */}
+           <div className="sre-reveal flex items-center gap-4">
+              <div className="w-3 h-3 bg-[#fff0aa] animate-pulse"></div>
+              <span className="font-mono text-xs uppercase tracking-widest opacity-70">Error Log: #ERR_404_GRID</span>
+           </div>
+
+           {/* Main Message */}
+           <div className="sre-reveal my-auto">
+              <h1 className="text-6xl md:text-8xl font-black font-goldman uppercase leading-[0.85] mb-6 mix-blend-difference">
+                 Dead <br/> End.
+              </h1>
+              <p className="font-mono text-sm md:text-base opacity-80 max-w-md leading-relaxed border-l-2 border-[#fff0aa] pl-6">
+                 /SYSTEM_ALERT: The requested energy node is offline. Possible causes: link decay, route migration, or dimensional misalignment.
+              </p>
+           </div>
+
+           {/* Footer Info */}
+           <div className="sre-reveal font-mono text-[10px] opacity-40 uppercase tracking-widest">
+              ID: SRE-PENS-WEB-V2 // <br className="md:hidden"/>
+              STATUS: DISCONNECTED
+           </div>
         </div>
 
-        {/* Technical Error Code */}
-        <div className="sre-element mb-4 flex items-center gap-3">
-             <span className="h-px w-8 bg-[#fff0aa]/50"></span>
-             <p className="font-mono text-xs md:text-sm uppercase tracking-[0.2em] text-[#fff0aa]/70">
-                System Failure: 404
-             </p>
-             <span className="h-px w-8 bg-[#fff0aa]/50"></span>
+
+        {/* RIGHT: Visual Anchor & Action */}
+        <div className="flex flex-col justify-center items-center lg:items-end h-full order-1 lg:order-2">
+           
+           {/* Big 404 Visual */}
+           <div className="relative sre-reveal">
+              <div className="absolute -inset-10 border border-[#fff0aa]/20 rounded-full animate-[spin_10s_linear_infinite] md:block hidden"></div>
+              <div className="absolute -inset-4 border border-[#fff0aa]/40 rounded-full animate-[spin_15s_linear_infinite_reverse] md:block hidden"></div>
+              
+              <h2 className="text-[12rem] md:text-[15rem] font-black font-goldman leading-none text-[#fff0aa] mix-blend-difference relative z-10">
+                 404
+              </h2>
+              
+              {/* Glitch Overlay Text */}
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-mono bg-[#012e21] px-2 text-[#fff0aa] z-20 whitespace-nowrap">
+                 PAGE NOT FOUND
+              </span>
+           </div>
+
+           {/* Call to Action (Magnetic Button Style) */}
+           <div className="mt-12 sre-reveal">
+              <Link href="/" className="group relative inline-flex items-center justify-center">
+                 {/* Circle Background */}
+                 <div className="absolute w-20 h-20 rounded-full bg-[#fff0aa] scale-0 group-hover:scale-100 transition-transform duration-500 ease-in-out"></div>
+                 
+                 {/* Text & Icon */}
+                 <div className="relative z-10 flex items-center gap-4 px-8 py-4 border-b border-[#fff0aa] group-hover:border-transparent transition-colors duration-300">
+                    <span className="font-bold font-goldman text-xl uppercase tracking-widest text-[#fff0aa] group-hover:text-[#012e21] transition-colors duration-300">
+                       Return Home
+                    </span>
+                    <FaArrowRight className="text-[#fff0aa] group-hover:text-[#012e21] -rotate-45 group-hover:rotate-0 transition-all duration-300 transform group-hover:translate-x-2" />
+                 </div>
+              </Link>
+           </div>
+
         </div>
 
-        {/* Headline */}
-        <h2 className="sre-element text-4xl md:text-6xl font-bold font-goldman uppercase tracking-tight mb-6 text-[#fff0aa]">
-          Energy Source <br />
-          <span className="text-transparent bg-clip-text bg-linear-to-r from-[#fff0aa] to-[#fff0aa]/40">
-            Not Found
-          </span>
-        </h2>
-
-        {/* Description */}
-        <p className="sre-element font-montserrat text-sm md:text-base text-[#fff0aa]/80 leading-relaxed mb-10 max-w-md mx-auto">
-          The grid connection to this URL has been disrupted. 
-          Please return to the main generator to restore power.
-        </p>
-
-        {/* --- BUTTON (SRE Style) --- */}
-        <div className="sre-element">
-          <Link
-            href="/"
-            className="group relative inline-flex items-center gap-3 px-8 py-3.5 overflow-hidden rounded-full border border-[#fff0aa]/30 bg-[#fff0aa]/5 hover:bg-[#fff0aa] transition-all duration-300"
-          >
-            {/* Hover Background Fill Effect */}
-            <span className="absolute inset-0 w-full h-full bg-[#fff0aa] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
-            
-            <FaArrowLeft className="relative z-10 text-xs text-[#fff0aa] group-hover:text-[#012e21] transition-colors duration-300 group-hover:-translate-x-1" />
-            <span className="relative z-10 font-bold font-montserrat text-xs md:text-sm uppercase tracking-widest text-[#fff0aa] group-hover:text-[#012e21] transition-colors duration-300">
-              Reconnect Home
-            </span>
-          </Link>
-        </div>
       </div>
 
-      {/* --- FOOTER DECORATION (SRE BRANDING) --- */}
-      <div className="absolute bottom-8 w-full px-8 md:px-12 flex justify-between items-end text-[10px] md:text-xs font-mono text-[#fff0aa]/40 uppercase tracking-widest z-20">
-        <div className="flex flex-col text-left">
-           <span>Society of Renewable Energy</span>
-           <span>PENS Surabaya</span>
-        </div>
-        
-        <div className="hidden md:block h-[1px] flex-1 mx-8 bg-[#fff0aa]/10" />
-
-        <div className="text-right">
-             <span>Status: Offline</span>
-        </div>
-      </div>
+      {/* --- GRID OVERLAY (Fine Detail) --- */}
+      <div className="absolute inset-0 z-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#fff0aa 1px, transparent 1px), linear-gradient(90deg, #fff0aa 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.03 }}></div>
     </div>
   );
 }

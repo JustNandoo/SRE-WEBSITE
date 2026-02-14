@@ -3,256 +3,216 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { articleContent, Article } from "@/lib/articleData";
-import ArticleCard from "@/app/components/article/ArticleCard";
 import { Poppins } from "next/font/google";
-import { FaArrowRight, FaSearch, FaCalendarAlt, FaUser } from "react-icons/fa";
+import { FaArrowRight, FaSearch } from "react-icons/fa";
 
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600"],
 });
 
-// --- SUB-COMPONENT: NOISE OVERLAY ---
-const NoiseOverlay = () => (
-  <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] mix-blend-overlay">
-    <svg className="w-full h-full">
-      <filter id="noiseFilter">
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency="0.8"
-          stitchTiles="stitch"
-        />
-      </filter>
-      <rect width="100%" height="100%" filter="url(#noiseFilter)" />
-    </svg>
-  </div>
-);
-
-// --- HELPER ---
-const truncateText = (text: string, maxLength: number) =>
-  text.length <= maxLength ? text : text.substring(0, maxLength) + "...";
-
-// --- KOMPONEN FEATURED HERO ---
-const FeaturedArticle = ({ article }: { article: Article }) => {
+// --- COMPONENT: DESKTOP ACCORDION ROW ---
+const ArticleRow = ({ article, index }: { article: Article; index: number }) => {
   return (
-    <div className="relative h-[90vh] w-full overflow-hidden bg-[#022321]">
-      <div
-        className="absolute inset-0 w-full h-[120%] -top-[10%]"
-        data-scroll
-        data-scroll-speed="-0.5"
-      >
-        <Image
-          src={article.image || "/img/default.jpg"}
-          alt={article.title}
-          fill
-          priority
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="absolute inset-0 bg-linear-to-t from-[#022321] via-[#022321]/50 to-transparent opacity-90" />
-      </div>
+    <Link
+      href={`/article/${article.id}`}
+      className="group relative block w-full border-t border-[#fff0aa]/20 transition-all duration-700 ease-[0.22,1,0.36,1]"
+    >
+      {/* 1. ROW HEADER (Always Visible) */}
+      <div className="flex flex-col md:flex-row items-baseline justify-between py-8 px-4 md:px-0 group-hover:px-4 transition-all duration-500">
+        
+        {/* Left: Index & Category */}
+        <div className="flex items-center gap-8 w-full md:w-1/4">
+           <span className="font-mono text-xs text-[#fff0aa]/40">
+              {String(index + 1).padStart(2, "0")}
+           </span>
+           <span className="font-mono text-xs text-[#fff0aa]/60 uppercase tracking-widest border border-[#fff0aa]/20 px-2 py-1 rounded-full">
+              News
+           </span>
+        </div>
 
-      {/* 2. CONTENT */}
-      <div
-        className="absolute inset-0 flex flex-col justify-end z-10 pb-16 sm:pb-24 px-6 sm:px-10 md:px-16"
-        data-scroll
-        data-scroll-speed="0.1"
-      >
-        <div className="container mx-auto border-t border-white/20 pt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-            <div className="lg:col-span-3 flex flex-col gap-4 text-white/80">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="flex flex-col items-start gap-3"
-              >
-                <span className="bg-[#F2C601] text-[#022321] px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-sm">
-                  Featured Story
-                </span>
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest mt-2">
-                  <FaCalendarAlt className="text-[#F2C601]" />
-                  <span>{article.date}</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest">
-                  <FaUser className="text-[#F2C601]" />
-                  <span>{article.author || "SRE Team"}</span>
-                </div>
-              </motion.div>
-            </div>
+        {/* Center: Title */}
+        <div className="w-full md:w-1/2 mt-4 md:mt-0">
+           <h3 className="text-3xl md:text-5xl font-light text-[#fff0aa] group-hover:text-[#F2C601] transition-colors duration-300">
+              {article.title}
+           </h3>
+        </div>
 
-            {/* Title */}
-            <div className="lg:col-span-7">
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight"
-              >
-                {truncateText(article.title, 90)}
-              </motion.h1>
-            </div>
-
-            {/* CTA */}
-            <div className="lg:col-span-2 flex lg:justify-end">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-              >
-                <Link
-                  href={`/article/${article.id}`}
-                  className="group flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-[#F2C601] hover:border-[#F2C601] transition-all duration-300"
-                >
-                  <FaArrowRight className="text-white group-hover:text-[#022321] text-xl -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
-                </Link>
-              </motion.div>
-            </div>
-          </div>
+        {/* Right: Date & Arrow */}
+        <div className="w-full md:w-1/4 flex justify-between md:justify-end items-center gap-8 mt-4 md:mt-0">
+           <span className="font-mono text-xs text-[#fff0aa]/40 uppercase">
+              {article.date}
+           </span>
+           <div className="w-10 h-10 rounded-full border border-[#fff0aa]/20 flex items-center justify-center group-hover:bg-[#F2C601] group-hover:border-[#F2C601] transition-all duration-500">
+              <FaArrowRight className="text-[#fff0aa] text-sm -rotate-45 group-hover:rotate-0 group-hover:text-[#012e21] transition-transform duration-500" />
+           </div>
         </div>
       </div>
-    </div>
+
+      {/* 2. REVEAL CONTENT (Hidden by default, expands on hover) */}
+      {/* Height transition trick for accordion effect */}
+      <div className="max-h-0 overflow-hidden group-hover:max-h-[500px] transition-all duration-700 ease-[0.22,1,0.36,1]">
+         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 px-4">
+            
+            {/* Empty Space for Alignment */}
+            <div className="hidden md:block md:col-span-3"></div>
+
+            {/* Image Preview */}
+            <div className="md:col-span-5 relative aspect-video w-full overflow-hidden rounded-lg">
+               <Image
+                  src={article.image || "/img/default.jpg"}
+                  alt={article.title}
+                  fill
+                  className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+               />
+            </div>
+
+            {/* Description */}
+            <div className="md:col-span-4 flex flex-col justify-between">
+               <p className="text-[#fff0aa]/70 font-sans text-sm leading-relaxed max-w-sm">
+                  {article.description}
+               </p>
+               <span className="inline-block mt-6 text-[#F2C601] text-xs font-bold uppercase tracking-widest underline underline-offset-4 decoration-[#F2C601]/30 hover:decoration-[#F2C601] transition-all">
+                  Read Full Story
+               </span>
+            </div>
+
+         </div>
+      </div>
+    </Link>
   );
 };
 
-// --- KOMPONEN MARQUEE ---
-const MarqueeSeparator = () => (
-  <div
-    className="bg-[#F2C601] py-3 overflow-hidden relative z-20 -mt-1 border-y border-[#022321]"
-  >
-    <div className="flex whitespace-nowrap animate-marquee">
-      {[...Array(10)].map((_, i) => (
-        <span
-          key={i}
-          className="text-[#022321] text-sm md:text-base font-black uppercase tracking-[0.2em] mx-8 flex items-center gap-4"
-          data-scroll
-          data-scroll-direction="horizontal"
-          data-scroll-speed="2"
-        >
-          Latest Insights{" "}
-          <span className="w-2 h-2 bg-[#022321] rounded-full"></span>
-          Research <span className="w-2 h-2 bg-[#022321] rounded-full"></span>
-          Technology <span className="w-2 h-2 bg-[#022321] rounded-full"></span>
-        </span>
-      ))}
-    </div>
-  </div>
+// --- COMPONENT: MOBILE CARD (Simple Stack) ---
+const MobileCard = ({ article, index }: { article: Article; index: number }) => (
+   <Link href={`/article/${article.id}`} className="block mb-10 border-b border-[#fff0aa]/10 pb-10">
+      <div className="flex items-center justify-between mb-4">
+         <span className="font-mono text-xs text-[#fff0aa]/40">
+            {String(index + 1).padStart(2, "0")} / {article.date}
+         </span>
+         <FaArrowRight className="-rotate-45 text-[#F2C601]" />
+      </div>
+      <div className="relative aspect-video w-full mb-6 overflow-hidden rounded-lg bg-gray-800">
+         <Image 
+            src={article.image || "/img/default.jpg"} 
+            alt={article.title} 
+            fill 
+            className="object-cover" 
+         />
+      </div>
+      <h3 className="text-2xl font-medium text-[#fff0aa] mb-2">{article.title}</h3>
+      <p className="text-sm text-[#fff0aa]/60 line-clamp-3">{article.description}</p>
+   </Link>
 );
 
 // --- MAIN SECTION ---
-const SectionHome: React.FC = () => {
+export default function ArticleSection() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [randomArticle, setRandomArticle] = useState<Article | null>(null);
-
-  const filteredArticles = articleContent.filter(
-    (article) =>
-      article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      article.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [filteredArticles, setFilteredArticles] = useState(articleContent);
 
   useEffect(() => {
-    setRandomArticle(
-      articleContent[Math.floor(Math.random() * articleContent.length)]
+    const results = articleContent.filter(
+      (article) =>
+        article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        article.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, []);
+    setFilteredArticles(results);
+  }, [searchTerm]);
 
   return (
     <section
-      className={`relative bg-linear-to-b from-[#185897] to-[#012e21] min-h-screen ${poppins.variable}`}
+      className={`relative min-h-screen bg-[#012e21] text-[#fff0aa] ${poppins.variable} pb-32`}
       data-scroll-section
     >
-      <NoiseOverlay />
-
-      {randomArticle && <FeaturedArticle article={randomArticle} />}
-
-      <MarqueeSeparator />
-
-      <div className="container mx-auto px-6 md:px-10 py-24 md:py-32 relative z-10">
-        {/* Header & Search */}
-        <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12 border-b border-white/10 pb-12">
-          <div className="relative">
-            <h2 className="text-white text-6xl md:text-8xl font-black tracking-tighter leading-none">
-              EXPLORE
-              <br />
-              <span
-                className="text-transparent stroke-text block opacity-30"
-                style={{ WebkitTextStroke: "1px #fff" }}
-              >
-                ARTICLES
-              </span>
-            </h2>
-          </div>
-
-          <div className="w-full lg:w-auto">
-            <div className="relative group w-full lg:min-w-[400px]">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-6 pointer-events-none">
-                <FaSearch className="text-white/30 group-focus-within:text-[#F2C601] transition-colors text-lg" />
-              </div>
-              <input
-                type="text"
-                placeholder="Find interesting topics..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-8 text-white text-lg placeholder-white/20 focus:outline-none focus:border-[#F2C601]/50 focus:bg-white/10 transition-all duration-300"
-              />
+      {/* 1. HEADER (Sticky & Big) */}
+      <div className="pt-32 pb-16 md:pb-24 px-4 md:px-10 container mx-auto">
+         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
+            <div>
+               <h1 className="text-[14vw] md:text-[8rem] font-light leading-[0.85] tracking-tighter">
+                  SRE <span className="font-serif italic text-[#F2C601]">Journal</span>
+               </h1>
             </div>
-          </div>
-        </div>
-
-        {/* Article Grid */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredArticles.length > 0 ? (
-              filteredArticles.map((article, index) => (
-                <motion.div
-                  layout
-                  key={article.id}
-                  initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0.9,
-                    transition: { duration: 0.2 },
-                  }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  data-scroll
-                  data-scroll-speed={index % 3 === 1 ? "0.1" : "0"}
-                >
-                  <ArticleCard
-                    id={Number(article.id)}
-                    title={article.title}
-                    image={article.image}
-                    description={article.description}
-                    date={article.date}
+            
+            <div className="w-full md:w-auto flex flex-col items-end gap-4">
+               <p className="text-right text-[#fff0aa]/50 font-mono text-xs uppercase max-w-[200px] hidden md:block">
+                  A collection of thoughts, research, and updates from our team.
+               </p>
+               
+               {/* Minimal Search Input */}
+               <div className="relative w-full md:w-[300px] group">
+                  <input 
+                     type="text" 
+                     placeholder="Search..." 
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
+                     className="w-full bg-transparent border-b border-[#fff0aa]/30 py-2 pl-0 pr-8 text-[#fff0aa] placeholder-[#fff0aa]/30 focus:outline-none focus:border-[#F2C601] transition-colors font-mono text-sm"
                   />
-                </motion.div>
-              ))
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="col-span-full py-32 text-center"
-              >
-                <h3 className="text-2xl text-white/30 font-serif italic">
-                  {`No articles found matching "${searchTerm}".`}
-                </h3>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                  <FaSearch className="absolute right-0 top-1/2 -translate-y-1/2 text-[#fff0aa]/30 text-xs" />
+               </div>
+            </div>
+         </div>
       </div>
+
+      {/* 2. ARTICLE LIST (The Core Experience) */}
+      <div className="container mx-auto px-4 md:px-10">
+         
+         {/* HEADERS (Desktop) */}
+         <div className="hidden md:flex justify-between pb-4 px-4 text-[#fff0aa]/30 font-mono text-[10px] uppercase tracking-widest">
+            <span className="w-1/4">Index / Category</span>
+            <span className="w-1/2">Article Title</span>
+            <span className="w-1/4 text-right">Published / Action</span>
+         </div>
+
+         {/* LIST CONTAINER */}
+         <div className="flex flex-col">
+            {filteredArticles.length > 0 ? (
+               <>
+                  {/* Desktop View */}
+                  <div className="hidden md:block">
+                     {filteredArticles.map((article, index) => (
+                        <ArticleRow key={article.id} article={article} index={index} />
+                     ))}
+                  </div>
+
+                  {/* Mobile View */}
+                  <div className="md:hidden">
+                     {filteredArticles.map((article, index) => (
+                        <MobileCard key={article.id} article={article} index={index} />
+                     ))}
+                  </div>
+               </>
+            ) : (
+               <div className="py-32 border-t border-[#fff0aa]/20 text-center">
+                  <span className="font-mono text-[#fff0aa]/40">No entries found.</span>
+               </div>
+            )}
+            
+            {/* Closing Line */}
+            <div className="w-full h-px bg-[#fff0aa]/20" />
+         </div>
+
+      </div>
+
+      {/* 3. FOOTER MARQUEE (Awwwards Touch) */}
+      <div className="mt-32 overflow-hidden py-4 border-y border-[#fff0aa]/10 bg-[#012e21]">
+         <div className="flex whitespace-nowrap animate-[marquee_20s_linear_infinite]">
+            {[...Array(6)].map((_, i) => (
+               <span key={i} className="text-[#fff0aa]/10 text-6xl md:text-8xl font-black uppercase tracking-tighter mx-8">
+                  Renewable Energy Society
+               </span>
+            ))}
+         </div>
+      </div>
+
+      {/* Tailwind Animation Config (Pastikan ini ada di tailwind.config.ts atau style global) */}
+      <style jsx global>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </section>
   );
-};
-
-export default SectionHome;
+}

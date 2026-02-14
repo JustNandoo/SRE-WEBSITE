@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, Variants } from "framer-motion";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
 import { upcomingEvents } from "@/lib/activityData";
@@ -20,64 +19,46 @@ const akira = localFont({
   display: "swap",
 });
 
-// ================= VARIANTS (DESKTOP ONLY) =================
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 60 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" },
-  },
-};
-
-const containerVariants: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-};
-
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] },
-  },
-};
-
 // ================= HELPERS =================
 const truncateTitle = (text: string, max: number) =>
   text.length <= max ? text : text.slice(0, max) + "...";
 
-// ================= MOBILE / TABLET =================
-function NewsGridStatic() {
+// ================= NEWS GRID COMPONENT =================
+function NewsGrid() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
       {upcomingEvents.slice(0, 3).map((event) => (
         <div
           key={event.id}
-          className="group relative flex flex-col h-full border border-[#fff0aa]/20 bg-[#012e21]"
+          className="group relative flex flex-col h-full border border-[#fff0aa]/20 hover:border-[#fff0aa] transition-colors duration-300 bg-[#012e21]"
         >
-          <div className="relative w-full aspect-4/3 overflow-hidden border-b border-[#fff0aa]/20">
+          {/* IMAGE CONTAINER */}
+          <div className="relative w-full aspect-[4/3] overflow-hidden border-b border-[#fff0aa]/20">
+            {/* Overlay Effect on Hover */}
+            <div className="absolute inset-0 bg-[#134576]/0 group-hover:bg-[#134576]/20 transition-colors duration-300 mix-blend-overlay z-10" />
+            
             <Image
               src={event.image}
               alt={event.title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
             />
-            <div className="absolute top-4 left-4 bg-[#fff0aa] text-[#012e21] px-3 py-1 text-xs font-akira">
+            
+            <div className="absolute top-4 left-4 bg-[#fff0aa] text-[#012e21] px-3 py-1 text-xs font-akira z-20">
               {event.category}
             </div>
           </div>
 
-          <div className="p-6 flex flex-col grow justify-between">
+          {/* TEXT CONTENT */}
+          <div className="p-6 flex flex-col grow justify-between group-hover:bg-[#fff0aa] transition-colors duration-300">
             <div className="space-y-4">
-              <p className="text-xs tracking-widest opacity-60">
+              <p className="text-xs tracking-widest opacity-60 group-hover:text-[#012e21]/60 transition-colors duration-300">
                 {event.date}
               </p>
-              <h3 className="text-xl font-semibold leading-tight">
+              <h3 className="text-xl font-semibold leading-tight group-hover:text-[#012e21] transition-colors duration-300">
                 {truncateTitle(event.title, 50)}
               </h3>
-              <p className="text-sm opacity-70 line-clamp-3">
+              <p className="text-sm opacity-70 line-clamp-3 group-hover:text-[#012e21]/70 transition-colors duration-300">
                 {event.description}
               </p>
             </div>
@@ -85,54 +66,6 @@ function NewsGridStatic() {
         </div>
       ))}
     </div>
-  );
-}
-
-// ================= DESKTOP =================
-function NewsGridMotion() {
-  return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }}
-      className="grid grid-cols-3 gap-6 w-full"
-    >
-      {upcomingEvents.slice(0, 3).map((event) => (
-        <motion.div
-          key={event.id}
-          variants={cardVariants}
-          className="group relative flex flex-col h-full border border-[#fff0aa]/20 hover:border-[#fff0aa] transition bg-[#012e21]"
-        >
-          <div className="relative w-full aspect-4/3 overflow-hidden border-b border-[#fff0aa]/20">
-            <div className="absolute inset-0 bg-[#134576]/0 group-hover:bg-[#134576]/20 transition mix-blend-overlay z-10" />
-            <Image
-              src={event.image}
-              alt={event.title}
-              fill
-              className="object-cover transition duration-700 group-hover:scale-110"
-            />
-            <div className="absolute top-4 left-4 bg-[#fff0aa] text-[#012e21] px-3 py-1 text-xs font-akira z-20">
-              {event.category}
-            </div>
-          </div>
-
-          <div className="p-6 flex flex-col grow justify-between group-hover:bg-[#fff0aa] transition">
-            <div className="space-y-4">
-              <p className="text-xs tracking-widest opacity-60 group-hover:text-[#012e21]/60">
-                {event.date}
-              </p>
-              <h3 className="text-xl font-semibold group-hover:text-[#012e21]">
-                {truncateTitle(event.title, 50)}
-              </h3>
-              <p className="text-sm opacity-70 group-hover:text-[#012e21]/70 line-clamp-3">
-                {event.description}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      ))}
-    </motion.div>
   );
 }
 
@@ -153,28 +86,24 @@ export default function SectionNews() {
             </span>
           </div>
 
-          <h2 className="font-akira text-[10vw] md:text-[8vw] uppercase">
+          <h2 className="font-akira text-[10vw] md:text-[8vw] uppercase leading-none">
             WHAT&apos;S NEW
           </h2>
-          <h2 className="font-akira text-[10vw] md:text-[8vw] uppercase opacity-80 md:ml-24">
+          <h2 className="font-akira text-[10vw] md:text-[8vw] uppercase opacity-80 md:ml-24 leading-none">
             AT SRE PENS
           </h2>
         </div>
 
-        {/* GRID */}
-        <div className="block lg:hidden w-full">
-          <NewsGridStatic />
-        </div>
-
-        <div className="hidden lg:block w-full">
-          <NewsGridMotion />
+        {/* GRID (Unified for Mobile & Desktop) */}
+        <div className="w-full">
+          <NewsGrid />
         </div>
 
         {/* BUTTON */}
         <div className="mt-20">
           <Link
             href="/activity"
-            className="font-akira text-lg hover:text-[#134576] transition"
+            className="font-akira text-lg hover:text-[#134576] transition-colors duration-300"
           >
             View All Activity →
           </Link>

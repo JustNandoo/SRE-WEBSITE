@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-// PERBAIKAN 1: Import tipe 'Variants'
-import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Poppins } from "next/font/google";
 import { FaSearch } from "react-icons/fa";
 import EventCard from "@/app/components/activity/ActivityCard";
@@ -30,29 +28,9 @@ export default function SectionHome() {
     setFilteredEvents(results);
   }, [searchTerm]);
 
-  // Framer Motion Variants (Explicitly Typed)
-  // PERBAIKAN 2: Tambahkan tipe ': Variants' pada objek animasi
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-    },
-  };
-
-  const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
-    },
-    exit: { opacity: 0, scale: 0.9, transition: { duration: 0.3 } },
-  };
-
   return (
     <section
-      className={`min-h-screen bg-[#10926C] relative overflow-hidden ${poppins.variable}`}
+      className={`min-h-screen bg-gradient-to-b from-[#10926C] to-[#012e21] relative overflow-hidden ${poppins.variable}`}
       data-scroll-section
     >
       {/* BACKGROUND DECORATION (Parallax Text) */}
@@ -70,43 +48,26 @@ export default function SectionHome() {
         {/* --- HEADER SECTION --- */}
         <div className="flex flex-col mb-20 md:mb-28">
           {/* Label Kecil */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="flex items-center gap-3 mb-6"
-          >
+          <div className="flex items-center gap-3 mb-6 transition-all duration-700 ease-out translate-y-0 opacity-100">
             <div className="w-10 h-0.5 bg-[#F2C601]"></div>
             <span className="text-[#F2C601] font-mono tracking-widest text-sm uppercase">
-              Agenda & Activities
+              Plan & Activities
             </span>
-          </motion.div>
+          </div>
 
           {/* Massive Title */}
           <div className="flex flex-col">
             <div className="overflow-hidden">
-              <motion.h1
-                initial={{ y: "100%" }}
-                whileInView={{ y: "0%" }}
-                transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
-                className="text-[10vw] md:text-[7rem] font-bold text-white leading-[0.9] tracking-tighter"
-              >
+              <h1 className="text-[10vw] md:text-[7rem] font-bold text-white leading-[0.9] tracking-tighter transition-transform duration-700 ease-out translate-y-0">
                 <span className="block" data-scroll data-scroll-speed="0.2">
-                  WHAT&apos;S NEW AT
+                  WHAT&apos;S NEWS AT
                 </span>
-              </motion.h1>
+              </h1>
             </div>
 
             <div className="overflow-hidden">
-              <motion.h1
-                initial={{ y: "100%" }}
-                whileInView={{ y: "0%" }}
-                transition={{
-                  duration: 1,
-                  delay: 0.1,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
-                className="text-[10vw] md:text-[7rem] font-black text-[#F2C601] leading-[0.9] tracking-tighter"
+              <h1
+                className="text-[10vw] md:text-[7rem] font-black text-[#F2C601] leading-[0.9] tracking-tighter transition-transform duration-700 delay-100 ease-out translate-y-0"
                 style={{
                   WebkitTextStroke: "1px #F2C601",
                   color: "transparent",
@@ -115,7 +76,7 @@ export default function SectionHome() {
                 <span className="block" data-scroll data-scroll-speed="0.1">
                   SRE PENS
                 </span>
-              </motion.h1>
+              </h1>
             </div>
           </div>
         </div>
@@ -145,48 +106,34 @@ export default function SectionHome() {
         </div>
 
         {/* --- EVENTS GRID --- */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((event, index) => (
-                <motion.div
-                  key={event.id}
-                  variants={cardVariants}
-                  layout
-                  className="h-full"
-                >
-                  {/* Wrapper untuk Activity Card */}
-                  <div className="h-full">
-                    <EventCard event={event} index={index} />
-                  </div>
-                </motion.div>
-              ))
-            ) : (
-              // Empty State
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="col-span-full py-20 text-center"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 min-h-[400px]">
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event, index) => (
+              <div
+                key={event.id}
+                className="h-full transition-all duration-500 ease-out hover:-translate-y-2"
               >
-                <h3 className="text-2xl text-white/40 font-mono">
-                  No events found.
-                </h3>
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="mt-4 text-[#F2C601] underline hover:text-white transition-colors"
-                >
-                  Clear search
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                {/* Wrapper untuk Activity Card */}
+                <div className="h-full">
+                  <EventCard event={event} index={index} />
+                </div>
+              </div>
+            ))
+          ) : (
+            // Empty State
+            <div className="col-span-full py-20 text-center animate-pulse">
+              <h3 className="text-2xl text-white/40 font-mono">
+                No events found.
+              </h3>
+              <button
+                onClick={() => setSearchTerm("")}
+                className="mt-4 text-[#F2C601] underline hover:text-white transition-colors"
+              >
+                Clear search
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { staffData } from "@/lib/staffData";
-import MotionSwitch from "@/app/components/MotionSwitch";
 import { MemberCard } from "@/app/components/about/MemberCard";
 
 export default function SectionMember() {
@@ -13,13 +12,12 @@ export default function SectionMember() {
       <div className="container mx-auto px-4 md:px-10">
         {/* HEADER */}
         <div className="mb-20 md:mb-32 text-center md:text-left border-b border-[#012e21]/10 pb-10">
-          <MotionSwitch
-            initial={{ y: "100%" }}
-            whileInView={{ y: "0%" }}
-            transition={{ duration: 1, ease: "circOut" }}
-            className="text-[12vw] md:text-[8rem] font-black text-[#012e21] leading-[0.85] tracking-tighter uppercase overflow-hidden"
-          >
-            <span className="block" data-scroll data-scroll-speed="0.2">
+          <div className="text-[12vw] md:text-[8rem] font-black text-[#012e21] leading-[0.85] tracking-tighter uppercase overflow-hidden">
+            <span 
+              className="block" 
+              data-scroll 
+              data-scroll-speed="0.2"
+            >
               MEET THE
             </span>
             <span
@@ -30,7 +28,7 @@ export default function SectionMember() {
             >
               PILLARS
             </span>
-          </MotionSwitch>
+          </div>
         </div>
 
         {/* CONTENT */}
@@ -40,29 +38,29 @@ export default function SectionMember() {
               key={dept.id}
               className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10"
             >
-              {/* LEFT */}
+              {/* LEFT: Sticky Title */}
               <div className="md:col-span-4 lg:col-span-3">
                 <div className="sticky top-10 flex flex-col gap-4">
-                  <span className="text-[#012e21]/40 font-mono text-sm">
+                  <span className="text-[#012e21]/40 font-mono text-sm font-bold">
                     0{index + 1}
                   </span>
-                  <h2 className="text-4xl md:text-5xl font-black text-[#012e21] uppercase">
+                  <h2 className="text-4xl md:text-5xl font-black text-[#012e21] uppercase leading-none">
                     {dept.division}
                   </h2>
-                  <p className="text-[#012e21]/70 text-sm max-w-[200px]">
+                  <p className="text-[#012e21]/70 text-sm max-w-[200px] leading-relaxed">
                     {dept.description}
                   </p>
                 </div>
               </div>
 
-              {/* RIGHT */}
+              {/* RIGHT: Member Grid */}
               <div className="md:col-span-8 lg:col-span-9">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                  {/* Mapping Members */}
                   {dept.members.map((member, idx) => (
-                    <MemberCard
-                      key={`${dept.id}-${idx}`}
-                      member={member}
-                    />
+                    <div key={`${dept.id}-${idx}`} className="h-full">
+                         <MemberCard member={member} />
+                    </div>
                   ))}
                 </div>
               </div>

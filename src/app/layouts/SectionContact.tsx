@@ -199,8 +199,8 @@ export default function SectionContact() {
             <p>SURABAYA, INDONESIA</p>
             <p>PENS – EEPIS</p>
           </div>
-          <div className="mt-4 md:mt-0 flex gap-6">
-            <span>© 2024 SRE PENS</span>
+          <div className="mt-4 md:mt-0 flex gap-6 justify-center">
+            <span>© 2025 SRE PENS</span>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="hover:underline uppercase"

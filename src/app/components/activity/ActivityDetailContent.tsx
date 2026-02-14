@@ -10,7 +10,7 @@ export default function ActivityDetailContent({ activity }: { activity: EventDat
     <div 
       className="relative min-h-screen bg-[#f4f4f4]" 
       data-scroll-section
-      // --- BACKGROUND GRID PATTERN (DIPINDAH KE SINI) ---
+      // --- BACKGROUND GRID PATTERN ---
       style={{
         backgroundImage: `
           linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
@@ -34,10 +34,11 @@ export default function ActivityDetailContent({ activity }: { activity: EventDat
             alt={activity.title}
             fill
             priority
+            sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent opacity-90" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-90" />
         </div>
 
         {/* Floating Category Badge */}
@@ -58,7 +59,7 @@ export default function ActivityDetailContent({ activity }: { activity: EventDat
       <div className="relative z-20 px-4 sm:px-6 md:px-10 -mt-20 md:-mt-32 pb-20">
         
         {/* The White Card (Polos & Bersih) */}
-        <div className="bg-white rounded-4xl md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
+        <div className="bg-white rounded-[2rem] md:rounded-[3.5rem] shadow-2xl overflow-hidden max-w-5xl mx-auto border border-gray-100">
            
            {/* HEADER AREA */}
            <div className="px-6 py-10 md:px-16 md:py-16 border-b border-gray-100/50 relative z-10">

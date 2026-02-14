@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaClock, FaArrowRight } from "react-icons/fa";
-import { EventData } from "@/lib/activityData"; // Sesuaikan path import
+import { EventData } from "@/lib/activityData"; 
 
 interface ActivityCardProps {
   event: EventData;
@@ -24,20 +24,24 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ event, index }) => {
 
   return (
     <Link href={`/activity/${event.id}`} className="block h-full w-full group">
-      <div className="relative h-full min-h-[400px] w-full overflow-hidden rounded-4xl bg-[#012e21] border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[#F2C601]/20">
+      {/* Container Card: Ubah rounded-4xl ke rounded-[2rem] agar lebih aman */}
+      <div className="relative h-full min-h-[400px] w-full overflow-hidden rounded-[2rem] bg-[#012e21] border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[#F2C601]/20">
+        
         {/* --- 1. BACKGROUND IMAGE (Zoom & Grayscale Effect) --- */}
         <div className="absolute inset-0 w-full h-full">
           <Image
             src={event.image}
             alt={event.title}
             fill
+            // Optimasi: Load gambar sesuai ukuran kolom grid
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110 grayscale group-hover:grayscale-0"
           />
         </div>
 
         {/* --- 2. GRADIENT OVERLAY --- */}
-        {/* Gelap di bawah agar teks terbaca, transisi opacity saat hover */}
-        <div className="absolute inset-0 bg-linear-to-t from-[#012e21] via-[#012e21]/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+        {/* Fix: bg-linear-to-t menjadi bg-gradient-to-t */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#012e21] via-[#012e21]/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
 
         {/* --- 3. TOP CONTENT (Date & Index) --- */}
         <div className="absolute top-5 left-5 right-5 flex justify-between items-start z-10">

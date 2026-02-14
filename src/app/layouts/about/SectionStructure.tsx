@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Variants } from "framer-motion";
-import MotionSwitch from "@/app/components/MotionSwitch";
 
 // ================= DATA =================
 const divisions = [
@@ -88,20 +86,6 @@ const divisions = [
   },
 ];
 
-// ================= ANIMATION =================
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.2, 0.65, 0.3, 0.9],
-      delay: i * 0.1,
-    },
-  }),
-};
-
 export default function Structure() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -123,24 +107,13 @@ export default function Structure() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ================= HEADER ================= */}
         <div className="mb-16 md:mb-24 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-          <MotionSwitch
-            as="h2"
-            variants={{
-              hidden: { y: "100%" },
-              visible: {
-                y: 0,
-                transition: { duration: 1, ease: [0.76, 0, 0.24, 1] },
-              },
-            }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
+          <h2
             data-scroll
             data-scroll-speed="0.2"
             className="text-5xl md:text-7xl lg:text-8xl font-black text-[#F2C601] uppercase tracking-tighter leading-[0.9]"
           >
             Our <br /> Structure
-          </MotionSwitch>
+          </h2>
 
           <div
             className="max-w-md text-[#fff0aa]/80 text-sm md:text-base font-light"
@@ -156,22 +129,17 @@ export default function Structure() {
 
         {/* ================= GRID ================= */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {divisions.map((item, i) => (
-            <MotionSwitch
+          {divisions.map((item) => (
+            <div
               key={item.id}
-              custom={i}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              whileHover={{ scale: 0.98 }}
               className={`
                 ${item.colSpan}
                 ${item.bgClass}
                 ${item.textClass}
                 relative p-6 md:p-8 rounded-3xl border
                 flex flex-col justify-between min-h-[200px]
-                group transition-colors duration-500 cursor-default
+                group transition-all duration-300 ease-out 
+                cursor-default hover:scale-[0.98]
               `}
             >
               {/* TOP */}
@@ -198,7 +166,7 @@ export default function Structure() {
                   {item.desc}
                 </p>
               </div>
-            </MotionSwitch>
+            </div>
           ))}
         </div>
       </div>

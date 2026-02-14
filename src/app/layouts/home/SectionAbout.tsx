@@ -3,8 +3,7 @@
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import Link from "next/link";
-import { Variants } from "framer-motion";
-import MotionSwitch from "@/app/components/MotionSwitch";
+import "locomotive-scroll/dist/locomotive-scroll.css";
 
 // ================= FONTS =================
 const poppins = Poppins({
@@ -18,35 +17,6 @@ const akira = localFont({
   variable: "--font-akira",
   display: "swap",
 });
-
-// ================= VARIANTS =================
-const containerVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const textReveal: Variants = {
-  hidden: { y: "110%" },
-  visible: {
-    y: "0%",
-    transition: {
-      duration: 1,
-      ease: [0.76, 0, 0.24, 1],
-    },
-  },
-};
-
-const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 1, delay: 0.5 },
-  },
-};
 
 export default function SectionAbout() {
   return (
@@ -63,61 +33,40 @@ export default function SectionAbout() {
         />
       </div>
 
-      <div className="absolute inset-0 bg-linear-to-b from-[#fff0aa] via-transparent to-[#fff0aa]/80 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#fff0aa] via-transparent to-[#fff0aa]/80 pointer-events-none z-0" />
 
       {/* ================= CONTENT ================= */}
-      <MotionSwitch
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-10%" }}
-        className="relative z-10 px-6 py-24 md:px-10 lg:px-20 lg:py-32 flex flex-col min-h-screen justify-between"
-      >
+      <div className="relative z-10 px-6 py-24 md:px-10 lg:px-20 lg:py-32 flex flex-col min-h-screen justify-between">
         {/* ---------- HEADER ---------- */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-20">
           <div className="overflow-hidden">
-            <MotionSwitch
-              variants={textReveal}
-              className="flex items-center space-x-2"
-            >
+            <div className="flex items-center space-x-2">
               <span className="w-2 h-2 rounded-full bg-[#134576] animate-pulse" />
               <span className="font-poppins uppercase tracking-widest text-xs md:text-sm font-bold text-[#134576]">
                 Who We Are
               </span>
-            </MotionSwitch>
+            </div>
           </div>
 
           <div className="overflow-hidden mt-4 md:mt-0 max-w-xs md:text-right">
-            <MotionSwitch
-              as="p"
-              variants={textReveal}
-              className="font-poppins text-sm text-[#012e21]/70 leading-relaxed font-medium"
-            >
+            <p className="font-poppins text-sm text-[#012e21]/70 leading-relaxed font-medium">
               Establishing a sustainable future through student innovation.
-            </MotionSwitch>
+            </p>
           </div>
         </div>
 
         {/* ---------- TITLE ---------- */}
         <div className="relative mb-16 md:mb-24">
           <div className="overflow-hidden leading-[0.85]">
-            <MotionSwitch
-              as="h2"
-              variants={textReveal}
-              className="font-akira font-bold text-[14vw] md:text-[11vw] text-[#012e21] uppercase"
-            >
+            <h2 className="font-akira font-bold text-[14vw] md:text-[11vw] text-[#012e21] uppercase">
               About
-            </MotionSwitch>
+            </h2>
           </div>
 
           <div className="overflow-hidden leading-[0.85] flex md:justify-end">
-            <MotionSwitch
-              as="h1"
-              variants={textReveal}
-              className="font-akira font-bold text-[14vw] md:text-[11vw] text-[#134576] uppercase"
-            >
+            <h1 className="font-akira font-bold text-[14vw] md:text-[11vw] text-[#134576] uppercase">
               SRE PENS
-            </MotionSwitch>
+            </h1>
           </div>
         </div>
 
@@ -126,19 +75,12 @@ export default function SectionAbout() {
           {/* LEFT */}
           <div className="lg:col-span-4 flex flex-col justify-between h-full">
             <div className="overflow-hidden">
-              <MotionSwitch
-                as="h3"
-                variants={textReveal}
-                className="font-poppins text-2xl md:text-3xl font-semibold leading-tight text-[#134576]"
-              >
+              <h3 className="font-poppins text-2xl md:text-3xl font-semibold leading-tight text-[#134576]">
                 &quot;Empowering Energy Transition.&quot;
-              </MotionSwitch>
+              </h3>
             </div>
 
-            <MotionSwitch
-              variants={fadeIn}
-              className="mt-10 lg:mt-auto pt-10 border-t border-[#012e21]/20"
-            >
+            <div className="mt-10 lg:mt-auto pt-10 border-t border-[#012e21]/20">
               <p className="text-xs uppercase tracking-widest text-[#012e21]/60 mb-2 font-bold">
                 Member of
               </p>
@@ -163,16 +105,12 @@ export default function SectionAbout() {
                   />
                 </svg>
               </Link>
-            </MotionSwitch>
+            </div>
           </div>
 
           {/* RIGHT */}
           <div className="lg:col-span-8">
-            <MotionSwitch
-              variants={fadeIn}
-              data-scroll
-              data-scroll-speed="0.5"
-            >
+            <div data-scroll data-scroll-speed="0.5">
               <p className="font-poppins text-lg md:text-xl lg:text-2xl leading-relaxed text-[#012e21]/80 font-medium mb-10">
                 <strong className="text-[#012e21] font-extrabold">
                   Society of Renewable Energy PENS
@@ -211,10 +149,10 @@ export default function SectionAbout() {
                   </svg>
                 </div>
               </Link>
-            </MotionSwitch>
+            </div>
           </div>
         </div>
-      </MotionSwitch>
+      </div>
     </section>
   );
 }
