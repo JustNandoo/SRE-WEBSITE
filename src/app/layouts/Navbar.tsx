@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaChevronDown } from "react-icons/fa"; // Pastikan install react-icons: npm install react-icons
+import { FaChevronDown } from "react-icons/fa";
 
 // --- Sub-component Item Menu (Fullscreen) ---
 const MobileNavLink = ({ title, href, index, closeMenu }: any) => {
@@ -74,7 +74,6 @@ const DesktopNavLink = ({ title, href, hasDropdown = false, children }: any) => 
 export default function NavbarSRE() {
   const [isActive, setIsActive] = useState(false);
 
-  // Menu untuk Fullscreen (Disederhanakan)
   const fullScreenMenuItems = [
     { title: "Home", href: "/" },
     { title: "About", href: "/about" },
@@ -86,22 +85,19 @@ export default function NavbarSRE() {
     <>
       <motion.header
         id="navbar"
+        // Tambahkan class 'nav-open' jika active, agar SmoothScrollProvider bisa mendeteksi
         className={`
           fixed z-50 
           left-1/2 -translate-x-1/2
           flex justify-between items-center 
           px-6 md:px-12
-          border border-transparent
           transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]
-          ${
-            isActive
-              ? "!w-full !top-0 !bg-transparent !rounded-none !shadow-none !py-6 !border-transparent delay-0"
-              : "w-full top-0 py-6 bg-transparent rounded-none"
-          }
+          w-full top-0 py-6 bg-transparent rounded-none border-transparent
+          ${isActive ? "nav-open !w-full !top-0 !bg-transparent !rounded-none !shadow-none !py-6 !border-transparent delay-0" : ""}
         `}
       >
         {/* --- LOGO (KIRI) --- */}
-        <div className="z-50 flex-shrink-0">
+        <div className="z-50 shrink-0">
           <Link href="/">
             <div
               className={`relative transition-all duration-300 ${
@@ -121,7 +117,6 @@ export default function NavbarSRE() {
         </div>
 
         {/* --- DESKTOP NAVIGATION (TENGAH) --- */}
-        {/* Hanya muncul di layar besar (lg ke atas) & saat menu tutup */}
         <nav
           className={`hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 transition-opacity duration-300 ${
             isActive ? "opacity-0 pointer-events-none" : "opacity-100"
@@ -131,7 +126,6 @@ export default function NavbarSRE() {
           <DesktopNavLink title="About" href="/about" />
           <DesktopNavLink title="Merch" href="/merchandise" />
 
-          {/* Milestone Dropdown */}
           <DesktopNavLink title="Milestone" href="#" hasDropdown>
             <div className="flex flex-col">
               <Link
@@ -157,7 +151,7 @@ export default function NavbarSRE() {
         </nav>
 
         {/* --- TOMBOL MENU BURGER (KANAN) --- */}
-        <div className="z-50 flex-shrink-0">
+        <div className="z-50 shrink-0">
           <button
             onClick={() => setIsActive(!isActive)}
             className={`
@@ -180,7 +174,6 @@ export default function NavbarSRE() {
               </motion.div>
             </span>
 
-            {/* Icon Burger Lines */}
             <div
               className={`relative w-5 h-2.5 flex flex-col justify-between items-end transition-transform duration-300 ${
                 isActive ? "rotate-45" : ""
@@ -211,10 +204,8 @@ export default function NavbarSRE() {
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
             className="fixed inset-0 z-40 bg-[#012e21] flex flex-col justify-center items-center"
           >
-            {/* Background Decoration (Glow) */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#fff0aa] opacity-5 rounded-full blur-3xl pointer-events-none" />
 
-            {/* List Menu (Simplified) */}
             <div className="relative z-10 flex flex-col items-start justify-center space-y-2 md:space-y-4">
               <p className="text-[#fff0aa]/50 text-xs md:text-sm uppercase tracking-[0.2em] mb-4 ml-1">
                 Navigation
@@ -229,7 +220,6 @@ export default function NavbarSRE() {
                 />
               ))}
 
-              {/* Sub-links kecil untuk Milestone di Fullscreen Menu */}
               <div className="flex gap-6 mt-8 ml-1 pt-8 border-t border-[#fff0aa]/20">
                  <Link href="/academic" onClick={() => setIsActive(false)} className="text-[#fff0aa]/60 hover:text-[#fff0aa] text-sm uppercase tracking-widest">Academic</Link>
                  <Link href="/activity" onClick={() => setIsActive(false)} className="text-[#fff0aa]/60 hover:text-[#fff0aa] text-sm uppercase tracking-widest">Activity</Link>
@@ -237,7 +227,6 @@ export default function NavbarSRE() {
               </div>
             </div>
 
-            {/* Footer Menu */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
