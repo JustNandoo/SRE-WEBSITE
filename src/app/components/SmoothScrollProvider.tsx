@@ -16,7 +16,9 @@ export default function SmoothScrollProvider({ children }: Props) {
   // --- EFFECT 1: RESET SCROLL SAAT PINDAH HALAMAN ---
   useEffect(() => {
     // 1. Reset Native Scroll (Mobile)
-    window.scrollTo(0, 0);
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
 
     // 2. Reset Locomotive Scroll (Desktop)
     if (scrollRef.current) {
@@ -60,23 +62,24 @@ export default function SmoothScrollProvider({ children }: Props) {
         const LocomotiveScroll = (await import("locomotive-scroll")).default;
 
         if (containerRef.current) {
-          scrollInstance = new LocomotiveScroll({
+          // KITA GUNAKAN 'as any' DI SINI UNTUK MENGHINDARI ERROR TYPE BREAKPOINT
+          const options = {
             el: containerRef.current,
             smooth: true,
             lerp: 0.08,
             multiplier: 1,
             class: "is-reveal",
-            // PERBAIKAN DI SINI: Tambahkan 'breakpoint: 0'
-            smartphone: { 
+            smartphone: {
               smooth: false,
-              breakpoint: 0 // Wajib ada untuk TypeScript
             },
-            tablet: { 
-              smooth: false, 
-              breakpoint: 0 // Wajib ada untuk TypeScript
+            tablet: {
+              smooth: false,
+              breakpoint: 0, 
             },
             resetNativeScroll: true 
-          });
+          };
+
+          scrollInstance = new LocomotiveScroll(options as any);
 
           scrollRef.current = scrollInstance;
 
