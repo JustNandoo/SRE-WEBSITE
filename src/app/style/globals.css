@@ -19,57 +19,72 @@
   }
 }
 
-/* 1. HILANGKAN SCROLLBAR BAWAAN BROWSER */
+/* =================================================================
+   1. PENGATURAN SCROLL UTAMA (FIXED FOR MOBILE)
+   ================================================================= */
+
 html,
 body {
-  /* Hati-hati: overflow: hidden mematikan scroll native. 
-     Pastikan Locomotive Scroll (JS) sudah aktif. */
-  overflow: hidden !important;
   width: 100%;
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 
-  /* Tambahan untuk memastikan native scrollbar hilang di semua browser */
+  /* --- DEFAULT (MOBILE & TABLET) --- */
+  /* Kita izinkan scroll native agar HP tidak macet */
+  overflow-x: hidden;
+  overflow-y: auto; 
+
+  /* Hilangkan scrollbar bawaan browser secara visual (agar rapi) */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
 }
 
-html::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+/* --- KHUSUS DESKTOP (LG ke atas / > 1024px) --- */
+/* Hanya di ukuran ini kita matikan native scroll agar Locomotive jalan */
+@media (min-width: 1024px) {
+  html,
+  body {
+    overflow: hidden !important;
+  }
 }
 
-/* 2. CUSTOM STYLE LOCOMOTIVE SCROLL (MINIMALIS / THIN BAR) */
+/* Hilangkan scrollbar Chrome/Safari di semua ukuran */
+html::-webkit-scrollbar {
+  display: none; 
+}
+
+
+/* =================================================================
+   2. CUSTOM STYLE LOCOMOTIVE SCROLL (DESKTOP ONLY)
+   ================================================================= */
 
 /* A. THE TRACK (Container) */
 .c-scrollbar {
   position: fixed !important;
-  right: 0 !important; /* Tempel ke kanan mentok */
-  top: 0 !important; /* Tempel ke atas mentok */
-  bottom: 0 !important; /* Tempel ke bawah mentok */
-  width: 3px !important; /* Sangat tipis (2px - 4px) */
+  right: 0 !important; 
+  top: 0 !important; 
+  bottom: 0 !important; 
+  width: 3px !important; 
   height: 100vh !important;
   z-index: 9999 !important;
-  background-color: transparent !important; /* Tidak ada warna track */
-  pointer-events: none; /* Visual only, tembus klik */
+  background-color: transparent !important; 
+  pointer-events: none; 
 }
 
 /* B. THE THUMB (Indikator Scroll) */
 .c-scrollbar_thumb {
   background-color: #1b1b1b !important;
   width: 100% !important;
-  border-radius: 0 !important; /* Kotak, bukan kapsul, agar menyatu */
-  opacity: 1 !important; /* Selalu terlihat solid */
+  border-radius: 0 !important; 
+  opacity: 1 !important; 
 
-  /* FITUR KEREN: Warna otomatis kontras (Putih di Gelap, Hitam di Terang) */
+  /* Warna otomatis kontras */
   mix-blend-mode: difference;
-
-  /* Tidak perlu cursor grab karena pointer-events: none di parent */
 }
 
-/* C. HILANGKAN INTERAKSI (Tetap Tipis) */
-/* Kita override efek hover agar tidak melebar */
+/* C. HILANGKAN INTERAKSI HOVER (Tetap Tipis) */
 .c-scrollbar:hover {
   width: 3px !important;
   background-color: transparent !important;
@@ -79,18 +94,22 @@ html::-webkit-scrollbar {
   background-color: #1b1b1b !important;
 }
 
+
+/* =================================================================
+   3. UTILITIES LAINNYA
+   ================================================================= */
+
 /* Text stroke utility */
 .text-stroke {
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-width: 1px; /* Saya ubah jadi 1px agar lebih elegan (opsional) */
   -webkit-text-stroke-color: #fff0aa;
 
   cursor: pointer;
 
-  /* Fokus ke properti yang relevan */
   transition:
-    -webkit-text-fill-color 700s cubic-bezier(0.22, 1, 0.36, 1),
-    -webkit-text-stroke-color 700s cubic-bezier(0.22, 1, 0.36, 1);
+    -webkit-text-fill-color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-text-stroke-color 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .text-stroke:hover {
