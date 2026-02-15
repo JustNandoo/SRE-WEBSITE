@@ -14,30 +14,41 @@ export default function SmoothScrollProvider({ children }: Props) {
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
 
-  // --- EFFECT 1: CEK DEVICE & RESET SCROLL SAAT PINDAH HALAMAN ---
+  // --- LOGIC 1: DETEKSI MOBILE & BERSIHKAN SAMPAH LOCOMOTIVE ---
   useEffect(() => {
-    // Cek apakah mobile (hanya sekali saat mount)
     const checkMobile = () => {
-      setIsMobile(window.matchMedia("(max-width: 1024px)").matches);
+      // Cek apakah layar di bawah ukuran LG (1024px)
+      const mobile = window.matchMedia("(max-width: 1024px)").matches;
+      setIsMobile(mobile);
+
+      // PENTING: Jika mobile, paksa bersihkan class di <html> yang bikin stuck
+      if (mobile) {
+        document.documentElement.classList.remove("has-scroll-smooth");
+        document.documentElement.style.overflow = "auto";
+        document.body.style.overflow = "auto";
+      }
     };
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
-    // Reset Scroll Position
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
-    }
-    
+  // --- LOGIC 2: RESET SCROLL SAAT PINDAH HALAMAN ---
+  useEffect(() => {
+    // Reset Native (Mobile)
+    window.scrollTo(0, 0);
+
+    // Reset Locomotive (Desktop)
     if (scrollRef.current) {
       scrollRef.current.update();
       scrollRef.current.scrollTo(0, { duration: 0, disableLerp: true });
     }
-
-    return () => window.removeEventListener("resize", checkMobile);
   }, [pathname]);
 
-  // --- EFFECT 2: INISIALISASI SCROLL ---
+  // --- LOGIC 3: INISIALISASI SCROLL ENGINE ---
   useEffect(() => {
+    // Fungsi Transform Navbar (Shared Logic)
     const handleNavbarTransform = (scrollY: number) => {
       const navbar = document.getElementById("navbar");
       if (!navbar || navbar.classList.contains("nav-open")) return;
@@ -54,41 +65,51 @@ export default function SmoothScrollProvider({ children }: Props) {
     let scrollInstance: any;
 
     const initScroll = async () => {
+      // Cek ulang ukuran layar saat init
       const mobileCheck = window.matchMedia("(max-width: 1024px)").matches;
 
       if (mobileCheck) {
-        // === MOBILE NATIVE ===
-        console.log("Mobile mode: Native scroll enabled");
+        // ===============================================
+        // MODE MOBILE: NATIVE SCROLL (RINGAN & LANCAR)
+        // ===============================================
+        console.log("Mobile Detected: Locomotive Disabled.");
         
         const onNativeScroll = () => {
           handleNavbarTransform(window.scrollY);
         };
-        
+
         window.addEventListener("scroll", onNativeScroll);
-        onNativeScroll(); // Initial check
+        // Trigger sekali di awal
+        onNativeScroll();
 
         return () => window.removeEventListener("scroll", onNativeScroll);
+
       } else {
-        // === DESKTOP LOCOMOTIVE ===
-        console.log("Desktop mode: Locomotive scroll enabled");
+        // ===============================================
+        // MODE DESKTOP: LOCOMOTIVE SCROLL (SMOOTH)
+        // ===============================================
+        console.log("Desktop Detected: Locomotive Enabled.");
         
+        // Import hanya jika Desktop
         const LocomotiveScroll = (await import("locomotive-scroll")).default;
 
         if (containerRef.current) {
-          scrollInstance = new LocomotiveScroll({
+          const options = {
             el: containerRef.current,
             smooth: true,
             lerp: 0.08,
             multiplier: 1,
             class: "is-reveal",
-            // Paksa matikan di tablet/smartphone lewat config juga
-            smartphone: { smooth: false }, 
+            // Matikan fitur tablet/hp di config juga sebagai pengaman
+            smartphone: { smooth: false },
             tablet: { smooth: false },
-          } as any); // 'as any' untuk bypass error type breakpoint
+            resetNativeScroll: true
+          };
 
+          scrollInstance = new LocomotiveScroll(options as any);
           scrollRef.current = scrollInstance;
 
-          // Resize observer penting untuk konten dinamis
+          // Resize Observer agar halaman tidak terpotong
           const resizeObserver = new ResizeObserver(() => {
             scrollInstance.update();
           });
@@ -106,7 +127,6 @@ export default function SmoothScrollProvider({ children }: Props) {
       }
     };
 
-    // Jalankan init
     const cleanupPromise = initScroll();
 
     return () => {
@@ -115,17 +135,17 @@ export default function SmoothScrollProvider({ children }: Props) {
       });
       if (scrollInstance) scrollInstance.destroy();
     };
-  }, []);
+  }, []); // Run once on mount
 
   return (
     <div
       ref={containerRef}
       id="smooth-wrapper"
       data-scroll-container
-      // PENTING: Jangan gunakan min-h-screen atau overflow-hidden di sini untuk mobile
-      // Biarkan tinggi otomatis agar body bisa discroll native
-      className={isMobile ? "" : "min-h-screen"} 
-      style={isMobile ? { overflow: "visible" } : {}}
+      // PENTING: Style ini memastikan scroll tidak macet di HP
+      // Di desktop (else), Locomotive butuh min-h-screen
+      className={isMobile ? "overflow-y-auto overflow-x-hidden" : "min-h-screen"}
+      style={isMobile ? { height: 'auto', overflowY: 'auto' } : {}}
     >
       {children}
     </div>
