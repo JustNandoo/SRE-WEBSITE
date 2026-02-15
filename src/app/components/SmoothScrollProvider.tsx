@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef, useState, ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import "locomotive-scroll/dist/locomotive-scroll.css";
 
@@ -12,19 +12,28 @@ export default function SmoothScrollProvider({ children }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<any>(null);
   const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
 
-  // --- EFFECT 1: RESET SCROLL SAAT PINDAH HALAMAN ---
+  // --- EFFECT 1: CEK DEVICE & RESET SCROLL SAAT PINDAH HALAMAN ---
   useEffect(() => {
-    // 1. Reset Native Scroll (Mobile)
+    // Cek apakah mobile (hanya sekali saat mount)
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(max-width: 1024px)").matches);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    // Reset Scroll Position
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
-
-    // 2. Reset Locomotive Scroll (Desktop)
+    
     if (scrollRef.current) {
       scrollRef.current.update();
       scrollRef.current.scrollTo(0, { duration: 0, disableLerp: true });
     }
+
+    return () => window.removeEventListener("resize", checkMobile);
   }, [pathname]);
 
   // --- EFFECT 2: INISIALISASI SCROLL ---
@@ -45,44 +54,41 @@ export default function SmoothScrollProvider({ children }: Props) {
     let scrollInstance: any;
 
     const initScroll = async () => {
-      const isMobile = window.matchMedia("(max-width: 1024px)").matches;
+      const mobileCheck = window.matchMedia("(max-width: 1024px)").matches;
 
-      if (isMobile) {
+      if (mobileCheck) {
         // === MOBILE NATIVE ===
+        console.log("Mobile mode: Native scroll enabled");
+        
         const onNativeScroll = () => {
           handleNavbarTransform(window.scrollY);
         };
-        window.addEventListener("scroll", onNativeScroll);
         
+        window.addEventListener("scroll", onNativeScroll);
         onNativeScroll(); // Initial check
 
         return () => window.removeEventListener("scroll", onNativeScroll);
       } else {
         // === DESKTOP LOCOMOTIVE ===
+        console.log("Desktop mode: Locomotive scroll enabled");
+        
         const LocomotiveScroll = (await import("locomotive-scroll")).default;
 
         if (containerRef.current) {
-          // KITA GUNAKAN 'as any' DI SINI UNTUK MENGHINDARI ERROR TYPE BREAKPOINT
-          const options = {
+          scrollInstance = new LocomotiveScroll({
             el: containerRef.current,
             smooth: true,
             lerp: 0.08,
             multiplier: 1,
             class: "is-reveal",
-            smartphone: {
-              smooth: false,
-            },
-            tablet: {
-              smooth: false,
-              breakpoint: 0, 
-            },
-            resetNativeScroll: true 
-          };
-
-          scrollInstance = new LocomotiveScroll(options as any);
+            // Paksa matikan di tablet/smartphone lewat config juga
+            smartphone: { smooth: false }, 
+            tablet: { smooth: false },
+          } as any); // 'as any' untuk bypass error type breakpoint
 
           scrollRef.current = scrollInstance;
 
+          // Resize observer penting untuk konten dinamis
           const resizeObserver = new ResizeObserver(() => {
             scrollInstance.update();
           });
@@ -100,6 +106,7 @@ export default function SmoothScrollProvider({ children }: Props) {
       }
     };
 
+    // Jalankan init
     const cleanupPromise = initScroll();
 
     return () => {
@@ -115,7 +122,10 @@ export default function SmoothScrollProvider({ children }: Props) {
       ref={containerRef}
       id="smooth-wrapper"
       data-scroll-container
-      className="min-h-screen"
+      // PENTING: Jangan gunakan min-h-screen atau overflow-hidden di sini untuk mobile
+      // Biarkan tinggi otomatis agar body bisa discroll native
+      className={isMobile ? "" : "min-h-screen"} 
+      style={isMobile ? { overflow: "visible" } : {}}
     >
       {children}
     </div>
