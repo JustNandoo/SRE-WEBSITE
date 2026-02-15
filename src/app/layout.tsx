@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./style/globals.css";
 import NavbarWrapper from "./components/NavbarWrapper"; // Sesuaikan import jika nama file Navbar.tsx
 import CustomScrollbar from "@/app/components/CustomScrollbar";
-import SmoothScrollProvider from "@/app/components/SmoothScrollProvider";
+import "locomotive-scroll/dist/locomotive-scroll.css";
 
 export const metadata: Metadata = {
   title: "SRE PENS",
@@ -17,13 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased bg-[#012e21]">
-        <SmoothScrollProvider>
           <CustomScrollbar />
           <NavbarWrapper />
           <main className="relative z-0">
             {children}
           </main>
-        </SmoothScrollProvider>
       </body>
     </html>
   );
