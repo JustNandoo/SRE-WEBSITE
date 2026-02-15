@@ -64,7 +64,7 @@ export default function SectionMerch() {
               data-scroll-speed="-1.5"
             >
               <Image
-                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2020&auto=format&fit=crop"
+                src="https://lh3.googleusercontent.com/d/1rlUorrB0xj0RfooVcf6g5ENf4_9cjGdm=w1000"
                 alt="Hero Merch"
                 fill
                 sizes="33vw"

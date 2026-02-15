@@ -12,10 +12,14 @@ interface MerchCardProps {
 
 const MerchCard: React.FC<MerchCardProps> = ({ item }) => {
   return (
-    <Link href={`/merch/${item.id}`} className="group block w-full">
+    <Link
+      href={item.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group block w-full"
+    >
       {/* Image Wrapper */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#0a0a0a]">
-        
         {/* Hover Reveal Image (Zoom Effect) */}
         <Image
           src={item.image}
@@ -27,19 +31,19 @@ const MerchCard: React.FC<MerchCardProps> = ({ item }) => {
 
         {/* Status Tag (Top Left) */}
         <div className="absolute top-0 left-0 p-4 z-20">
-           <span className="inline-block px-3 py-1 bg-[#F2C601] text-[#012e21] text-[10px] font-bold uppercase tracking-widest">
-              {item.tag}
-           </span>
+          <span className="inline-block px-3 py-1 bg-[#F2C601] text-[#012e21] text-[10px] font-bold uppercase tracking-widest">
+            {item.tag}
+          </span>
         </div>
 
         {/* Overlay Darken */}
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500" />
-        
+
         {/* Quick Add Button (Bottom Right) */}
         <div className="absolute bottom-0 right-0 p-4 z-20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
-           <button className="w-12 h-12 bg-white text-[#012e21] rounded-full flex items-center justify-center hover:bg-[#F2C601] transition-colors shadow-lg">
-              <FaShoppingBag size={14} />
-           </button>
+          <button className="w-12 h-12 bg-white text-[#012e21] rounded-full flex items-center justify-center hover:bg-[#F2C601] transition-colors shadow-lg">
+            <FaShoppingBag size={14} />
+          </button>
         </div>
       </div>
 

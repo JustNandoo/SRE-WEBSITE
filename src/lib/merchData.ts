@@ -5,55 +5,35 @@ export interface MerchItem {
   price: string;
   image: string;
   tag: string;
+  link: string;
 }
 
 export const merchItems: MerchItem[] = [
   {
     id: 1,
-    name: "SRE Signature Hoodie v.01",
+    name: "T-Shirt Econysm",
     category: "Apparel",
-    price: "IDR 250.000",
-    image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=2070&auto=format&fit=crop",
-    tag: "Best Seller",
+    price: "IDR 65.000",
+    image: "https://lh3.googleusercontent.com/d/1N03qfs9j6dwoOw1Vszt1JAMHrIMxq4Ro=w1000",
+    tag: "Best Recommended",
+    link: "https://www.instagram.com/greenspark.pens/"
   },
   {
     id: 2,
-    name: "Eco Canvas Tote",
+    name: "SRE Pin Series",
     category: "Accessories",
-    price: "IDR 85.000",
-    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1888&auto=format&fit=crop",
-    tag: "Sustainable",
+    price: "IDR 5.000/ITEM",
+    image: "https://lh3.googleusercontent.com/d/1UdnZwAwV65zSilUpZPSLbSU3nQ9IUSEo=w1000",
+    tag: "Limited",
+    link: "https://www.instagram.com/greenspark.pens/"
   },
   {
     id: 3,
-    name: "Hydro Flask Series",
-    category: "Essentials",
-    price: "IDR 120.000",
-    image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=1887&auto=format&fit=crop",
+    name: "SRE Keychain Series",
+    category: "Accessories",
+    price: "IDR 10.000/ITEM",
+    image: "https://lh3.googleusercontent.com/d/1xxeR6rcMe-_laslTDLbaFGuTvHjmz8SH=w1000",
     tag: "Limited",
-  },
-  {
-    id: 4,
-    name: "Core Lanyard Black",
-    category: "Accessories",
-    price: "IDR 45.000",
-    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1974&auto=format&fit=crop",
-    tag: "Essential",
-  },
-  {
-    id: 5,
-    name: "Oversized Tee 'Future'",
-    category: "Apparel",
-    price: "IDR 135.000",
-    image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=1887&auto=format&fit=crop",
-    tag: "New Drop",
-  },
-  {
-    id: 6,
-    name: "Energy Cap",
-    category: "Accessories",
-    price: "IDR 75.000",
-    image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=1936&auto=format&fit=crop",
-    tag: "Restock",
+    link: "https://www.instagram.com/greenspark.pens/"
   },
 ];
