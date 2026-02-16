@@ -67,7 +67,7 @@ export default function Preloader() {
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
 
   // Kata-kata dikurangi agar pas dengan durasi loading
-  const words = ["Hello", "Bonjour", "こんにちは", "안녕하세요", "你好", "привет", "Halo"];
+  const words = ["Hello", "Bonjour", "こんにちは", "Halo"];
 
   useEffect(() => {
     // === 1. CEK SESSION (Aktifkan baris ini jika sudah mau production) ===
