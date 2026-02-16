@@ -71,11 +71,11 @@ export default function Preloader() {
 
   useEffect(() => {
     // === 1. CEK SESSION (Aktifkan baris ini jika sudah mau production) ===
-    const hasVisited = sessionStorage.getItem("hasVisited");
-    if (hasVisited) {
-      setIsLoading(false);
-      return;
-    }
+    // const hasVisited = sessionStorage.getItem("hasVisited");
+    // if (hasVisited) {
+    //   setIsLoading(false);
+    //   return;
+    // }
 
     const resize = () => {
       setDimension({ width: window.innerWidth, height: window.innerHeight });
