@@ -115,3 +115,12 @@ html::-webkit-scrollbar {
 .text-stroke:hover {
   -webkit-text-fill-color: #fff0aa;
 }
+
+/* === TAMBAHAN BARU: UTILITY HIDE SCROLLBAR === */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
