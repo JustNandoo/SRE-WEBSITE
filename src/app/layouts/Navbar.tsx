@@ -148,6 +148,7 @@ export default function NavbarSRE() {
               </Link>
             </div>
           </DesktopNavLink>
+          <DesktopNavLink title="Contact" href="/contact" />
         </nav>
 
         {/* --- TOMBOL MENU BURGER (KANAN) --- */}

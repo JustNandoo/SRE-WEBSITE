@@ -1,63 +1,54 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
+import { usePathname } from "next/navigation"; // Import ini
 import { ReactNode } from "react";
 
-// --- VARIANT DEFINITIONS (Ditaruh di luar agar aman deployment) ---
+// --- VARIANTS ---
 
-// Animasi untuk Kolom (Tirai)
 const columnVariants: Variants = {
   initial: {
-    height: "100vh", // Awal: Menutup layar penuh
+    height: "100vh",
     bottom: 0,
   },
   enter: (i: number) => ({
-    height: "0vh", // Akhir: Naik ke atas sampai hilang
+    height: "0vh",
     transition: {
-      duration: 0.8,
-      ease: [0.76, 0, 0.24, 1], // Easing Awwwards (Bezier)
-      delay: 0.05 * i, // Stagger: Kolom berikutnya delay 0.05s
+      duration: 1.2, // Durasi 1.2 detik
+      ease: [0.76, 0, 0.24, 1],
+      delay: 0.05 * i, // Stagger effect
     },
-    transitionEnd: {
-      height: "0vh", 
-      display: "none" // Hapus dari DOM setelah selesai agar tidak menghalangi klik
-    }
+    transitionEnd: { height: "0vh", display: "none" }
   }),
 };
 
-// Animasi untuk Konten Halaman (Muncul pelan-pelan)
 const contentVariants: Variants = {
-  initial: { 
-    opacity: 0, 
-    y: 20 
-  },
+  initial: { opacity: 0, y: 50 }, // Mulai agak bawah
   enter: { 
     opacity: 1, 
     y: 0, 
     transition: { 
-      duration: 0.5, 
-      delay: 0.6, // Tunggu tirai naik dulu baru konten muncul
+      duration: 0.8, 
+      delay: 0.6, // Tunggu tirai naik setengah jalan
       ease: "easeOut" 
     } 
   },
 };
 
 export default function SubPreloader({ children }: { children: ReactNode }) {
-  // Kita gunakan 5 kolom untuk efek shutter yang elegan
+  const pathname = usePathname(); // Ambil URL saat ini
   const columns = 5; 
 
   return (
-    <div className="relative min-h-screen w-full">
+    // TAMBAHKAN key={pathname} DISINI. INI KUNCINYA!
+    <div key={pathname} className="relative min-h-screen w-full">
       
-      {/* 1. GRID SHUTTERS (TIRAI KOLOM) */}
-      {/* Fixed position z-[9999] memastikan ini menutupi segalanya 
-          saat halaman baru pertama kali di-load.
-      */}
+      {/* 1. GRID SHUTTERS (TIRAI) */}
       <div className="fixed inset-0 z-[9999] flex pointer-events-none">
         {[...Array(columns)].map((_, i) => (
           <motion.div
             key={i}
-            custom={i} // Mengirim index ke variant untuk delay
+            custom={i}
             variants={columnVariants}
             initial="initial"
             animate="enter"
