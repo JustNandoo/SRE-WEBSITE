@@ -3,6 +3,7 @@ import "./style/globals.css";
 import NavbarWrapper from "./components/NavbarWrapper"; // Sesuaikan import jika nama file Navbar.tsx
 import CustomScrollbar from "@/app/components/CustomScrollbar";
 import "locomotive-scroll/dist/locomotive-scroll.css";
+import Preloader from "./components/ui/Preloader";
 
 export const metadata: Metadata = {
   title: "SRE PENS",
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body className="antialiased bg-[#012e21]">
           <CustomScrollbar />
           <NavbarWrapper />
+          <Preloader />
           <main className="relative z-0">
             {children}
           </main>

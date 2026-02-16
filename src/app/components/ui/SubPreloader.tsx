@@ -1,129 +1,81 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
+import { ReactNode } from "react";
 
-export default function SubPreloader({ isActive }: { isActive: boolean }) {
-  const [dimension, setDimension] = useState({ width: 0, height: 0 });
+// --- VARIANT DEFINITIONS (Ditaruh di luar agar aman deployment) ---
 
-  useEffect(() => {
-    const resize = () => {
-      setDimension({ width: window.innerWidth, height: window.innerHeight });
-    };
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, []);
-
-  // --- SETTINGAN DURASI ---
-  const DURATION = 1.2;
-  // PERBAIKAN: Definisikan tipe EASE secara eksplisit sebagai Tuple [n, n, n, n]
-  const EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
-
-  const slideUp: Variants = {
-    initial: { top: "100vh" },
-    enter: {
-      top: "0vh",
-      transition: { duration: DURATION, ease: EASE },
+// Animasi untuk Kolom (Tirai)
+const columnVariants: Variants = {
+  initial: {
+    height: "100vh", // Awal: Menutup layar penuh
+    bottom: 0,
+  },
+  enter: (i: number) => ({
+    height: "0vh", // Akhir: Naik ke atas sampai hilang
+    transition: {
+      duration: 0.8,
+      ease: [0.76, 0, 0.24, 1], // Easing Awwwards (Bezier)
+      delay: 0.05 * i, // Stagger: Kolom berikutnya delay 0.05s
     },
-    exit: {
-      top: "-100vh",
-      transition: { duration: DURATION, ease: EASE, delay: 0.2 },
-    },
-  };
+    transitionEnd: {
+      height: "0vh", 
+      display: "none" // Hapus dari DOM setelah selesai agar tidak menghalangi klik
+    }
+  }),
+};
 
-  // 2. SVG Curve (Ekor Lengkungan)
-  const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} 0 Q${
-    dimension.width / 2
-  } 0 0 0`;
-  const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} 0 Q${
-    dimension.width / 2
-  } 300 0 0`;
+// Animasi untuk Konten Halaman (Muncul pelan-pelan)
+const contentVariants: Variants = {
+  initial: { 
+    opacity: 0, 
+    y: 20 
+  },
+  enter: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 0.5, 
+      delay: 0.6, // Tunggu tirai naik dulu baru konten muncul
+      ease: "easeOut" 
+    } 
+  },
+};
 
-  const curveAnim: Variants = {
-    initial: { d: initialPath },
-    enter: {
-      d: initialPath,
-      transition: { duration: DURATION, ease: EASE },
-    },
-    exit: {
-      d: targetPath,
-      transition: { duration: DURATION, ease: EASE, delay: 0.2 },
-    },
-  };
-
-  // 3. Teks (Word Reveal)
-  const textContainer: Variants = {
-    enter: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-    },
-    exit: {
-      opacity: 0,
-    },
-  };
-
-  const textItem: Variants = {
-    initial: { y: "100%" },
-    enter: {
-      y: "0%",
-      transition: { duration: 0.8, ease: [0.33, 1, 0.68, 1] },
-    },
-    exit: { y: "-100%" },
-  };
+export default function SubPreloader({ children }: { children: ReactNode }) {
+  // Kita gunakan 5 kolom untuk efek shutter yang elegan
+  const columns = 5; 
 
   return (
-    <AnimatePresence mode="wait">
-      {isActive && dimension.width > 0 && (
-        <motion.div
-          variants={slideUp}
-          initial="initial"
-          animate="enter"
-          exit="exit"
-          className="fixed inset-0 z-9999 flex items-center justify-center bg-[#012e21] pointer-events-none"
-        >
-          {/* SVG CURVE (Bottom Tail) */}
-          <svg className="absolute top-full w-full h-[300px] fill-[#012e21]">
-            <motion.path
-              variants={curveAnim}
-              initial="initial"
-              animate="enter"
-              exit="exit"
-            />
-          </svg>
+    <div className="relative min-h-screen w-full">
+      
+      {/* 1. GRID SHUTTERS (TIRAI KOLOM) */}
+      {/* Fixed position z-[9999] memastikan ini menutupi segalanya 
+          saat halaman baru pertama kali di-load.
+      */}
+      <div className="fixed inset-0 z-[9999] flex pointer-events-none">
+        {[...Array(columns)].map((_, i) => (
+          <motion.div
+            key={i}
+            custom={i} // Mengirim index ke variant untuk delay
+            variants={columnVariants}
+            initial="initial"
+            animate="enter"
+            className="relative w-full bg-[#012e21] border-r border-[#012e21]/10 last:border-none"
+          />
+        ))}
+      </div>
 
-          {/* TEXT CONTENT */}
-          <div className="absolute z-10 flex gap-4 md:gap-8 overflow-hidden">
-            <motion.div
-              variants={textContainer}
-              initial="initial"
-              animate="enter"
-              exit="exit"
-              className="flex items-center gap-4 md:gap-6"
-            >
-              {/* Kata 1: SRE */}
-              <div className="overflow-hidden relative">
-                <motion.h1
-                  variants={textItem}
-                  className="text-[#fff0aa] text-5xl md:text-7xl font-black uppercase tracking-tighter"
-                >
-                  SRE
-                </motion.h1>
-              </div>
-
-              {/* Kata 2: PENS */}
-              <div className="overflow-hidden relative">
-                <motion.h1
-                  variants={textItem}
-                  className="text-[#fff0aa] text-5xl md:text-7xl font-black uppercase tracking-tighter"
-                >
-                  PENS
-                </motion.h1>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+      {/* 2. KONTEN HALAMAN */}
+      <motion.div
+        variants={contentVariants}
+        initial="initial"
+        animate="enter"
+        className="w-full"
+      >
+        {children}
+      </motion.div>
+      
+    </div>
   );
 }
