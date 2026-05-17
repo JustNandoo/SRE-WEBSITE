@@ -205,6 +205,7 @@ CREATE TABLE public.user_roles (
     id UUID PRIMARY KEY, -- References auth.users(id) in practice
     email TEXT NOT NULL,
     role VARCHAR(50) NOT NULL CHECK (role IN ('staff', 'admin', 'super-admin')),
+    password_text VARCHAR(255),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -214,3 +215,33 @@ CREATE POLICY "Allow public read access on user_roles" ON public.user_roles FOR 
 CREATE POLICY "Allow super-admin and admin access on user_roles" ON public.user_roles FOR ALL USING (true);
 
 CREATE TRIGGER update_user_roles_modtime BEFORE UPDATE ON public.user_roles FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+-- ==========================================================
+-- 9. SEED AUTH USERS & ROLES DIRECTLY
+-- Note: Required extensions pgcrypto
+-- ==========================================================
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+INSERT INTO auth.users (
+  instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, recovery_sent_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, email_change, email_change_token_new, recovery_token
+) VALUES 
+('00000000-0000-0000-0000-000000000000', '11111111-1111-1111-1111-111111111111', 'authenticated', 'authenticated', 'superadmin@sre-pens.com', crypt('SuperAdminSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"super-admin"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '22222222-2222-2222-2222-222222222222', 'authenticated', 'authenticated', 'admin@sre-pens.com', crypt('AdminSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"admin"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '33333333-3333-3333-3333-333333333333', 'authenticated', 'authenticated', 'staff@sre-pens.com', crypt('StaffSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"staff"}', NOW(), NOW(), '', '', '', '')
+ON CONFLICT (id) DO UPDATE SET 
+  encrypted_password = EXCLUDED.encrypted_password,
+  email_confirmed_at = NOW();
+
+INSERT INTO auth.identities (id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at) VALUES 
+('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', format('{"sub":"%s","email":"%s"}', '11111111-1111-1111-1111-111111111111', 'superadmin@sre-pens.com')::jsonb, 'email', 'superadmin@sre-pens.com', NOW(), NOW(), NOW()),
+('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', format('{"sub":"%s","email":"%s"}', '22222222-2222-2222-2222-222222222222', 'admin@sre-pens.com')::jsonb, 'email', 'admin@sre-pens.com', NOW(), NOW(), NOW()),
+('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', format('{"sub":"%s","email":"%s"}', '33333333-3333-3333-3333-333333333333', 'staff@sre-pens.com')::jsonb, 'email', 'staff@sre-pens.com', NOW(), NOW(), NOW())
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO public.user_roles (id, email, role, password_text) VALUES 
+('11111111-1111-1111-1111-111111111111', 'superadmin@sre-pens.com', 'super-admin', 'SuperAdminSRE2026!'),
+('22222222-2222-2222-2222-222222222222', 'admin@sre-pens.com', 'admin', 'AdminSRE2026!'),
+('33333333-3333-3333-3333-333333333333', 'staff@sre-pens.com', 'staff', 'StaffSRE2026!')
+ON CONFLICT (id) DO UPDATE SET 
+  role = EXCLUDED.role,
+  password_text = EXCLUDED.password_text;

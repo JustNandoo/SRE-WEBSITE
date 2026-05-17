@@ -82,6 +82,7 @@ export interface UserRoleEntity {
   id: string;
   email: string;
   role: RoleType;
+  password_text?: string;
   created_at: string;
   updated_at: string;
 }
