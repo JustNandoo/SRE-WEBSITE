@@ -22,7 +22,9 @@ sre-pens-v2/
 - **Supabase JS & SSR SDK**: Menginstal paket `@supabase/supabase-js` dan `@supabase/ssr` pada *frontend* dan *backend* *workspaces*.
 - **Client Utilities**: Membuat utilitas koneksi Supabase untuk *browser* (`apps/frontend/src/lib/supabase/client.ts`) dan *server* (`apps/frontend/src/lib/supabase/server.ts`).
 - **AI Agent Skills**: Mengintegrasikan agen keterampilan otomatis `supabase/agent-skills` (`Postgres Best Practices` dan `Supabase Client`) di `.\.agents\skills\`.
-- **Database Schema**: Skema DDL SQL lengkap beserta *Row Level Security* (RLS) dan *Triggers* pembaruan stempel waktu otomatis tersedia di `apps/backend/supabase/migrations/20260517000000_initial_schema.sql`.
+- **Database Schema & Data Seeding**: Skema DDL SQL lengkap beserta *Row Level Security* (RLS), *Triggers* pembaruan stempel waktu otomatis, serta skrip pengisian data (*seeding*) tersedia di `apps/backend/supabase/migrations/20260517000000_initial_schema.sql`.
+- **API Services Layer**: Membangun utilitas pengambil data asinkron (`fetchAcademics`, `fetchActivities`, `fetchArticles`, `fetchMerchandise`, `fetchStaffDivisions`) di `apps/frontend/src/services/api.ts`.
+- **Frontend UI Integration**: Menghubungkan komponen utama beranda dan halaman detail pada *Academic, Activity, Article, Merchandise*, dan *About (Section Member)* agar mengambil data dinamis langsung dari Supabase secara *real-time* dengan mekanisme *graceful fallback* ke data lokal.
 - **Shared Types**: Definisi antarmuka TypeScript (*Interface*) yang 100% selaras dengan tabel database tersedia di `packages/shared-types/index.ts`.
 
 ### ✨ Peningkatan & Pembersihan Kode (*Clean Code Refactoring*)

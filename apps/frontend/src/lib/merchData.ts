@@ -1,5 +1,5 @@
 export interface MerchItem {
-  id: number;
+  id: string | number;
   name: string;
   category: string;
   price: string;

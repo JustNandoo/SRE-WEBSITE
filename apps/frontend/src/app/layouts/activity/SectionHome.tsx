@@ -5,6 +5,7 @@ import { Poppins } from "next/font/google";
 import { FaSearch } from "react-icons/fa";
 import EventCard from "@/app/components/activity/ActivityCard";
 import { upcomingEvents, type EventData } from "@/lib/activityData";
+import { fetchActivities } from "@/services/api";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -14,19 +15,30 @@ const poppins = Poppins({
 
 export default function SectionHome() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredEvents, setFilteredEvents] =
-    useState<EventData[]>(upcomingEvents);
+  const [activitiesData, setActivitiesData] = useState<EventData[]>(upcomingEvents);
+  const [filteredEvents, setFilteredEvents] = useState<EventData[]>(upcomingEvents);
+
+  useEffect(() => {
+    async function loadData() {
+      const data = await fetchActivities();
+      if (data && data.length > 0) {
+        setActivitiesData(data);
+        setFilteredEvents(data);
+      }
+    }
+    loadData();
+  }, []);
 
   // Logic Search Filter
   useEffect(() => {
-    const results = upcomingEvents.filter(
+    const results = activitiesData.filter(
       (event) =>
         event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredEvents(results);
-  }, [searchTerm]);
+  }, [searchTerm, activitiesData]);
 
   return (
     <section

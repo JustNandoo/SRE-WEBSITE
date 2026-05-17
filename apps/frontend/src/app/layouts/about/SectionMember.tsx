@@ -1,11 +1,23 @@
 "use client";
 
-import React from "react";
-import { staffData } from "@/lib/staffData";
+import React, { useState, useEffect } from "react";
+import { staffData, Division } from "@/lib/staffData";
 import { MemberCard } from "@/app/components/about/MemberCard";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { fetchStaffDivisions } from "@/services/api";
 
 export default function SectionMember() {
+  const [divisionsData, setDivisionsData] = useState<Division[]>(staffData);
+
+  useEffect(() => {
+    async function loadData() {
+      const data = await fetchStaffDivisions();
+      if (data && data.length > 0) {
+        setDivisionsData(data);
+      }
+    }
+    loadData();
+  }, []);
 
   // Fungsi untuk handle klik tombol panah (Scroll Kiri/Kanan)
   const handleScroll = (elementId: string, direction: "left" | "right") => {
@@ -46,7 +58,7 @@ export default function SectionMember() {
 
         {/* === CONTENT (Looping Departemen) === */}
         <div className="flex flex-col gap-24 md:gap-40">
-          {staffData.map((dept, index) => (
+          {divisionsData.map((dept, index) => (
             <div
               key={dept.id}
               className="flex flex-col md:flex-row gap-8 md:gap-10 border-t border-[#012e21]/10 pt-10 md:pt-0 md:border-none"

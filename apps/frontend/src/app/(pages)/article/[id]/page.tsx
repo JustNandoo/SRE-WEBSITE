@@ -3,14 +3,31 @@ import { articleContent } from "@/lib/articleData";
 import ArticleDetailContent from "@/app/components/article/ArticleDetailContent";
 import { notFound } from "next/navigation";
 import SmoothScrollProvider from "@/app/components/SmoothScrollProvider";
+import { createClient } from "@/lib/supabase/server";
 
-// Async param fetch dengan React.use()
-export default function ArticleDetailPage(props: {
+export default async function ArticleDetailPage(props: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(props.params); // <- Ini dia kunci utama
+  const { id } = await props.params;
+  const supabase = await createClient();
+  const { data } = await supabase.from('articles').select('*').eq('id', id).single();
 
-  const article = articleContent.find((a) => a.id === Number(id));
+  let article: any = null;
+  if (data) {
+    article = {
+      id: data.id,
+      title: data.title,
+      author: data.author,
+      created_by: data.created_by,
+      image: data.image,
+      description: data.description,
+      content: data.content,
+      date: data.published_date,
+    };
+  } else {
+    article = articleContent.find((a) => String(a.id) === String(id));
+  }
+
   if (!article) notFound();
 
   return (

@@ -6,6 +6,8 @@ import { academicContent, AcademicCardProps } from "@/lib/academicData";
 import { Poppins } from "next/font/google";
 import { FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
+import { fetchAcademics } from "@/services/api";
+
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -16,16 +18,27 @@ const ITEMS_PER_PAGE = 6; // Jumlah kartu per halaman
 
 export default function AcademicSection() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredCards, setFilteredCards] =
-    useState<AcademicCardProps[]>(academicContent);
+  const [academicsData, setAcademicsData] = useState<AcademicCardProps[]>(academicContent);
+  const [filteredCards, setFilteredCards] = useState<AcademicCardProps[]>(academicContent);
 
   // State Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const gridRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    async function loadData() {
+      const data = await fetchAcademics();
+      if (data && data.length > 0) {
+        setAcademicsData(data);
+        setFilteredCards(data);
+      }
+    }
+    loadData();
+  }, []);
+
   // Logic Filtering
   useEffect(() => {
-    const results = academicContent.filter(
+    const results = academicsData.filter(
       (card) =>
         card.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         card.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -34,7 +47,7 @@ export default function AcademicSection() {
     );
     setFilteredCards(results);
     setCurrentPage(1); // Reset ke halaman 1 setiap kali search berubah
-  }, [searchTerm]);
+  }, [searchTerm, academicsData]);
 
   // Logic Slicing Data (Pagination)
   const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);

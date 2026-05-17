@@ -1,5 +1,5 @@
 export interface AcademicCardProps {
-  id: number;
+  id: string | number;
   title: string;
   image: string;
   description: string;

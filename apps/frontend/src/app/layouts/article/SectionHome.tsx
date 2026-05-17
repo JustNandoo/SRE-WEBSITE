@@ -7,6 +7,8 @@ import { articleContent, Article } from "@/lib/articleData";
 import { Poppins } from "next/font/google";
 import { FaArrowRight, FaSearch } from "react-icons/fa";
 
+import { fetchArticles } from "@/services/api";
+
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -110,16 +112,28 @@ const MobileCard = ({ article, index }: { article: Article; index: number }) => 
 // --- MAIN SECTION ---
 export default function ArticleSection() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredArticles, setFilteredArticles] = useState(articleContent);
+  const [articlesData, setArticlesData] = useState<Article[]>(articleContent);
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>(articleContent);
 
   useEffect(() => {
-    const results = articleContent.filter(
+    async function loadData() {
+      const data = await fetchArticles();
+      if (data && data.length > 0) {
+        setArticlesData(data);
+        setFilteredArticles(data);
+      }
+    }
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    const results = articlesData.filter(
       (article) =>
         article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         article.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredArticles(results);
-  }, [searchTerm]);
+  }, [searchTerm, articlesData]);
 
   return (
     <section

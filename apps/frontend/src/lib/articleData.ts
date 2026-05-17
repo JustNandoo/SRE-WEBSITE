@@ -3,7 +3,7 @@
 // --- 1. DEFINISI TIPE DATA ---
 
 export interface ArticleContent {
-  id: number;
+  id: string | number;
   author: string;
   title: string;
   image: string;

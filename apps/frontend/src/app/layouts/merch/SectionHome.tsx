@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { FaAsterisk } from "react-icons/fa";
-import { merchItems } from "@/lib/merchData"; // Import Data
+import { merchItems, MerchItem } from "@/lib/merchData"; // Import Data
 import MerchCard from "@/app/components/merch/MerchCard"; // Import Card
 import MerchFilter from "@/app/components/merch/MerchFilter"; // Import Filter
+import { fetchMerchandise } from "@/services/api";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -27,10 +28,26 @@ const NoiseOverlay = () => (
 
 export default function SectionMerch() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [merchandiseData, setMerchandiseData] = useState<MerchItem[]>(merchItems);
+  const [filteredItems, setFilteredItems] = useState<MerchItem[]>(merchItems);
 
-  const filteredItems = merchItems.filter(
-    (item) => activeCategory === "All" || item.category === activeCategory
-  );
+  useEffect(() => {
+    async function loadData() {
+      const data = await fetchMerchandise();
+      if (data && data.length > 0) {
+        setMerchandiseData(data);
+        setFilteredItems(data);
+      }
+    }
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    const results = merchandiseData.filter(
+      (item) => activeCategory === "All" || item.category === activeCategory
+    );
+    setFilteredItems(results);
+  }, [activeCategory, merchandiseData]);
 
   const categories = ["All", "Apparel", "Accessories", "Essentials"];
 
