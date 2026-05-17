@@ -47,7 +47,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   };
 
   if (pathname === "/admin-sre/login") {
-    return <>{children}</>;
+    return <div className="admin-viewport min-h-screen w-full bg-[#011a12]">{children}</div>;
   }
 
   const navItems = [
@@ -60,7 +60,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#011a12] text-white font-sans selection:bg-[#F2C601] selection:text-[#012e21]">
+    <div className="admin-viewport min-h-screen flex flex-col md:flex-row bg-[#011a12] text-white font-sans selection:bg-[#F2C601] selection:text-[#012e21]">
       {/* Mobile Top Navbar */}
       <div className="md:hidden flex items-center justify-between px-6 py-4 bg-[#012e21] border-b border-white/10 sticky top-0 z-50">
         <div className="flex items-center gap-3">

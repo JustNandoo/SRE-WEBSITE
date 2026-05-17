@@ -42,11 +42,15 @@ body {
 }
 
 /* --- KHUSUS DESKTOP (LG ke atas / > 1024px) --- */
-/* Hanya di ukuran ini kita matikan native scroll agar Locomotive jalan */
+/* Hanya di ukuran ini kita matikan native scroll agar Locomotive jalan, KECUALI di halaman admin/CMS */
 @media (min-width: 1024px) {
-  html,
-  body {
+  html:not(:has(.admin-viewport)),
+  body:not(:has(.admin-viewport)) {
     overflow: hidden !important;
+  }
+  html:has(.admin-viewport),
+  body:has(.admin-viewport) {
+    overflow-y: auto !important;
   }
 }
 
