@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSpinner, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaShieldAlt, FaArrowLeft, FaCheck } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
     if (authError) {
       setError(authError.message || "Invalid login credentials.");
     } else if (data.session) {
-      setSuccess("Authentication successful! Redirecting to dashboard...");
+      setSuccess("Granted. Redirecting...");
       setTimeout(() => {
         router.push("/admin-sre");
       }, 1000);
@@ -62,62 +62,63 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className={`min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#011a12] text-white ${poppins.variable} ${akira.variable} font-sans selection:bg-[#F2C601] selection:text-[#011a12] relative overflow-hidden`}>
-      {/* Mobile Glowing Background Element */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-[#F2C601]/10 rounded-full blur-[100px] pointer-events-none lg:hidden" />
-
-      {/* Left Column: Responsive Form Section */}
-      <div className="flex flex-col justify-between p-6 sm:p-10 md:p-16 lg:p-20 relative z-10 bg-[#012e21]/70 lg:bg-[#012e21]/40 backdrop-blur-3xl border-r border-white/10 min-h-screen lg:min-h-0">
-        {/* Top Header & Return Link */}
-        <div className="flex items-center justify-between">
+    <div className={`min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#011a12] text-white ${poppins.variable} ${akira.variable} font-sans selection:bg-[#F2C601] selection:text-[#011a12]`}>
+      {/* Left Column: Editorial Form Section */}
+      <div className="flex flex-col justify-between p-8 sm:p-12 md:p-16 lg:p-20 border-r border-white/15 bg-[#011a12]">
+        {/* Editorial Masthead */}
+        <div className="flex items-center justify-between pb-6 border-b border-white/15">
           <div className="flex items-center gap-3">
-            <div className="w-9 sm:w-10 h-9 sm:h-10 bg-[#F2C601] text-[#012e21] rounded-xl flex items-center justify-center font-bold shadow-[0_0_20px_rgba(242,198,1,0.4)]">
-              <FaShieldAlt className="text-base sm:text-lg" />
+            <div className="w-8 h-8 bg-[#F2C601] text-[#011a12] flex items-center justify-center font-bold">
+              <FaShieldAlt size={16} />
             </div>
-            <span className="font-akira tracking-wider text-lg sm:text-xl uppercase text-white">SRE CMS</span>
+            <div>
+              <span className="font-akira tracking-widest text-lg uppercase block leading-none">SRE PENS</span>
+              <span className="font-mono text-[9px] text-[#F2C601] tracking-[0.3em] uppercase block mt-1">VOL. II / NO. 2026</span>
+            </div>
           </div>
           <Link
             href="/"
-            className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-white/60 hover:text-[#F2C601] transition-colors uppercase tracking-widest border border-white/10 px-3.5 py-2 rounded-full bg-white/5 backdrop-blur-sm"
+            className="flex items-center gap-2 text-[10px] font-mono text-white hover:text-[#F2C601] uppercase tracking-widest border border-white/20 px-4 py-2 hover:border-[#F2C601]"
           >
-            <FaArrowLeft size={10} /> Back to Site
+            <FaArrowLeft size={10} /> RETURN TO SITE
           </Link>
         </div>
 
-        {/* Middle Form Area */}
-        <div className="w-full max-w-md mx-auto my-auto py-12">
-          <div className="text-center sm:text-left mb-10 space-y-3">
-            <h1 className="font-akira text-2xl sm:text-3xl md:text-4xl uppercase tracking-tighter text-white drop-shadow-md leading-tight">
-              Welcome back!
+        {/* Central Form Area */}
+        <div className="w-full max-w-md mx-auto my-16">
+          <div className="mb-12">
+            <p className="font-mono text-[10px] text-[#F2C601] tracking-[0.4em] uppercase mb-2">SECURE ENDPOINT</p>
+            <h1 className="font-akira text-3xl sm:text-4xl uppercase tracking-tighter text-white mb-4 leading-none">
+              AUTHENTICATION.
             </h1>
             <p className="text-xs sm:text-sm font-sans text-white/70 leading-relaxed font-light">
-              The faster you log in, the faster you manage the portal.
+              Restricted administrative access. Please authenticate using verified staff credentials to enter the CMS console.
             </p>
           </div>
 
-          {/* Messages */}
+          {/* Notices */}
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-400 text-xs font-mono flex items-center gap-3 animate-shake">
-              <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />
+            <div className="mb-8 p-4 bg-red-950/40 border border-red-500/40 text-red-400 text-xs font-mono flex items-center gap-3">
+              <span className="w-2 h-2 bg-red-500 flex-shrink-0" />
               <p>{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-300 text-xs font-mono flex items-center gap-3 animate-pulse">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
+            <div className="mb-8 p-4 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs font-mono flex items-center gap-3">
+              <FaCheck size={12} className="text-emerald-400 flex-shrink-0" />
               <p>{success}</p>
             </div>
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-8">
             <div className="space-y-2">
-              <label className="block font-mono text-[11px] sm:text-xs font-bold text-[#F2C601] uppercase tracking-widest pl-1">
-                Email Address
+              <label className="block font-mono text-xs text-[#F2C601] uppercase tracking-widest">
+                STAFF EMAIL
               </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-[#F2C601] transition-colors">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40">
                   <FaEnvelope size={14} />
                 </div>
                 <input
@@ -126,17 +127,17 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@sre-pens.com"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] focus:bg-black/60 transition-all duration-300 font-mono text-sm shadow-inner"
+                  className="w-full bg-transparent border border-white/25 rounded-none py-4 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block font-mono text-[11px] sm:text-xs font-bold text-[#F2C601] uppercase tracking-widest pl-1">
-                Password
+              <label className="block font-mono text-xs text-[#F2C601] uppercase tracking-widest">
+                PASSPHRASE
               </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-[#F2C601] transition-colors">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40">
                   <FaLock size={14} />
                 </div>
                 <input
@@ -145,12 +146,12 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-12 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] focus:bg-black/60 transition-all duration-300 font-mono text-sm shadow-inner"
+                  className="w-full bg-transparent border border-white/25 rounded-none py-4 pl-12 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-white/40 hover:text-white transition-colors"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-white/40 hover:text-white"
                 >
                   {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
                 </button>
@@ -159,94 +160,85 @@ export default function AdminLoginPage() {
 
             {/* Remember & Forgot */}
             <div className="flex items-center justify-between text-xs font-mono pt-2">
-              <label className="flex items-center gap-2.5 cursor-pointer text-white/70 hover:text-white transition-colors">
+              <label className="flex items-center gap-3 cursor-pointer text-white/70 hover:text-white">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-white/20 bg-black/40 text-[#F2C601] focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#F2C601]"
+                  className="w-4 h-4 rounded-none border-white/30 bg-transparent text-[#F2C601] focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#F2C601]"
                 />
-                <span className="text-[11px] sm:text-xs">Remember me</span>
+                <span className="text-xs uppercase tracking-wider">REMEMBER SESSION</span>
               </label>
               <button
                 type="button"
                 onClick={() => alert("Please contact the Super Admin (superadmin@sre-pens.com) to reset staff credentials.")}
-                className="text-[11px] sm:text-xs text-white/60 hover:text-[#F2C601] transition-colors underline underline-offset-4"
+                className="text-xs text-white/60 hover:text-[#F2C601] uppercase tracking-wider underline underline-offset-4"
               >
-                Forgot Password?
+                FORGOT PASSWORD?
               </button>
             </div>
 
             <button
               type="submit"
               disabled={loading || success !== null}
-              className="w-full bg-[#F2C601] hover:bg-[#fff0aa] text-[#011a12] font-bold py-4 rounded-xl font-mono text-xs sm:text-sm tracking-[0.2em] uppercase transition-all duration-300 shadow-[0_10px_30px_rgba(242,198,1,0.2)] hover:shadow-[0_15px_40px_rgba(242,198,1,0.4)] disabled:opacity-50 flex items-center justify-center gap-3 mt-6 active:scale-95"
+              className="w-full bg-[#F2C601] text-[#011a12] hover:bg-white hover:text-black font-bold py-4 rounded-none font-mono text-sm tracking-[0.2em] uppercase transition-colors disabled:opacity-50 flex items-center justify-center gap-3 mt-8"
             >
               {loading ? (
-                <>
-                  <FaSpinner className="animate-spin" size={16} />
-                  <span>Authenticating...</span>
-                </>
+                <span>VERIFYING CREDENTIALS...</span>
               ) : success ? (
-                <span>Access Granted</span>
+                <span>AUTHORIZED</span>
               ) : (
-                <span>Sign In</span>
+                <span>PROCEED TO CONSOLE</span>
               )}
             </button>
           </form>
         </div>
 
-        {/* Footer Note */}
-        <div className="text-center sm:text-left text-white/30 text-[10px] sm:text-[11px] font-mono leading-relaxed pt-6 border-t border-white/10">
-          <p>© 2026 Society of Renewable Energy PENS. Protected by Supabase RLS.</p>
+        {/* Editorial Footer */}
+        <div className="pt-6 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between font-mono text-[10px] text-white/40 uppercase tracking-widest gap-2">
+          <span>© 2026 SOCIETY OF RENEWABLE ENERGY</span>
+          <span>SECURED BY SUPABASE RLS</span>
         </div>
       </div>
 
-      {/* Right Column: Stunning Visual Banner Section matching the reference layout */}
-      <div className="relative hidden lg:flex items-end p-16 overflow-hidden bg-[#011a12]/90 border-l border-white/10">
-        {/* Full Cover Image */}
-        <Image
-          src="https://images.unsplash.com/photo-1466611653911-95081537e5b7"
-          alt="Renewable Energy Wind Turbines"
-          fill
-          sizes="50vw"
-          priority
-          className="object-cover opacity-60 scale-105 hover:scale-100 transition-transform duration-1000"
-        />
-
-        {/* Gradient Overlay for Text Clarity */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#011a12] via-[#011a12]/40 to-transparent" />
-
-        {/* Decorative Grid Overlay Pattern */}
-        <div className="absolute inset-0 bg-[radial-gradient(#F2C601_1px,transparent_1px)] [background-size:32px_32px] opacity-10" />
-
-        {/* Top Right Floating Logo Label */}
-        <div className="absolute top-16 right-16 z-20">
-          <span className="font-akira text-2xl tracking-widest text-white/90 drop-shadow-lg">
-            SRE PENS
-          </span>
+      {/* Right Column: Framed Editorial Visual Section */}
+      <div className="hidden lg:flex flex-col justify-between p-12 bg-[#011a12] border-l border-white/15">
+        <div className="text-right font-mono text-[10px] text-white/50 uppercase tracking-[0.3em]">
+          ARCHIVAL REPOSITORY / 01-26
         </div>
 
-        {/* Bottom Typography Overlay matching the Aespa / Karina reference */}
-        <div className="relative z-20 space-y-4 max-w-xl">
-          <div className="flex items-baseline gap-4">
-            <h2 className="font-akira text-4xl xl:text-5xl uppercase tracking-tight text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
-              Green Energy
-            </h2>
-            <span className="font-mono text-xl text-[#F2C601] tracking-widest font-bold">
-              재생 가능 에너지
-            </span>
+        {/* Framed Image */}
+        <div className="my-auto w-full max-w-xl mx-auto border border-white/15 p-3 bg-[#01251a]">
+          <div className="relative h-[480px] w-full overflow-hidden bg-black">
+            <Image
+              src="https://images.unsplash.com/photo-1466611653911-95081537e5b7"
+              alt="Renewable Energy Installation"
+              fill
+              sizes="50vw"
+              priority
+              className="object-cover grayscale contrast-125"
+            />
+            {/* Subtle overlay grid for editorial texture */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
           </div>
 
-          <p className="text-sm font-sans leading-relaxed text-white/80 drop-shadow backdrop-blur-sm bg-black/20 p-4 rounded-2xl border border-white/10 font-light">
-            SRE PENS (Society of Renewable Energy) is a dedicated student organization at Electronic Engineering Polytechnic Institute of Surabaya committed to advancing green technology, smart grid research, and energy transition innovation across Indonesia.
-          </p>
+          <div className="mt-4 pt-3 border-t border-white/15 flex items-start justify-between font-mono text-xs">
+            <div>
+              <span className="text-[#F2C601] font-bold block tracking-wider uppercase">FIG. 01 — WIND POWER GENERATOR</span>
+              <span className="text-[10px] text-white/60 tracking-wider">OFFSHORE INSTALLATION SERIES / ARCHIVE 2026</span>
+            </div>
+            <span className="text-[10px] px-2 py-1 bg-white/10 border border-white/20 text-white font-bold">RAW / 4K</span>
+          </div>
+        </div>
 
-          <div className="flex items-center gap-3 pt-2">
-            <span className="w-3 h-3 rounded-full bg-[#F2C601] animate-ping" />
-            <span className="font-mono text-xs uppercase tracking-widest text-[#F2C601] font-bold">
-              CMS Secure Connection Active
-            </span>
+        <div className="border-t border-white/15 pt-6 grid grid-cols-2 font-mono text-[10px] text-white/60 uppercase tracking-widest">
+          <div>
+            <span className="text-white block font-bold mb-1">SYSTEM STATUS</span>
+            <span className="text-[#F2C601]">ONLINE & ACTIVE</span>
+          </div>
+          <div className="text-right">
+            <span className="text-white block font-bold mb-1">ENCRYPTION LEVEL</span>
+            <span>AES-256 / SHA-256</span>
           </div>
         </div>
       </div>
