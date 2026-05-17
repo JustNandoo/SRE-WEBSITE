@@ -62,32 +62,35 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className={`min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#011a12] text-white ${poppins.variable} ${akira.variable} font-sans selection:bg-[#F2C601] selection:text-[#011a12]`}>
-      {/* Left Column: Form Section */}
-      <div className="flex flex-col justify-between p-8 md:p-16 lg:p-20 relative z-10 bg-[#012e21]/40 backdrop-blur-3xl border-r border-white/10">
+    <div className={`min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#011a12] text-white ${poppins.variable} ${akira.variable} font-sans selection:bg-[#F2C601] selection:text-[#011a12] relative overflow-hidden`}>
+      {/* Mobile Glowing Background Element */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-[#F2C601]/10 rounded-full blur-[100px] pointer-events-none lg:hidden" />
+
+      {/* Left Column: Responsive Form Section */}
+      <div className="flex flex-col justify-between p-6 sm:p-10 md:p-16 lg:p-20 relative z-10 bg-[#012e21]/70 lg:bg-[#012e21]/40 backdrop-blur-3xl border-r border-white/10 min-h-screen lg:min-h-0">
         {/* Top Header & Return Link */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#F2C601] text-[#012e21] rounded-xl flex items-center justify-center font-bold shadow-[0_0_20px_rgba(242,198,1,0.4)]">
-              <FaShieldAlt size={20} />
+            <div className="w-9 sm:w-10 h-9 sm:h-10 bg-[#F2C601] text-[#012e21] rounded-xl flex items-center justify-center font-bold shadow-[0_0_20px_rgba(242,198,1,0.4)]">
+              <FaShieldAlt className="text-base sm:text-lg" />
             </div>
-            <span className="font-akira tracking-wider text-xl uppercase text-white">SRE CMS</span>
+            <span className="font-akira tracking-wider text-lg sm:text-xl uppercase text-white">SRE CMS</span>
           </div>
           <Link
             href="/"
-            className="flex items-center gap-2 text-xs font-mono text-white/60 hover:text-[#F2C601] transition-colors uppercase tracking-widest border border-white/10 px-4 py-2 rounded-full bg-white/5"
+            className="flex items-center gap-2 text-[10px] sm:text-xs font-mono text-white/60 hover:text-[#F2C601] transition-colors uppercase tracking-widest border border-white/10 px-3.5 py-2 rounded-full bg-white/5 backdrop-blur-sm"
           >
             <FaArrowLeft size={10} /> Back to Site
           </Link>
         </div>
 
         {/* Middle Form Area */}
-        <div className="w-full max-w-md mx-auto my-12">
-          <div className="text-center lg:text-left mb-10 space-y-3">
-            <h1 className="font-akira text-3xl md:text-4xl uppercase tracking-tighter text-white">
+        <div className="w-full max-w-md mx-auto my-auto py-12">
+          <div className="text-center sm:text-left mb-10 space-y-3">
+            <h1 className="font-akira text-2xl sm:text-3xl md:text-4xl uppercase tracking-tighter text-white drop-shadow-md leading-tight">
               Welcome back!
             </h1>
-            <p className="text-sm font-sans text-white/60">
+            <p className="text-xs sm:text-sm font-sans text-white/70 leading-relaxed font-light">
               The faster you log in, the faster you manage the portal.
             </p>
           </div>
@@ -110,8 +113,8 @@ export default function AdminLoginPage() {
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <label className="block font-mono text-xs font-semibold text-white/80 uppercase tracking-wider pl-1">
-                Email
+              <label className="block font-mono text-[11px] sm:text-xs font-bold text-[#F2C601] uppercase tracking-widest pl-1">
+                Email Address
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-[#F2C601] transition-colors">
@@ -129,7 +132,7 @@ export default function AdminLoginPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="block font-mono text-xs font-semibold text-white/80 uppercase tracking-wider pl-1">
+              <label className="block font-mono text-[11px] sm:text-xs font-bold text-[#F2C601] uppercase tracking-widest pl-1">
                 Password
               </label>
               <div className="relative group">
@@ -163,12 +166,12 @@ export default function AdminLoginPage() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded border-white/20 bg-black/40 text-[#F2C601] focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#F2C601]"
                 />
-                <span>Remember me</span>
+                <span className="text-[11px] sm:text-xs">Remember me</span>
               </label>
               <button
                 type="button"
                 onClick={() => alert("Please contact the Super Admin (superadmin@sre-pens.com) to reset staff credentials.")}
-                className="text-white/60 hover:text-[#F2C601] transition-colors underline underline-offset-4"
+                className="text-[11px] sm:text-xs text-white/60 hover:text-[#F2C601] transition-colors underline underline-offset-4"
               >
                 Forgot Password?
               </button>
@@ -177,7 +180,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading || success !== null}
-              className="w-full bg-[#F2C601] hover:bg-[#fff0aa] text-[#011a12] font-bold py-4 rounded-xl font-mono text-sm tracking-[0.2em] uppercase transition-all duration-300 shadow-[0_10px_30px_rgba(242,198,1,0.2)] hover:shadow-[0_15px_40px_rgba(242,198,1,0.4)] disabled:opacity-50 flex items-center justify-center gap-3 mt-6"
+              className="w-full bg-[#F2C601] hover:bg-[#fff0aa] text-[#011a12] font-bold py-4 rounded-xl font-mono text-xs sm:text-sm tracking-[0.2em] uppercase transition-all duration-300 shadow-[0_10px_30px_rgba(242,198,1,0.2)] hover:shadow-[0_15px_40px_rgba(242,198,1,0.4)] disabled:opacity-50 flex items-center justify-center gap-3 mt-6 active:scale-95"
             >
               {loading ? (
                 <>
@@ -194,7 +197,7 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Footer Note */}
-        <div className="text-center lg:text-left text-white/30 text-[11px] font-mono leading-relaxed pt-6 border-t border-white/10">
+        <div className="text-center sm:text-left text-white/30 text-[10px] sm:text-[11px] font-mono leading-relaxed pt-6 border-t border-white/10">
           <p>© 2026 Society of Renewable Energy PENS. Protected by Supabase RLS.</p>
         </div>
       </div>
