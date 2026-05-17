@@ -75,3 +75,13 @@ export interface DivisionEntity {
   members?: MemberEntity[];
   created_at: string;
 }
+
+export type RoleType = 'staff' | 'admin' | 'super-admin';
+
+export interface UserRoleEntity {
+  id: string;
+  email: string;
+  role: RoleType;
+  created_at: string;
+  updated_at: string;
+}

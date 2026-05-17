@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 
 // --- VARIANTS ---
@@ -61,10 +62,13 @@ const curveAnim: Variants = {
 };
 
 export default function Preloader() {
+  const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [count, setCount] = useState(0);
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
+
+  if (pathname.startsWith("/admin-sre")) return null;
 
   // Kata-kata dikurangi agar pas dengan durasi loading
   const words = ["Hello", "Bonjour", "こんにちは", "Halo"];

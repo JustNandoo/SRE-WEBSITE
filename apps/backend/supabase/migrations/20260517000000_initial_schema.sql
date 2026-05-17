@@ -195,3 +195,22 @@ CREATE TRIGGER update_activities_modtime BEFORE UPDATE ON public.activities FOR 
 CREATE TRIGGER update_articles_modtime BEFORE UPDATE ON public.articles FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_merchandise_modtime BEFORE UPDATE ON public.merchandise FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_members_modtime BEFORE UPDATE ON public.members FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+-- ==========================================================
+-- 8. USER ROLES & AUTHORIZATION TABLE
+-- ==========================================================
+DROP TABLE IF EXISTS public.user_roles CASCADE;
+
+CREATE TABLE public.user_roles (
+    id UUID PRIMARY KEY, -- References auth.users(id) in practice
+    email TEXT NOT NULL,
+    role VARCHAR(50) NOT NULL CHECK (role IN ('staff', 'admin', 'super-admin')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access on user_roles" ON public.user_roles FOR SELECT USING (true);
+CREATE POLICY "Allow super-admin and admin access on user_roles" ON public.user_roles FOR ALL USING (true);
+
+CREATE TRIGGER update_user_roles_modtime BEFORE UPDATE ON public.user_roles FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();

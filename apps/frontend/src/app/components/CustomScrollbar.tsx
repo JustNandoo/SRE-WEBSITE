@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const CustomScrollbar = () => {
+  const pathname = usePathname();
   const [progress, setProgress] = useState(0);
+
+  if (pathname.startsWith("/admin-sre")) return null;
 
   useEffect(() => {
     // Jangan jalankan logic ini di mobile
