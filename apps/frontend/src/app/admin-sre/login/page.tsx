@@ -62,33 +62,33 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className={`min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#011a12] text-white ${poppins.variable} ${akira.variable} font-sans selection:bg-[#F2C601] selection:text-[#011a12]`}>
+    <div className={`min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 bg-[#011a12] text-white ${poppins.variable} ${akira.variable} font-sans selection:bg-[#F2C601] selection:text-[#011a12] overflow-y-auto`}>
       {/* Left Column: Editorial Form Section */}
-      <div className="flex flex-col justify-between p-8 sm:p-12 md:p-16 lg:p-20 border-r border-white/15 bg-[#011a12]">
+      <div className="flex flex-col justify-between p-6 sm:p-8 md:p-12 border-r border-white/15 bg-[#011a12] min-h-screen lg:min-h-0">
         {/* Editorial Masthead */}
-        <div className="flex items-center justify-between pb-6 border-b border-white/15">
+        <div className="flex items-center justify-between pb-6 border-b border-white/15 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-[#F2C601] text-[#011a12] flex items-center justify-center font-bold">
+            <div className="w-8 h-8 bg-[#F2C601] text-[#011a12] flex items-center justify-center font-bold flex-shrink-0">
               <FaShieldAlt size={16} />
             </div>
-            <div>
-              <span className="font-akira tracking-widest text-lg uppercase block leading-none">SRE PENS</span>
+            <div className="overflow-hidden">
+              <span className="font-akira tracking-widest text-base sm:text-lg uppercase block leading-none truncate">SRE PENS</span>
               <span className="font-mono text-[9px] text-[#F2C601] tracking-[0.3em] uppercase block mt-1">VOL. II / NO. 2026</span>
             </div>
           </div>
           <Link
             href="/"
-            className="flex items-center gap-2 text-[10px] font-mono text-white hover:text-[#F2C601] uppercase tracking-widest border border-white/20 px-4 py-2 hover:border-[#F2C601]"
+            className="flex items-center gap-2 text-[10px] font-mono text-white hover:text-[#F2C601] uppercase tracking-widest border border-white/20 px-3 py-1.5 hover:border-[#F2C601] whitespace-nowrap flex-shrink-0"
           >
-            <FaArrowLeft size={10} /> RETURN TO SITE
+            <FaArrowLeft size={10} /> RETURN
           </Link>
         </div>
 
         {/* Central Form Area */}
-        <div className="w-full max-w-md mx-auto my-16">
-          <div className="mb-12">
+        <div className="w-full max-w-md mx-auto my-auto py-8 sm:py-12 flex-1 flex flex-col justify-center">
+          <div className="mb-10">
             <p className="font-mono text-[10px] text-[#F2C601] tracking-[0.4em] uppercase mb-2">SECURE ENDPOINT</p>
-            <h1 className="font-akira text-3xl sm:text-4xl uppercase tracking-tighter text-white mb-4 leading-none">
+            <h1 className="font-akira text-3xl sm:text-4xl uppercase tracking-tighter text-white mb-3 leading-none">
               AUTHENTICATION.
             </h1>
             <p className="text-xs sm:text-sm font-sans text-white/70 leading-relaxed font-light">
@@ -98,21 +98,21 @@ export default function AdminLoginPage() {
 
           {/* Notices */}
           {error && (
-            <div className="mb-8 p-4 bg-red-950/40 border border-red-500/40 text-red-400 text-xs font-mono flex items-center gap-3">
+            <div className="mb-6 p-4 bg-red-950/40 border border-red-500/40 text-red-400 text-xs font-mono flex items-center gap-3">
               <span className="w-2 h-2 bg-red-500 flex-shrink-0" />
               <p>{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mb-8 p-4 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs font-mono flex items-center gap-3">
+            <div className="mb-6 p-4 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs font-mono flex items-center gap-3">
               <FaCheck size={12} className="text-emerald-400 flex-shrink-0" />
               <p>{success}</p>
             </div>
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleLogin} className="space-y-8">
+          <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <label className="block font-mono text-xs text-[#F2C601] uppercase tracking-widest">
                 STAFF EMAIL
@@ -127,7 +127,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@sre-pens.com"
-                  className="w-full bg-transparent border border-white/25 rounded-none py-4 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
+                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
                 />
               </div>
             </div>
@@ -146,7 +146,7 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-transparent border border-white/25 rounded-none py-4 pl-12 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
+                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
                 />
                 <button
                   type="button"
@@ -160,19 +160,19 @@ export default function AdminLoginPage() {
 
             {/* Remember & Forgot */}
             <div className="flex items-center justify-between text-xs font-mono pt-2">
-              <label className="flex items-center gap-3 cursor-pointer text-white/70 hover:text-white">
+              <label className="flex items-center gap-2.5 cursor-pointer text-white/70 hover:text-white">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded-none border-white/30 bg-transparent text-[#F2C601] focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#F2C601]"
                 />
-                <span className="text-xs uppercase tracking-wider">REMEMBER SESSION</span>
+                <span className="text-[11px] sm:text-xs uppercase tracking-wider">REMEMBER SESSION</span>
               </label>
               <button
                 type="button"
                 onClick={() => alert("Please contact the Super Admin (superadmin@sre-pens.com) to reset staff credentials.")}
-                className="text-xs text-white/60 hover:text-[#F2C601] uppercase tracking-wider underline underline-offset-4"
+                className="text-[11px] sm:text-xs text-white/60 hover:text-[#F2C601] uppercase tracking-wider underline underline-offset-4"
               >
                 FORGOT PASSWORD?
               </button>
@@ -195,21 +195,21 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Editorial Footer */}
-        <div className="pt-6 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between font-mono text-[10px] text-white/40 uppercase tracking-widest gap-2">
+        <div className="pt-6 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between font-mono text-[10px] text-white/40 uppercase tracking-widest gap-2 flex-shrink-0">
           <span>© 2026 SOCIETY OF RENEWABLE ENERGY</span>
           <span>SECURED BY SUPABASE RLS</span>
         </div>
       </div>
 
       {/* Right Column: Framed Editorial Visual Section */}
-      <div className="hidden lg:flex flex-col justify-between p-12 bg-[#011a12] border-l border-white/15">
-        <div className="text-right font-mono text-[10px] text-white/50 uppercase tracking-[0.3em]">
+      <div className="hidden lg:flex flex-col justify-between p-8 md:p-12 bg-[#011a12] border-l border-white/15 min-h-screen lg:min-h-0">
+        <div className="text-right font-mono text-[10px] text-white/50 uppercase tracking-[0.3em] flex-shrink-0">
           ARCHIVAL REPOSITORY / 01-26
         </div>
 
         {/* Framed Image */}
         <div className="my-auto w-full max-w-xl mx-auto border border-white/15 p-3 bg-[#01251a]">
-          <div className="relative h-[480px] w-full overflow-hidden bg-black">
+          <div className="relative w-full aspect-[4/3] max-h-[420px] overflow-hidden bg-black">
             <Image
               src="https://images.unsplash.com/photo-1466611653911-95081537e5b7"
               alt="Renewable Energy Installation"
@@ -231,7 +231,7 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        <div className="border-t border-white/15 pt-6 grid grid-cols-2 font-mono text-[10px] text-white/60 uppercase tracking-widest">
+        <div className="border-t border-white/15 pt-6 grid grid-cols-2 font-mono text-[10px] text-white/60 uppercase tracking-widest flex-shrink-0">
           <div>
             <span className="text-white block font-bold mb-1">SYSTEM STATUS</span>
             <span className="text-[#F2C601]">ONLINE & ACTIVE</span>
