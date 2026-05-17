@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
-import { upcomingEvents } from "@/lib/activityData";
+import { type EventData } from "@/lib/activityData";
 import { FaArrowRight } from "react-icons/fa";
+import { fetchActivities } from "@/services/api";
 
 // ================= FONTS =================
 const poppins = Poppins({
@@ -23,11 +24,18 @@ const akira = localFont({
 
 // ================= MAIN SECTION =================
 export default function SectionNews() {
-  // State untuk melacak berita mana yang sedang di-hover
   const [activeIndex, setActiveIndex] = useState(0);
-  
-  // Ambil maksimal 3 berita untuk home page
-  const displayedEvents = upcomingEvents.slice(0, 3);
+  const [displayedEvents, setDisplayedEvents] = useState<EventData[]>([]);
+
+  useEffect(() => {
+    async function loadData() {
+      const data = await fetchActivities();
+      if (data && data.length > 0) {
+        setDisplayedEvents(data.slice(0, 3));
+      }
+    }
+    loadData();
+  }, []);
 
   return (
     <section
@@ -71,36 +79,42 @@ export default function SectionNews() {
           
           {/* KIRI: Daftar Berita (Text Only) */}
           <div className="w-full lg:w-3/5 flex flex-col">
-            {displayedEvents.map((event, index) => (
-              <div
-                key={event.id}
-                onMouseEnter={() => setActiveIndex(index)}
-                // Untuk mobile: Tap untuk mengubah gambar
-                onClick={() => setActiveIndex(index)} 
-                className="group flex flex-col md:flex-row md:items-center justify-between py-6 md:py-10 border-b border-[#fff0aa]/20 cursor-pointer first:border-t"
-              >
-                {/* Info & Judul */}
-                <div className="flex gap-6 md:gap-10 items-start md:items-center w-full">
-                  <span className="font-mono text-sm opacity-40 font-bold mt-1 md:mt-0 transition-opacity duration-300 group-hover:opacity-100">
-                    0{index + 1}
-                  </span>
-                  <div className="flex flex-col">
-                    <h3 
-                      className={`text-2xl md:text-4xl lg:text-[2.5rem] font-black uppercase leading-[1.1] tracking-tighter transition-all duration-500 ease-out origin-left
-                        ${activeIndex === index ? "text-[#fff0aa] translate-x-2 md:translate-x-4 scale-105" : "text-[#fff0aa]/50"}
-                      `}
-                    >
-                      {event.title}
-                    </h3>
-                    <p className={`font-mono text-xs uppercase tracking-widest mt-3 transition-opacity duration-500
-                        ${activeIndex === index ? "opacity-80" : "opacity-0"}
-                    `}>
-                      {event.date} &nbsp;•&nbsp; {event.category}
-                    </p>
+            {displayedEvents.length > 0 ? (
+              displayedEvents.map((event, index) => (
+                <div
+                  key={event.id}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  // Untuk mobile: Tap untuk mengubah gambar
+                  onClick={() => setActiveIndex(index)} 
+                  className="group flex flex-col md:flex-row md:items-center justify-between py-6 md:py-10 border-b border-[#fff0aa]/20 cursor-pointer first:border-t"
+                >
+                  {/* Info & Judul */}
+                  <div className="flex gap-6 md:gap-10 items-start md:items-center w-full">
+                    <span className="font-mono text-sm opacity-40 font-bold mt-1 md:mt-0 transition-opacity duration-300 group-hover:opacity-100">
+                      0{index + 1}
+                    </span>
+                    <div className="flex flex-col">
+                      <h3 
+                        className={`text-2xl md:text-4xl lg:text-[2.5rem] font-black uppercase leading-[1.1] tracking-tighter transition-all duration-500 ease-out origin-left
+                          ${activeIndex === index ? "text-[#fff0aa] translate-x-2 md:translate-x-4 scale-105" : "text-[#fff0aa]/50"}
+                        `}
+                      >
+                        {event.title}
+                      </h3>
+                      <p className={`font-mono text-xs uppercase tracking-widest mt-3 transition-opacity duration-500
+                          ${activeIndex === index ? "opacity-80" : "opacity-0"}
+                      `}>
+                        {event.date} &nbsp;•&nbsp; {event.category}
+                      </p>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="py-12 opacity-60 font-mono text-sm tracking-widest animate-pulse uppercase">
+                Fetching latest updates from Supabase...
               </div>
-            ))}
+            )}
           </div>
 
           {/* KANAN: Display Gambar Dinamis (Statis & Kompak) */}

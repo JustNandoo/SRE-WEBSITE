@@ -161,10 +161,14 @@ export default function AcademicSection() {
                   </div>
                 </div>
               ))
+            ) : academicsData.length === 0 ? (
+              <div className="col-span-full py-32 text-center animate-pulse font-mono tracking-widest text-[#F2C601]/80 uppercase">
+                Fetching resources from Supabase...
+              </div>
             ) : (
               <div className="col-span-full py-20 text-center animate-pulse">
                 <h3 className="text-2xl text-white/40 font-mono">
-                  No results found.
+                  No results matching &quot;{searchTerm}&quot;
                 </h3>
               </div>
             )}

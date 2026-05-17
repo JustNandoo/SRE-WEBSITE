@@ -131,6 +131,10 @@ export default function SectionHome() {
                 </div>
               </div>
             ))
+          ) : activitiesData.length === 0 ? (
+            <div className="col-span-full py-32 text-center animate-pulse font-mono tracking-widest text-[#F2C601]/80 uppercase">
+              Fetching activities from Supabase...
+            </div>
           ) : (
             // Empty State
             <div className="col-span-full py-20 text-center animate-pulse">

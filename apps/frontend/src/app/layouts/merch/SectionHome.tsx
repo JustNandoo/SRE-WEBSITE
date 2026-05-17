@@ -134,10 +134,14 @@ export default function SectionMerch() {
                   </div>
                 ))}
               </div>
+            ) : merchandiseData.length === 0 ? (
+              <div className="py-32 border-t border-[#fff0aa]/20 text-center animate-pulse">
+                <span className="font-mono text-[#F2C601]/80 tracking-widest uppercase">Fetching merchandise from Supabase...</span>
+              </div>
             ) : (
               <div className="py-20 border-t border-[#fff0aa]/20 text-center">
                 <p className="font-mono text-[#fff0aa]/40">
-                  No items available in this collection.
+                  No items available in &quot;{activeCategory}&quot;.
                 </p>
               </div>
             )}

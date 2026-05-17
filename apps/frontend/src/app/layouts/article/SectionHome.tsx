@@ -197,9 +197,13 @@ export default function ArticleSection() {
                      ))}
                   </div>
                </>
+            ) : articlesData.length === 0 ? (
+               <div className="py-32 border-t border-[#fff0aa]/20 text-center animate-pulse">
+                  <span className="font-mono text-[#F2C601]/80 tracking-widest uppercase">Fetching articles from Supabase...</span>
+               </div>
             ) : (
                <div className="py-32 border-t border-[#fff0aa]/20 text-center">
-                  <span className="font-mono text-[#fff0aa]/40">No entries found.</span>
+                  <span className="font-mono text-[#fff0aa]/40">No entries matching &quot;{searchTerm}&quot;</span>
                </div>
             )}
             
