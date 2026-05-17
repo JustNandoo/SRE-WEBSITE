@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@motionone/utils": "^10.18.0",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.105.4",
     "bcrypt-ts": "^7.1.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.25",

@@ -6,5 +6,7 @@
   "scripts": {
     "dev": "echo \"Backend dev server...\""
   },
-  "dependencies": {}
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4"
+  }
 }
