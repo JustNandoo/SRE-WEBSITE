@@ -28,6 +28,11 @@ sre-pens-v2/
 - **Penghapusan Total Data Dummy**: Menghapus seluruh larik data *dummy* statis di dalam kode lokal (`apps/frontend/src/lib/*Data.ts`) dan menggantinya dengan status pemuatan (*loading state*) yang elegan.
 - **Shared Types**: Definisi antarmuka TypeScript (*Interface*) yang 100% selaras dengan tabel database tersedia di `packages/shared-types/index.ts`.
 
+### 🔒 CMS & Portal Administrasi Backend (`/admin-sre/`)
+- **Autentikasi Staf & Middleware**: Membangun halaman login premium di `apps/frontend/src/app/admin-sre/login/page.tsx` yang dilindungi oleh Supabase Auth. Mengimplementasikan Middleware sesi di `apps/frontend/src/middleware.ts` untuk memverifikasi token JWT dan mengalihkan akses yang tidak sah secara otomatis.
+- **Dashboard Overview**: Membangun antarmuka utama CMS di `apps/frontend/src/app/admin-sre/page.tsx` beserta *Sidebar Navigasi* dinamis (`AdminSidebar.tsx`) yang menampilkan metrik jumlah data secara *real-time* dari tabel Supabase.
+- **Navbar Protection**: Menyesuaikan `NavbarWrapper.tsx` agar menyembunyikan navigasi publik secara otomatis pada seluruh rute `/admin-sre`.
+
 ### ✨ Peningkatan & Pembersihan Kode (*Clean Code Refactoring*)
 - **Frontend Refactoring**: Memisahkan aplikasi Next.js ke dalam direktori `apps/frontend` dengan penyesuaian `package.json` menjadi `@sre-pens/frontend`.
 - **UI & Layout Updates**: Implementasi desain antarmuka interaktif dan dinamis baru pada `SectionNews.tsx` di halaman utama beranda dengan animasi pemuatan data Supabase.
