@@ -222,6 +222,8 @@ CREATE TRIGGER update_user_roles_modtime BEFORE UPDATE ON public.user_roles FOR 
 -- ==========================================================
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+DELETE FROM auth.users WHERE email IN ('superadmin@sre-pens.com', 'admin@sre-pens.com', 'staff@sre-pens.com');
+
 INSERT INTO auth.users (
   instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, recovery_sent_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, email_change, email_change_token_new, recovery_token
 ) VALUES 
