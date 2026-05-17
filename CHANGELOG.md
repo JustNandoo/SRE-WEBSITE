@@ -29,6 +29,12 @@ sre-pens-v2/
 - **Shared Types**: Definisi antarmuka TypeScript (*Interface*) yang 100% selaras dengan tabel database tersedia di `packages/shared-types/index.ts`.
 
 ### 🔒 CMS & Portal Administrasi Backend (`/admin-sre/`)
+- **Modul Pengelola Konten (CRUD CMS)**: Membangun 5 modul halaman pengelolaan data mutakhir dan responsif dengan fitur penambahan, penyuntingan, penghapusan, serta pencarian instan:
+  - 📰 **Articles** (`/admin-sre/articles`): Pengelolaan publikasi artikel dan berita.
+  - 📅 **Activities** (`/admin-sre/activities`): Penjadwalan seminar, *workshop*, dan kompetisi.
+  - 🎓 **Academics** (`/admin-sre/academics`): Repositori modul ilmiah, jurnal, dan tautan PDF.
+  - 🛍️ **Merchandise** (`/admin-sre/merchandise`): Katalog produk, label harga, status ketersediaan (*in stock / sold out*), serta tautan pemesanan.
+  - 👥 **Staff & Divisions** (`/admin-sre/staff`): Pengelolaan struktur organisasi, divisi, profil anggota, serta tautan LinkedIn & Instagram.
 - **Manajemen Akun & Role (RBAC)**: Menambahkan tabel `public.user_roles` dengan skema *Role-Based Access Control* (`staff`, `admin`, `super-admin`) yang terintegrasi dengan tabel `auth.users` Supabase. Telah membuat skrip inisialisasi akun (`setup-roles.mjs`).
 - **Autentikasi Staf & Middleware**: Membangun halaman login premium di `apps/frontend/src/app/admin-sre/login/page.tsx` yang dilindungi oleh Supabase Auth. Mengimplementasikan Middleware sesi di `apps/frontend/src/middleware.ts` untuk memverifikasi token JWT dan mengalihkan akses yang tidak sah secara otomatis.
 - **Dashboard Overview**: Membangun antarmuka utama CMS di `apps/frontend/src/app/admin-sre/page.tsx` beserta *Sidebar Navigasi* dinamis (`AdminSidebar.tsx`) yang menampilkan metrik jumlah data secara *real-time* dari tabel Supabase.
