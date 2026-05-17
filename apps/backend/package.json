@@ -1,0 +1,10 @@
+{
+  "name": "@sre-pens/backend",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "echo \"Backend dev server...\""
+  },
+  "dependencies": {}
+}
