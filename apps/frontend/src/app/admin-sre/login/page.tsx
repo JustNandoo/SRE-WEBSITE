@@ -203,7 +203,7 @@ export default function AdminLoginPage() {
         {/* Editorial Footer */}
         <div className="pt-6 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between font-poppins text-xs text-white/50 tracking-widest uppercase gap-2 flex-shrink-0">
           <span>© 2026 SOCIETY OF RENEWABLE ENERGY</span>
-          <span>SECURED BY SUPABASE RLS</span>
+          <span>RESTRICTED INTERNAL CONSOLE</span>
         </div>
       </div>
 
