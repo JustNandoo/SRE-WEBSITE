@@ -109,8 +109,8 @@ export async function fetchStaffDivisions(): Promise<Division[] | null> {
     .select('*')
     .order('order_index', { ascending: true });
 
-  if (divError || memError || !divisions || !members) {
-    console.error("Supabase fetchStaffDivisions error:", divError || memError);
+  if (divError || memError || !divisions || !members || members.length < 20) {
+    console.error("Supabase fetchStaffDivisions error or unseeded DB:", divError || memError);
     return null;
   }
 
