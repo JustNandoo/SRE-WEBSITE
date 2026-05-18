@@ -38,7 +38,7 @@ sre-pens-v2/
 - **Manajemen Akun & Role (RBAC)**: Menambahkan tabel `public.user_roles` dengan skema *Role-Based Access Control* (`staff`, `admin`, `super-admin`) yang terintegrasi dengan tabel `auth.users` Supabase. Telah membuat skrip inisialisasi akun (`setup-roles.mjs`).
 - **Autentikasi Staf & Awwwards Editorial UI**: Merancang ulang antarmuka login di `apps/frontend/src/app/admin-sre/login/page.tsx` mengusung gaya editorial/arsitektural khas *Awwwards* tanpa animasi (*static elegance*). Menampilkan hirarki grid geometris tajam, masthead editorial *"VOL. II / NO. 2026"*, bingkai foto monokromatik dengan blok takarir (*caption block*), serta formulir minimalis tanpa tombol pihak ketiga yang dilindungi oleh Supabase Auth dan Middleware JWT.
 - **Dashboard Overview**: Membangun antarmuka utama CMS di `apps/frontend/src/app/admin-sre/page.tsx` beserta *Sidebar Navigasi* dinamis (`AdminSidebar.tsx`) yang menampilkan metrik jumlah data secara *real-time* dari tabel Supabase.
-- **Penonaktifan Loader & Preloader Publik**: Memodifikasi `Preloader.tsx` dan `CustomScrollbar.tsx` agar dinonaktifkan secara otomatis pada rute `/admin-sre/` demi memberikan pengalaman navigasi *dashboard* yang instan dan responsif.
+- **Penonaktifan Total Preloader & SubPreloader**: Memodifikasi `Preloader.tsx`, `SubPreloader.tsx`, dan `CustomScrollbar.tsx` agar langsung dinonaktifkan secara otomatis (`return null` atau *bypass*) pada seluruh rute `/admin-sre/` demi memberikan pengalaman navigasi *dashboard* dan login yang instan, responsif, dan bebas hambatan visual.
 - **Navbar Protection**: Menyesuaikan `NavbarWrapper.tsx` agar menyembunyikan navigasi publik secara otomatis pada seluruh rute `/admin-sre`.
 
 ### ✨ Peningkatan & Pembersihan Kode (*Clean Code Refactoring*)

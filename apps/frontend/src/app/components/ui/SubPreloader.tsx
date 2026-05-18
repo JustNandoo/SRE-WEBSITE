@@ -39,6 +39,10 @@ export default function SubPreloader({ children }: { children: ReactNode }) {
   const pathname = usePathname(); // Ambil URL saat ini
   const columns = 5; 
 
+  if (pathname.startsWith("/admin-sre")) {
+    return <>{children}</>;
+  }
+
   return (
     // TAMBAHKAN key={pathname} DISINI. INI KUNCINYA!
     <div key={pathname} className="relative min-h-screen w-full">
