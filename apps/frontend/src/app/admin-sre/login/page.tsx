@@ -21,6 +21,12 @@ const akira = localFont({
   display: "swap",
 });
 
+const elagern = localFont({
+  src: "../../fonts/Elagern.ttf",
+  variable: "--font-elagern",
+  display: "swap",
+});
+
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,7 +68,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className={`min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 bg-[#011a12] text-white ${poppins.variable} ${akira.variable} font-sans selection:bg-[#F2C601] selection:text-[#011a12] overflow-y-auto`}>
+    <div className={`min-h-screen w-full grid grid-cols-1 lg:grid-cols-2 bg-[#011a12] text-white ${poppins.variable} ${akira.variable} ${elagern.variable} font-sans selection:bg-[#F2C601] selection:text-[#011a12] overflow-y-auto`}>
       {/* Left Column: Editorial Form Section */}
       <div className="flex flex-col justify-between p-6 sm:p-8 md:p-12 border-r border-white/15 bg-[#011a12] min-h-screen lg:min-h-0">
         {/* Editorial Masthead */}
@@ -88,8 +94,8 @@ export default function AdminLoginPage() {
         <div className="w-full max-w-md mx-auto my-auto py-8 sm:py-12 flex-1 flex flex-col justify-center">
           <div className="mb-10">
             <p className="font-mono text-[10px] text-[#F2C601] tracking-[0.4em] uppercase mb-2">SECURE ENDPOINT</p>
-            <h1 className="font-akira text-3xl sm:text-4xl uppercase tracking-tighter text-white mb-3 leading-none">
-              AUTHENTICATION.
+            <h1 className="font-elagern text-4xl sm:text-5xl tracking-wide font-normal text-white mb-3 leading-none">
+              Authentication.
             </h1>
             <p className="text-xs sm:text-sm font-sans text-white/70 leading-relaxed font-light">
               Restricted administrative access. Please authenticate using verified staff credentials to enter the CMS console.

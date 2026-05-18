@@ -128,3 +128,10 @@ html::-webkit-scrollbar {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Chrome, Safari and Opera */
 }
+
+@utility font-akira {
+  font-family: var(--font-akira), sans-serif;
+}
+@utility font-elagern {
+  font-family: var(--font-elagern), serif;
+}
