@@ -16,9 +16,9 @@ import {
   FaBars,
   FaTimes,
   FaUserCircle,
-  FaShieldAlt,
   FaExternalLinkAlt,
 } from "react-icons/fa";
+import Image from "next/image";
 
 export default function AdminSidebar({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -47,7 +47,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   };
 
   if (pathname === "/admin-sre/login") {
-    return <div className="admin-viewport min-h-screen w-full bg-[#011a12]">{children}</div>;
+    return <div className="admin-viewport min-h-screen w-full bg-[#012e21]">{children}</div>;
   }
 
   const navItems = [
@@ -60,61 +60,61 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   ];
 
   return (
-    <div className="admin-viewport min-h-screen flex flex-col md:flex-row bg-[#011a12] text-white font-sans selection:bg-[#F2C601] selection:text-[#012e21]">
+    <div className="admin-viewport min-h-screen flex flex-col md:flex-row bg-[#011f16] text-white font-sans selection:bg-[#fff0aa] selection:text-[#011f16]">
       {/* Mobile Top Navbar */}
-      <div className="md:hidden flex items-center justify-between px-6 py-4 bg-[#012e21] border-b border-white/10 sticky top-0 z-50">
+      <div className="md:hidden flex items-center justify-between px-6 py-4 bg-[#012e21] border-b border-white/10 sticky top-0 z-50 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#F2C601] text-[#012e21] rounded-xl flex items-center justify-center font-bold">
-            <FaShieldAlt size={16} />
+          <div className="w-8 h-8 relative flex-shrink-0 bg-white/10 p-1 border border-white/15">
+            <Image src="/favicon.ico" alt="SRE PENS Logo" fill className="object-contain" sizes="32px" />
           </div>
-          <span className="font-akira tracking-wider text-lg uppercase">SRE CMS</span>
+          <span className="font-akira tracking-wider text-base uppercase text-white">SRE CMS</span>
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-white hover:text-[#F2C601] transition-colors p-2"
+          className="text-white hover:text-[#fff0aa] transition-colors p-2"
         >
-          {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {isOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
         </button>
       </div>
 
-      {/* Sidebar */}
+      {/* Sticky Minimalist Sidebar */}
       <aside
-        className={`w-full md:w-72 bg-[#012e21]/80 backdrop-blur-3xl border-r border-white/10 flex flex-col flex-shrink-0 transition-all duration-300 fixed md:sticky top-0 z-40 h-screen overflow-y-auto ${
+        className={`w-full md:w-72 bg-[#012e21] border-r border-white/10 flex flex-col flex-shrink-0 transition-all duration-300 fixed md:sticky top-0 z-40 h-screen overflow-y-auto scrollbar-hide shadow-2xl ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
         {/* Brand Header */}
-        <div className="p-8 border-b border-white/10">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-[#F2C601] text-[#012e21] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(242,198,1,0.4)]">
-              <FaShieldAlt size={24} />
+        <div className="p-8 border-b border-white/10 flex-shrink-0">
+          <div className="flex items-center gap-3.5 mb-4">
+            <div className="w-11 h-11 relative flex-shrink-0 bg-white/5 p-1.5 border border-white/15 shadow-md">
+              <Image src="/favicon.ico" alt="SRE PENS Logo" fill className="object-contain" sizes="44px" />
             </div>
             <div>
-              <h2 className="font-akira text-xl tracking-tighter uppercase text-white">SRE PENS</h2>
-              <span className="font-mono text-[10px] text-[#F2C601] tracking-[0.2em] uppercase">CMS System</span>
+              <h2 className="font-akira text-lg tracking-wider uppercase text-white leading-none">SRE PENS</h2>
+              <span className="font-poppins text-[10px] font-semibold text-[#fff0aa] tracking-[0.2em] uppercase block mt-1.5">STAFF CONSOLE</span>
             </div>
           </div>
           <Link
             href="/"
             target="_blank"
-            className="inline-flex items-center gap-2 font-mono text-xs text-white/60 hover:text-[#F2C601] transition-colors border border-white/10 rounded-full px-4 py-1.5 bg-white/5"
+            className="inline-flex items-center gap-2 font-poppins text-xs font-medium text-white/70 hover:text-[#fff0aa] transition-all border border-white/15 rounded-full px-4 py-2 bg-white/5 hover:bg-white/10 shadow-sm"
           >
-            <span>Visit Live Site</span> <FaExternalLinkAlt size={10} />
+            <span>Visit Live Website</span> <FaExternalLinkAlt size={10} />
           </Link>
         </div>
 
-        {/* User Card */}
-        <div className="mx-6 my-6 p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
-          <FaUserCircle size={32} className="text-[#F2C601] flex-shrink-0" />
-          <div className="overflow-hidden">
-            <p className="font-mono text-xs text-white/40 uppercase tracking-widest">Logged in as</p>
-            <p className="text-sm font-semibold truncate text-white">{user?.email || "admin@sre-pens.com"}</p>
+        {/* User Status Card */}
+        <div className="mx-6 my-6 p-4 bg-white/5 border border-white/10 flex items-center gap-3.5 shadow-sm flex-shrink-0">
+          <FaUserCircle size={28} className="text-[#fff0aa] flex-shrink-0" />
+          <div className="overflow-hidden font-poppins">
+            <p className="text-[10px] text-white/50 uppercase tracking-widest font-medium">Logged in as</p>
+            <p className="text-xs font-semibold truncate text-white tracking-wide">{user?.email || "admin@sre-pens.com"}</p>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-6 space-y-2 mb-8">
-          <p className="px-4 font-mono text-[10px] text-white/40 tracking-[0.2em] uppercase mb-4">Database Modules</p>
+        {/* Navigation Links */}
+        <nav className="flex-1 px-6 space-y-2 mb-8 font-poppins">
+          <p className="px-4 text-[10px] font-semibold text-white/40 tracking-[0.2em] uppercase mb-4">CONTENT DOMAINS</p>
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             const Icon = item.icon;
@@ -123,13 +123,13 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
                 key={item.path}
                 href={item.path}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl font-mono text-sm tracking-wider uppercase transition-all duration-300 ${
+                className={`flex items-center gap-4 px-4 py-3.5 font-medium text-xs sm:text-sm tracking-wider uppercase transition-all duration-300 ${
                   isActive
-                    ? "bg-[#F2C601] text-[#012e21] font-bold shadow-[0_0_20px_rgba(242,198,1,0.3)]"
+                    ? "bg-[#fff0aa] text-[#012e21] font-bold shadow-lg pl-6 border-l-4 border-[#011f16]"
                     : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                <Icon size={18} className={isActive ? "text-[#012e21]" : "text-[#F2C601]"} />
+                <Icon size={18} className={isActive ? "text-[#012e21]" : "text-[#fff0aa]"} />
                 <span>{item.name}</span>
               </Link>
             );
@@ -137,19 +137,19 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
         </nav>
 
         {/* Logout Footer */}
-        <div className="p-6 border-t border-white/10 mt-auto">
+        <div className="p-6 border-t border-white/10 mt-auto flex-shrink-0">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-2xl border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-300 font-mono text-sm tracking-wider uppercase shadow-inner"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-red-950/30 border border-red-500/30 text-red-300 hover:bg-red-500 hover:text-white transition-all font-poppins font-semibold text-xs tracking-wider uppercase shadow-sm"
           >
-            <FaSignOutAlt size={16} />
-            <span>Secure Logout</span>
+            <FaSignOutAlt size={15} />
+            <span>SECURE LOGOUT</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 min-w-0 p-6 md:p-12 overflow-y-auto">
+      <main className="flex-1 min-w-0 p-6 sm:p-8 md:p-14 overflow-y-auto min-h-screen">
         {children}
       </main>
     </div>

@@ -194,7 +194,7 @@ export default function AdminLoginPage() {
               ) : success ? (
                 <span>AUTHORIZED</span>
               ) : (
-                <span>PROCEED TO CONSOLE</span>
+                <span>LOGIN</span>
               )}
             </button>
           </form>

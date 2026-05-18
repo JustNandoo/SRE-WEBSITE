@@ -151,36 +151,37 @@ export default function AdminArticlesPage() {
 
   return (
     <div className={`space-y-8 ${poppins.variable} ${akira.variable} font-sans text-white`}>
-      {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl">
-        <div>
-          <h1 className="font-akira text-3xl uppercase tracking-tighter text-white mb-2">Article Management</h1>
-          <p className="text-sm font-sans text-white/60">Create, edit, and organize news publications & research articles.</p>
+      {/* Minimalist Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-8 bg-[#012e21] border border-white/15 shadow-xl relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-64 h-64 bg-[#fff0aa]/5 rounded-bl-full pointer-events-none" />
+        <div className="relative z-10">
+          <h1 className="font-akira text-2xl sm:text-3xl uppercase tracking-tighter text-white mb-2">ARTICLE MANAGEMENT</h1>
+          <p className="text-xs sm:text-sm font-poppins font-light text-white/70">Create, edit, and organize news publications & research articles.</p>
         </div>
         <button
           onClick={openNewModal}
-          className="flex items-center gap-3 px-6 py-3.5 bg-[#F2C601] hover:bg-[#fff0aa] text-[#012e21] font-bold font-mono text-sm uppercase tracking-wider rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-[1.02]"
+          className="relative z-10 flex items-center gap-3 px-7 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
         >
-          <FaPlus size={14} /> Publish New Article
+          <FaPlus size={14} /> PUBLISH NEW ARTICLE
         </button>
       </div>
 
       {/* Notices */}
       {notice && (
-        <div className={`p-4 rounded-2xl border font-mono text-xs flex items-center justify-between transition-all ${notice.type === "success" ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300" : "bg-red-500/10 border-red-500/30 text-red-300"}`}>
+        <div className={`p-4 border font-poppins text-xs flex items-center justify-between font-medium transition-all ${notice.type === "success" ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300" : "bg-red-950/40 border-red-500/40 text-red-300"}`}>
           <div className="flex items-center gap-3">
-            {notice.type === "success" ? <FaCheckCircle size={16} /> : <FaExclamationCircle size={16} />}
+            {notice.type === "success" ? <FaCheckCircle size={16} className="text-emerald-400 flex-shrink-0" /> : <FaExclamationCircle size={16} className="text-red-400 flex-shrink-0" />}
             <span>{notice.text}</span>
           </div>
-          <button onClick={() => setNotice(null)} className="opacity-50 hover:opacity-100 p-1">
+          <button onClick={() => setNotice(null)} className="opacity-60 hover:opacity-100 p-1">
             <FaTimes size={14} />
           </button>
         </div>
       )}
 
-      {/* Search & Filter */}
-      <div className="relative group max-w-md">
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-[#F2C601]">
+      {/* Search Input */}
+      <div className="relative max-w-md">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40">
           <FaSearch size={14} />
         </div>
         <input
@@ -188,28 +189,28 @@ export default function AdminArticlesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search articles by title or publisher..."
-          className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] focus:bg-white/10 transition-all font-mono text-sm"
+          className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none font-poppins text-xs sm:text-sm tracking-wide transition-all"
         />
       </div>
 
-      {/* Articles Grid / Table */}
+      {/* Articles Grid */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 text-white/40 font-mono text-sm">
-          <FaSpinner className="animate-spin text-[#F2C601] mb-4" size={32} />
+        <div className="flex flex-col items-center justify-center py-20 text-white/50 font-poppins tracking-wide">
+          <FaSpinner className="animate-spin text-[#fff0aa] mb-4" size={32} />
           <span>Fetching database records...</span>
         </div>
       ) : filteredArticles.length === 0 ? (
-        <div className="text-center py-20 border border-dashed border-white/10 rounded-3xl bg-white/[0.02]">
-          <p className="font-mono text-sm text-white/40">No articles found matching your criteria.</p>
+        <div className="text-center py-20 border border-white/10 bg-white/5 font-poppins text-sm text-white/50">
+          <p>No articles found matching your criteria.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredArticles.map((article) => (
             <div
               key={article.id}
-              className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 hover:shadow-2xl transition-all duration-300 flex flex-col group"
+              className="bg-white/5 border border-white/10 hover:border-[#fff0aa] overflow-hidden transition-all duration-300 flex flex-col group shadow-lg"
             >
-              <div className="relative h-48 w-full bg-black/40 overflow-hidden">
+              <div className="relative h-52 w-full bg-black/40 overflow-hidden">
                 <Image
                   src={article.image || "https://images.unsplash.com/photo-1518770660439-4636190af475"}
                   alt={article.title}
@@ -217,29 +218,31 @@ export default function AdminArticlesPage() {
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full font-mono text-[10px] text-[#F2C601] uppercase tracking-wider border border-white/10">
+                <div className="absolute top-4 left-4 px-3.5 py-1 bg-[#012e21]/90 backdrop-blur-sm font-poppins font-semibold text-[10px] text-[#fff0aa] uppercase tracking-widest border border-white/20">
                   {article.published_date}
                 </div>
               </div>
 
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div>
-                  <h3 className="font-semibold text-lg line-clamp-2 mb-2 group-hover:text-[#F2C601] transition-colors">{article.title}</h3>
-                  <p className="text-xs text-white/60 font-sans line-clamp-3 leading-relaxed mb-4">{article.description}</p>
+                  <h3 className="font-poppins font-semibold text-lg line-clamp-2 mb-2 group-hover:text-[#fff0aa] transition-colors">{article.title}</h3>
+                  <p className="text-xs text-white/70 font-poppins font-light line-clamp-3 leading-relaxed mb-4">{article.description}</p>
                 </div>
 
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                  <span className="text-white/40 truncate max-w-[150px]">By {article.created_by}</span>
+                <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-poppins">
+                  <span className="text-white/50 truncate max-w-[150px] font-medium">By {article.created_by}</span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => openEditModal(article)}
-                      className="p-2.5 rounded-xl bg-white/5 hover:bg-blue-500 hover:text-white border border-white/10 transition-colors text-blue-400 shadow"
+                      className="p-2.5 bg-white/5 hover:bg-blue-600 hover:text-white border border-white/15 transition-all text-blue-300"
+                      title="Edit Article"
                     >
                       <FaEdit size={14} />
                     </button>
                     <button
                       onClick={() => handleDelete(article.id)}
-                      className="p-2.5 rounded-xl bg-white/5 hover:bg-red-500 hover:text-white border border-white/10 transition-colors text-red-400 shadow"
+                      className="p-2.5 bg-white/5 hover:bg-red-600 hover:text-white border border-white/15 transition-all text-red-300"
+                      title="Delete Article"
                     >
                       <FaTrash size={14} />
                     </button>
@@ -253,109 +256,109 @@ export default function AdminArticlesPage() {
 
       {/* CRUD Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl overflow-y-auto animate-fade-in">
-          <div className="bg-[#012e21] border border-white/10 rounded-3xl max-w-2xl w-full p-8 md:p-10 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto animate-fade-in">
+          <div className="bg-[#012e21] border border-white/15 max-w-2xl w-full p-8 md:p-12 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-6 right-6 p-3 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+              className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors border border-white/10"
             >
-              <FaTimes size={18} />
+              <FaTimes size={16} />
             </button>
 
-            <h2 className="font-akira text-2xl uppercase tracking-tighter text-white mb-6">
-              {editingArticle ? "Edit Article" : "Publish Article"}
+            <h2 className="font-akira text-2xl uppercase tracking-tighter text-white mb-6 leading-tight">
+              {editingArticle ? "EDIT ARTICLE" : "PUBLISH ARTICLE"}
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 font-poppins">
               <div className="space-y-2">
-                <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Article Title</label>
+                <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Article Title</label>
                 <input
                   type="text"
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g. Transisi Menuju Energi Bersih 2045"
-                  className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-sans text-sm"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-sm transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Publisher / Source</label>
+                  <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Publisher / Source</label>
                   <input
                     type="text"
                     required
                     value={formData.created_by}
                     onChange={(e) => setFormData({ ...formData, created_by: e.target.value })}
                     placeholder="e.g. Kementerian ESDM / BBC News"
-                    className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-sans text-sm"
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-sm transition-all"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Published Date</label>
+                  <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Published Date</label>
                   <input
                     type="text"
                     required
                     value={formData.published_date}
                     onChange={(e) => setFormData({ ...formData, published_date: e.target.value })}
                     placeholder="e.g. 17 May 2026"
-                    className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-sans text-sm"
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-sm transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Image Thumbnail URL</label>
+                <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Image Thumbnail URL</label>
                 <input
                   type="url"
                   required
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-mono text-xs"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-xs font-mono transition-all"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Short Description (Summary)</label>
+                <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Short Description (Summary)</label>
                 <textarea
                   required
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Brief 2-3 sentence overview..."
-                  className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-sans text-sm resize-none"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-sm transition-all resize-none leading-relaxed"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Full Article Markdown Content</label>
+                <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Full Article Markdown Content</label>
                 <textarea
                   required
                   rows={6}
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                   placeholder="### Latar Belakang..."
-                  className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-mono text-xs"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-xs font-mono transition-all leading-relaxed"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-4 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-end gap-4 pt-4 border-t border-white/15">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-mono text-sm uppercase tracking-wider transition-colors"
+                  className="px-6 py-4 bg-white/5 hover:bg-white/10 text-white font-semibold text-xs uppercase tracking-widest transition-all border border-white/15"
                 >
-                  Cancel
+                  CANCEL
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-[#F2C601] hover:bg-[#fff0aa] text-[#012e21] font-bold font-mono text-sm uppercase tracking-wider transition-all duration-300 shadow-lg hover:shadow-2xl disabled:opacity-50"
+                  className="flex items-center gap-3 px-8 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold text-xs uppercase tracking-widest transition-all shadow-lg disabled:opacity-50"
                 >
-                  {saving ? <FaSpinner className="animate-spin" size={16} /> : <FaSave size={16} />}
-                  <span>{saving ? "Saving..." : "Save Article"}</span>
+                  {saving ? <FaSpinner className="animate-spin" size={14} /> : <FaSave size={14} />}
+                  <span>{saving ? "SAVING..." : "SAVE ARTICLE"}</span>
                 </button>
               </div>
             </form>

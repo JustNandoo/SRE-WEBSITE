@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { FaPlus, FaEdit, FaTrash, FaSpinner, FaSearch, FaTimes, FaSave, FaCheckCircle, FaExclamationCircle, FaTag, FaShoppingCart, FaToggleOn, FaToggleOff } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash, FaSpinner, FaSearch, FaTimes, FaSave, FaCheckCircle, FaExclamationCircle, FaToggleOn, FaToggleOff } from "react-icons/fa";
 import { MerchandiseEntity } from "@sre-pens/shared-types";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
@@ -165,36 +165,37 @@ export default function AdminMerchandisePage() {
 
   return (
     <div className={`space-y-8 ${poppins.variable} ${akira.variable} font-sans text-white`}>
-      {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl">
-        <div>
-          <h1 className="font-akira text-3xl uppercase tracking-tighter text-white mb-2">Merchandise Catalog</h1>
-          <p className="text-sm font-sans text-white/60">Manage SRE store catalog, pricing, availability tags, and order links.</p>
+      {/* Minimalist Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-8 bg-[#012e21] border border-white/15 shadow-xl relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-64 h-64 bg-[#fff0aa]/5 rounded-bl-full pointer-events-none" />
+        <div className="relative z-10">
+          <h1 className="font-akira text-2xl sm:text-3xl uppercase tracking-tighter text-white mb-2">MERCHANDISE CATALOG</h1>
+          <p className="text-xs sm:text-sm font-poppins font-light text-white/70">Manage SRE store catalog, pricing, availability tags, and order links.</p>
         </div>
         <button
           onClick={openNewModal}
-          className="flex items-center gap-3 px-6 py-3.5 bg-[#F2C601] hover:bg-[#fff0aa] text-[#012e21] font-bold font-mono text-sm uppercase tracking-wider rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-[1.02]"
+          className="relative z-10 flex items-center gap-3 px-7 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
         >
-          <FaPlus size={14} /> Add New Merch
+          <FaPlus size={14} /> ADD NEW MERCH
         </button>
       </div>
 
       {/* Notices */}
       {notice && (
-        <div className={`p-4 rounded-2xl border font-mono text-xs flex items-center justify-between transition-all ${notice.type === "success" ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300" : "bg-red-500/10 border-red-500/30 text-red-300"}`}>
+        <div className={`p-4 border font-poppins text-xs flex items-center justify-between font-medium transition-all ${notice.type === "success" ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300" : "bg-red-950/40 border-red-500/40 text-red-300"}`}>
           <div className="flex items-center gap-3">
-            {notice.type === "success" ? <FaCheckCircle size={16} /> : <FaExclamationCircle size={16} />}
+            {notice.type === "success" ? <FaCheckCircle size={16} className="text-emerald-400 flex-shrink-0" /> : <FaExclamationCircle size={16} className="text-red-400 flex-shrink-0" />}
             <span>{notice.text}</span>
           </div>
-          <button onClick={() => setNotice(null)} className="opacity-50 hover:opacity-100 p-1">
+          <button onClick={() => setNotice(null)} className="opacity-60 hover:opacity-100 p-1">
             <FaTimes size={14} />
           </button>
         </div>
       )}
 
-      {/* Search */}
-      <div className="relative group max-w-md">
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40 group-focus-within:text-[#F2C601]">
+      {/* Search Input */}
+      <div className="relative max-w-md">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/40">
           <FaSearch size={14} />
         </div>
         <input
@@ -202,26 +203,26 @@ export default function AdminMerchandisePage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search items by name or category..."
-          className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] focus:bg-white/10 transition-all font-mono text-sm"
+          className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none font-poppins text-xs sm:text-sm tracking-wide transition-all"
         />
       </div>
 
       {/* Grid */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 text-white/40 font-mono text-sm">
-          <FaSpinner className="animate-spin text-[#F2C601] mb-4" size={32} />
+        <div className="flex flex-col items-center justify-center py-20 text-white/50 font-poppins tracking-wide">
+          <FaSpinner className="animate-spin text-[#fff0aa] mb-4" size={32} />
           <span>Fetching database records...</span>
         </div>
       ) : filteredMerchandise.length === 0 ? (
-        <div className="text-center py-20 border border-dashed border-white/10 rounded-3xl bg-white/[0.02]">
-          <p className="font-mono text-sm text-white/40">No merchandise items found matching your criteria.</p>
+        <div className="text-center py-20 border border-white/10 bg-white/5 font-poppins text-sm text-white/50">
+          <p>No merchandise items found matching your criteria.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 font-poppins">
           {filteredMerchandise.map((item) => (
             <div
               key={item.id}
-              className={`bg-white/5 border rounded-3xl overflow-hidden transition-all duration-300 flex flex-col group ${item.is_available ? "border-white/10 hover:border-white/20 hover:shadow-2xl" : "border-red-500/20 opacity-75"}`}
+              className={`bg-white/5 border overflow-hidden transition-all duration-300 flex flex-col group shadow-lg ${item.is_available ? "border-white/10 hover:border-[#fff0aa]" : "border-red-500/30 opacity-70"}`}
             >
               <div className="relative h-56 w-full bg-black/40 overflow-hidden">
                 <Image
@@ -231,11 +232,11 @@ export default function AdminMerchandisePage() {
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute top-4 left-4 px-3 py-1 bg-amber-500 text-black font-bold rounded-full font-mono text-[10px] uppercase tracking-wider shadow">
+                <div className="absolute top-4 left-4 px-3.5 py-1 bg-amber-500 text-black font-bold font-poppins font-semibold text-[10px] uppercase tracking-widest border border-amber-400">
                   {item.category}
                 </div>
                 {item.tag && (
-                  <div className="absolute top-4 right-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full font-mono text-[10px] text-[#F2C601] border border-[#F2C601]/30">
+                  <div className="absolute top-4 right-4 px-3.5 py-1 bg-[#012e21]/90 backdrop-blur-sm font-poppins font-semibold text-[10px] text-[#fff0aa] border border-white/20 uppercase tracking-widest">
                     {item.tag}
                   </div>
                 )}
@@ -244,30 +245,32 @@ export default function AdminMerchandisePage() {
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div>
                   <div className="flex items-start justify-between gap-4 mb-2">
-                    <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-[#F2C601] transition-colors">{item.name}</h3>
-                    <span className="font-akira text-sm text-[#F2C601] whitespace-nowrap">{item.price}</span>
+                    <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-[#fff0aa] transition-colors">{item.name}</h3>
+                    <span className="font-akira text-sm text-[#fff0aa] whitespace-nowrap">{item.price}</span>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                   <button
                     onClick={() => toggleAvailability(item)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-colors ${item.is_available ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-black" : "bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white"}`}
+                    className={`flex items-center gap-2 px-3.5 py-2 font-semibold uppercase tracking-wider transition-all border ${item.is_available ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black" : "bg-red-950/40 border-red-500/40 text-red-400 hover:bg-red-500 hover:text-white"}`}
                   >
                     {item.is_available ? <FaToggleOn size={16} /> : <FaToggleOff size={16} />}
-                    <span>{item.is_available ? "In Stock" : "Sold Out"}</span>
+                    <span>{item.is_available ? "IN STOCK" : "SOLD OUT"}</span>
                   </button>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => openEditModal(item)}
-                      className="p-2.5 rounded-xl bg-white/5 hover:bg-blue-500 hover:text-white border border-white/10 transition-colors text-blue-400 shadow"
+                      className="p-2.5 bg-white/5 hover:bg-blue-600 hover:text-white border border-white/15 transition-all text-blue-300"
+                      title="Edit Merch"
                     >
                       <FaEdit size={14} />
                     </button>
                     <button
                       onClick={() => handleDelete(item.id)}
-                      className="p-2.5 rounded-xl bg-white/5 hover:bg-red-500 hover:text-white border border-white/10 transition-colors text-red-400 shadow"
+                      className="p-2.5 bg-white/5 hover:bg-red-600 hover:text-white border border-white/15 transition-all text-red-300"
+                      title="Delete Merch"
                     >
                       <FaTrash size={14} />
                     </button>
@@ -281,76 +284,76 @@ export default function AdminMerchandisePage() {
 
       {/* CRUD Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl overflow-y-auto animate-fade-in">
-          <div className="bg-[#012e21] border border-white/10 rounded-3xl max-w-2xl w-full p-8 md:p-10 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto animate-fade-in">
+          <div className="bg-[#012e21] border border-white/15 max-w-2xl w-full p-8 md:p-12 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-6 right-6 p-3 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+              className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors border border-white/10"
             >
-              <FaTimes size={18} />
+              <FaTimes size={16} />
             </button>
 
-            <h2 className="font-akira text-2xl uppercase tracking-tighter text-white mb-6">
-              {editingMerch ? "Edit Merch Item" : "Add Merch Item"}
+            <h2 className="font-akira text-2xl uppercase tracking-tighter text-white mb-6 leading-tight">
+              {editingMerch ? "EDIT MERCH ITEM" : "ADD MERCH ITEM"}
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 font-poppins">
               <div className="space-y-2">
-                <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Item Name</label>
+                <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Item Name</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. SRE Official Hoodie"
-                  className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-sans text-sm"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-sm transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Category</label>
+                  <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Category</label>
                   <input
                     type="text"
                     required
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     placeholder="Apparel / Accessories"
-                    className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-sans text-sm"
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-sm transition-all"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Price Tag</label>
+                  <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Price Tag</label>
                   <input
                     type="text"
                     required
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     placeholder="IDR 150.000"
-                    className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-sm font-mono transition-all"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Highlight Badge (Optional)</label>
+                  <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Highlight Badge (Optional)</label>
                   <input
                     type="text"
                     value={formData.tag}
                     onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
                     placeholder="Best Seller / Limited Edition"
-                    className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-sans text-sm"
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-sm transition-all"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Stock Status</label>
+                  <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Stock Status</label>
                   <select
                     value={formData.is_available ? "true" : "false"}
                     onChange={(e) => setFormData({ ...formData, is_available: e.target.value === "true" })}
-                    className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#F2C601] font-mono text-sm"
+                    className="w-full bg-[#011f16] border border-white/15 p-4 text-white focus:outline-none focus:border-[#fff0aa] text-sm transition-all"
                   >
                     <option value="true">In Stock (Available)</option>
                     <option value="false">Sold Out</option>
@@ -359,44 +362,44 @@ export default function AdminMerchandisePage() {
               </div>
 
               <div className="space-y-2">
-                <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Image URL</label>
+                <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Image URL</label>
                 <input
                   type="url"
                   required
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-mono text-xs"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-xs font-mono transition-all"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block font-mono text-xs text-white/60 uppercase tracking-wider pl-1">Order Link (Instagram / Shopee / WhatsApp)</label>
+                <label className="block text-xs font-semibold text-[#fff0aa] tracking-wider uppercase">Order Link (Instagram / Shopee / WhatsApp)</label>
                 <input
                   type="url"
                   required
                   value={formData.order_link}
                   onChange={(e) => setFormData({ ...formData, order_link: e.target.value })}
                   placeholder="https://instagram.com/greenspark.pens"
-                  className="w-full bg-black/30 border border-white/10 rounded-2xl p-4 text-white placeholder-white/20 focus:outline-none focus:border-[#F2C601] font-mono text-xs"
+                  className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] p-4 text-white placeholder-white/30 focus:outline-none text-xs font-mono transition-all"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-4 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-end gap-4 pt-4 border-t border-white/15">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-mono text-sm uppercase tracking-wider transition-colors"
+                  className="px-6 py-4 bg-white/5 hover:bg-white/10 text-white font-semibold text-xs uppercase tracking-widest transition-all border border-white/15"
                 >
-                  Cancel
+                  CANCEL
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-[#F2C601] hover:bg-[#fff0aa] text-[#012e21] font-bold font-mono text-sm uppercase tracking-wider transition-all duration-300 shadow-lg hover:shadow-2xl disabled:opacity-50"
+                  className="flex items-center gap-3 px-8 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold text-xs uppercase tracking-widest transition-all shadow-lg disabled:opacity-50"
                 >
-                  {saving ? <FaSpinner className="animate-spin" size={16} /> : <FaSave size={16} />}
-                  <span>{saving ? "Saving..." : "Save Item"}</span>
+                  {saving ? <FaSpinner className="animate-spin" size={14} /> : <FaSave size={14} />}
+                  <span>{saving ? "SAVING..." : "SAVE ITEM"}</span>
                 </button>
               </div>
             </form>

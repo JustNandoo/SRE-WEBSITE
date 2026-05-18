@@ -50,72 +50,78 @@ export default function AdminDashboardOverview() {
   }, []);
 
   const cards = [
-    { name: "Academics", count: counts.academics, icon: FaBook, color: "from-blue-500/20 to-blue-600/30", text: "text-blue-400", path: "/admin-sre/academics" },
-    { name: "Activities", count: counts.activities, icon: FaCalendarAlt, color: "from-emerald-500/20 to-emerald-600/30", text: "text-emerald-400", path: "/admin-sre/activities" },
-    { name: "Articles", count: counts.articles, icon: FaNewspaper, color: "from-purple-500/20 to-purple-600/30", text: "text-purple-400", path: "/admin-sre/articles" },
-    { name: "Merchandise", count: counts.merchandise, icon: FaTshirt, color: "from-amber-500/20 to-amber-600/30", text: "text-amber-400", path: "/admin-sre/merchandise" },
-    { name: "Active Members", count: counts.staff, icon: FaUserTie, color: "from-pink-500/20 to-pink-600/30", text: "text-pink-400", path: "/admin-sre/staff" },
+    { name: "Academics", count: counts.academics, icon: FaBook, text: "text-[#fff0aa]", path: "/admin-sre/academics" },
+    { name: "Activities", count: counts.activities, icon: FaCalendarAlt, text: "text-emerald-400", path: "/admin-sre/activities" },
+    { name: "Articles", count: counts.articles, icon: FaNewspaper, text: "text-amber-300", path: "/admin-sre/articles" },
+    { name: "Merchandise", count: counts.merchandise, icon: FaTshirt, text: "text-[#fff0aa]", path: "/admin-sre/merchandise" },
+    { name: "Active Members", count: counts.staff, icon: FaUserTie, text: "text-teal-300", path: "/admin-sre/staff" },
   ];
 
   return (
-    <div className={`space-y-12 ${poppins.variable} ${akira.variable} font-sans`}>
-      {/* Top Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#012e21] via-[#014f38] to-[#011a12] p-8 md:p-12 border border-white/10 shadow-2xl">
-        <div className="absolute -right-20 -top-20 w-80 h-80 bg-[#F2C601]/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className={`space-y-12 ${poppins.variable} ${akira.variable} font-sans text-white`}>
+      {/* Minimalist Top Banner matching SRE Theme */}
+      <div className="relative overflow-hidden bg-[#012e21] p-8 md:p-14 border border-white/15 shadow-2xl relative z-10">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0" />
+        <div className="absolute right-0 top-0 w-96 h-96 bg-[#fff0aa]/5 rounded-full blur-3xl pointer-events-none z-0" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F2C601]/10 border border-[#F2C601]/30 text-[#F2C601] font-mono text-xs uppercase tracking-widest mb-4">
-              <span className="w-2 h-2 rounded-full bg-[#F2C601] animate-pulse" />
-              Live PostgreSQL Database
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 border border-white/15 text-[#fff0aa] font-poppins font-semibold text-xs uppercase tracking-widest mb-4">
+              <span className="w-2 h-2 rounded-full bg-[#fff0aa] animate-pulse" />
+              LIVE POSTGRESQL ENDPOINT
             </div>
-            <h1 className="font-akira text-3xl md:text-5xl uppercase tracking-tighter text-white">
-              SRE PENS / SYSTEM OVERVIEW
+            <h1 className="font-akira text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-white leading-tight">
+              SRE PENS // OVERVIEW
             </h1>
-            <p className="text-white/70 max-w-2xl mt-3 font-sans leading-relaxed">
-              Welcome to the central administrative console. Manage all content domains, monitor live database records, and execute real-time schema mutations instantly.
+            <p className="font-poppins text-xs sm:text-sm text-white/80 max-w-2xl mt-3 leading-relaxed font-light">
+              Welcome to the central administrative dashboard. Manage all content domains, monitor live database records, and execute real-time schema mutations instantly.
             </p>
           </div>
           <button
             onClick={loadStats}
             disabled={loading}
-            className="self-start md:self-auto flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-mono text-sm uppercase tracking-wider transition-all duration-300 shadow-inner"
+            className="self-start md:self-auto flex items-center gap-3 px-7 py-4 bg-white/5 hover:bg-white/10 border border-white/15 hover:border-[#fff0aa] text-white font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
           >
-            <FaSyncAlt className={loading ? "animate-spin text-[#F2C601]" : "text-[#F2C601]"} />
-            <span>Refresh Stats</span>
+            <FaSyncAlt className={loading ? "animate-spin text-[#fff0aa]" : "text-[#fff0aa]"} />
+            <span>REFRESH METRICS</span>
           </button>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div>
-        <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-[#F2C601] mb-6 flex items-center gap-3">
-          <span>Database Summary Metrics</span>
-          <span className="h-px bg-white/10 flex-1" />
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
+          <h2 className="font-poppins text-xs font-semibold uppercase tracking-[0.2em] text-[#fff0aa] flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-[#fff0aa]" /> DATABASE SUMMARY METRICS
+          </h2>
+          <span className="font-mono text-[10px] text-white/40 tracking-widest uppercase">UPDATED REAL-TIME</span>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {cards.map((card) => {
             const Icon = card.icon;
             return (
               <Link
                 key={card.name}
                 href={card.path}
-                className="group relative bg-white/5 hover:bg-white/10 border border-white/10 rounded-3xl p-8 transition-all duration-500 overflow-hidden shadow-lg hover:shadow-2xl hover:border-white/20 flex flex-col justify-between h-48"
+                className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#fff0aa] p-8 transition-all duration-300 shadow-xl flex flex-col justify-between h-52 relative overflow-hidden"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${card.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                <div className="absolute right-0 bottom-0 w-32 h-32 bg-white/5 rounded-tl-full pointer-events-none group-hover:scale-125 transition-transform duration-500" />
                 <div className="relative z-10 flex items-start justify-between">
-                  <span className="font-mono text-sm tracking-wider uppercase text-white/60 group-hover:text-white transition-colors">{card.name}</span>
-                  <div className={`p-3 rounded-2xl bg-white/5 border border-white/10 ${card.text}`}>
+                  <span className="font-poppins font-semibold text-sm tracking-wider uppercase text-white/70 group-hover:text-[#fff0aa] transition-colors">{card.name}</span>
+                  <div className={`p-3.5 bg-white/5 border border-white/15 ${card.text}`}>
                     <Icon size={20} />
                   </div>
                 </div>
-                <div className="relative z-10 flex items-end justify-between">
+                
+                <div className="relative z-10 flex items-end justify-between mt-6">
                   {loading ? (
                     <FaSpinner className="animate-spin text-white/40 mb-1" size={28} />
                   ) : (
-                    <span className="font-akira text-5xl tracking-tighter text-white">{card.count}</span>
+                    <span className="font-akira text-4xl sm:text-5xl tracking-tighter text-white leading-none">{card.count}</span>
                   )}
-                  <div className="flex items-center gap-2 text-xs font-mono text-white/40 group-hover:text-[#F2C601] group-hover:translate-x-1 transition-all">
-                    <span>Manage</span> <FaArrowRight size={10} />
+                  <div className="flex items-center gap-2 font-poppins font-semibold text-xs text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all uppercase tracking-wider">
+                    <span>MANAGE</span> <FaArrowRight size={10} />
                   </div>
                 </div>
               </Link>
@@ -126,41 +132,42 @@ export default function AdminDashboardOverview() {
 
       {/* Quick Action & System Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 shadow-xl flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-3 text-[#F2C601] font-mono text-xs uppercase tracking-widest mb-4">
-              <FaCheckCircle size={16} /> Supabase RLS Secured
+        <div className="bg-[#012e21] border border-white/15 p-8 shadow-2xl flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute right-0 top-0 w-64 h-64 bg-emerald-500/5 rounded-bl-full pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 text-[#fff0aa] font-poppins font-semibold text-xs uppercase tracking-widest mb-4">
+              <FaCheckCircle size={16} /> ENTERPRISE RLS SECURED
             </div>
-            <h3 className="font-akira text-2xl uppercase tracking-tighter text-white mb-3">System Integrity</h3>
-            <p className="text-white/60 font-sans text-sm leading-relaxed mb-6">
-              All tables are fully indexed with UUID primary keys and secured by Row Level Security policies. Media objects are backed by Google Cloud Storage and CDN pipelines.
+            <h3 className="font-akira text-xl sm:text-2xl uppercase tracking-tighter text-white mb-3 leading-tight">SYSTEM INTEGRITY</h3>
+            <p className="text-white/70 font-poppins text-xs sm:text-sm leading-relaxed mb-6 font-light">
+              All tables are fully indexed with UUID primary keys and secured by internal Row Level Security policies. Media objects are backed by high-speed Google Cloud CDN pipelines.
             </p>
           </div>
-          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center justify-between">
-            <span>Connection Status: Active</span>
+          <div className="relative z-10 p-4 bg-white/5 border border-white/15 text-emerald-400 font-poppins font-semibold text-xs flex items-center justify-between uppercase tracking-wider">
+            <span>NETWORK STATUS: ONLINE & ACTIVE</span>
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 shadow-xl flex flex-col justify-between">
-          <div>
-            <h3 className="font-akira text-2xl uppercase tracking-tighter text-white mb-3">Quick Navigation</h3>
-            <p className="text-white/60 font-sans text-sm leading-relaxed mb-6">
-              Select any domain below to start creating new articles, scheduling upcoming activities, updating academic resources, or modifying team member roles.
+        <div className="bg-[#012e21] border border-white/15 p-8 shadow-2xl flex flex-col justify-between relative">
+          <div className="relative z-10">
+            <h3 className="font-akira text-xl sm:text-2xl uppercase tracking-tighter text-white mb-3 leading-tight">QUICK NAVIGATION</h3>
+            <p className="text-white/70 font-poppins text-xs sm:text-sm leading-relaxed mb-8 font-light">
+              Select any domain below to start publishing new articles or scheduling upcoming organizational activities instantly.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               href="/admin-sre/articles"
-              className="flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl bg-[#F2C601] hover:bg-[#fff0aa] text-[#012e21] font-bold font-mono text-xs uppercase tracking-wider transition-all duration-300 shadow-md"
+              className="flex items-center justify-center gap-3 py-4 px-6 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
             >
-              <FaPlus size={12} /> New Article
+              <FaPlus size={12} /> NEW ARTICLE
             </Link>
             <Link
               href="/admin-sre/activities"
-              className="flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase tracking-wider transition-all duration-300 border border-white/10"
+              className="flex items-center justify-center gap-3 py-4 px-6 bg-white/5 hover:bg-white/10 text-white font-poppins font-semibold text-xs uppercase tracking-widest transition-all border border-white/15"
             >
-              <FaPlus size={12} /> New Activity
+              <FaPlus size={12} /> NEW ACTIVITY
             </Link>
           </div>
         </div>
