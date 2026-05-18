@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
             </div>
             <div className="overflow-hidden">
               <span className="font-akira tracking-widest text-base sm:text-lg uppercase block leading-none truncate text-white">SRE PENS</span>
-              <span className="font-elagern text-[10px] sm:text-xs text-[#F2C601] tracking-[0.2em] uppercase block mt-1.5">VOL. II / NO. 2026</span>
+              <span className="font-poppins font-bold text-[10px] sm:text-xs text-[#F2C601] tracking-[0.2em] uppercase block mt-1.5">VOL. II / NO. 2026</span>
             </div>
           </div>
           <Link
@@ -97,21 +97,21 @@ export default function AdminLoginPage() {
             <h1 className="font-elagern text-5xl sm:text-6xl tracking-wide font-normal text-white mb-4 leading-none">
               Authentication.
             </h1>
-            <p className="font-elagern text-sm sm:text-base text-white/80 leading-relaxed font-light italic">
+            <p className="font-poppins text-xs sm:text-sm text-white/80 leading-relaxed font-light">
               Restricted administrative access. Please authenticate using verified staff credentials to enter the CMS console.
             </p>
           </div>
 
           {/* Notices */}
           {error && (
-            <div className="mb-6 p-4 bg-red-950/40 border border-red-500/40 text-red-400 font-elagern text-xs flex items-center gap-3 tracking-wide">
+            <div className="mb-6 p-4 bg-red-950/40 border border-red-500/40 text-red-400 font-poppins text-xs flex items-center gap-3 tracking-wide">
               <span className="w-2 h-2 bg-red-500 flex-shrink-0" />
               <p>{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 p-4 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 font-elagern text-xs flex items-center gap-3 tracking-wide">
+            <div className="mb-6 p-4 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 font-poppins text-xs flex items-center gap-3 tracking-wide">
               <FaCheck size={12} className="text-emerald-400 flex-shrink-0" />
               <p>{success}</p>
             </div>
@@ -133,7 +133,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@sre-pens.com"
-                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-elagern text-base tracking-wide"
+                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-poppins text-sm tracking-wide"
                 />
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-elagern text-base tracking-wide"
+                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-poppins text-sm tracking-wide"
                 />
                 <button
                   type="button"
@@ -165,7 +165,7 @@ export default function AdminLoginPage() {
             </div>
 
             {/* Remember & Forgot */}
-            <div className="flex items-center justify-between pt-2 font-akira text-[10px]">
+            <div className="flex items-center justify-between pt-2 font-poppins text-xs">
               <label className="flex items-center gap-2.5 cursor-pointer text-white/70 hover:text-white">
                 <input
                   type="checkbox"
@@ -173,12 +173,12 @@ export default function AdminLoginPage() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded-none border-white/30 bg-transparent text-[#F2C601] focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#F2C601]"
                 />
-                <span className="uppercase tracking-widest pt-0.5">REMEMBER SESSION</span>
+                <span className="uppercase tracking-wider">REMEMBER SESSION</span>
               </label>
               <button
                 type="button"
                 onClick={() => alert("Please contact the Super Admin (superadmin@sre-pens.com) to reset staff credentials.")}
-                className="text-white/60 hover:text-[#F2C601] uppercase tracking-widest underline underline-offset-4 pt-0.5"
+                className="text-white/60 hover:text-[#F2C601] uppercase tracking-wider underline underline-offset-4"
               >
                 FORGOT PASSWORD?
               </button>
@@ -201,7 +201,7 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Editorial Footer */}
-        <div className="pt-6 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between font-elagern text-xs text-white/50 tracking-widest uppercase gap-2 flex-shrink-0">
+        <div className="pt-6 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between font-poppins text-xs text-white/50 tracking-widest uppercase gap-2 flex-shrink-0">
           <span>© 2026 SOCIETY OF RENEWABLE ENERGY</span>
           <span>SECURED BY SUPABASE RLS</span>
         </div>
@@ -209,7 +209,7 @@ export default function AdminLoginPage() {
 
       {/* Right Column: Framed Editorial Visual Section */}
       <div className="hidden lg:flex flex-col justify-between p-8 md:p-12 bg-[#011a12] border-l border-white/15 min-h-screen lg:min-h-0">
-        <div className="text-right font-elagern text-xs text-white/60 tracking-[0.2em] uppercase flex-shrink-0">
+        <div className="text-right font-poppins font-semibold text-xs text-white/60 tracking-[0.2em] uppercase flex-shrink-0">
           ARCHIVAL REPOSITORY / 01-26
         </div>
 
@@ -231,7 +231,7 @@ export default function AdminLoginPage() {
           <div className="mt-4 pt-3 border-t border-white/15 flex items-start justify-between font-akira">
             <div>
               <span className="text-[#F2C601] text-xs sm:text-sm tracking-wider uppercase block">FIG. 01 — WIND POWER GENERATOR</span>
-              <span className="font-elagern text-xs text-white/70 tracking-wide italic mt-1 block">OFFSHORE INSTALLATION SERIES / ARCHIVE 2026</span>
+              <span className="font-poppins text-xs text-white/70 tracking-wide mt-1 block">OFFSHORE INSTALLATION SERIES / ARCHIVE 2026</span>
             </div>
             <span className="text-[10px] px-2.5 py-1 bg-white/10 border border-white/20 text-white font-bold tracking-wider">RAW / 4K</span>
           </div>
@@ -240,11 +240,11 @@ export default function AdminLoginPage() {
         <div className="border-t border-white/15 pt-6 grid grid-cols-2 flex-shrink-0">
           <div>
             <span className="font-akira text-[10px] text-white tracking-wider uppercase block mb-1.5">SYSTEM STATUS</span>
-            <span className="font-elagern text-xs text-[#F2C601] tracking-wider uppercase">ONLINE & ACTIVE</span>
+            <span className="font-poppins font-semibold text-xs text-[#F2C601] tracking-wider uppercase">ONLINE & ACTIVE</span>
           </div>
           <div className="text-right">
             <span className="font-akira text-[10px] text-white tracking-wider uppercase block mb-1.5">ENCRYPTION LEVEL</span>
-            <span className="font-elagern text-xs tracking-wider uppercase text-white/80">AES-256 / SHA-256</span>
+            <span className="font-poppins text-xs tracking-wider uppercase text-white/80">AES-256 / SHA-256</span>
           </div>
         </div>
       </div>
