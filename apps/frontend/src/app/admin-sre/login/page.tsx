@@ -78,13 +78,13 @@ export default function AdminLoginPage() {
               <FaShieldAlt size={16} />
             </div>
             <div className="overflow-hidden">
-              <span className="font-akira tracking-widest text-base sm:text-lg uppercase block leading-none truncate">SRE PENS</span>
-              <span className="font-mono text-[9px] text-[#F2C601] tracking-[0.3em] uppercase block mt-1">VOL. II / NO. 2026</span>
+              <span className="font-akira tracking-widest text-base sm:text-lg uppercase block leading-none truncate text-white">SRE PENS</span>
+              <span className="font-elagern text-[10px] sm:text-xs text-[#F2C601] tracking-[0.2em] uppercase block mt-1.5">VOL. II / NO. 2026</span>
             </div>
           </div>
           <Link
             href="/"
-            className="flex items-center gap-2 text-[10px] font-mono text-white hover:text-[#F2C601] uppercase tracking-widest border border-white/20 px-3 py-1.5 hover:border-[#F2C601] whitespace-nowrap flex-shrink-0"
+            className="flex items-center gap-2 font-akira text-[10px] text-white hover:text-[#F2C601] uppercase tracking-widest border border-white/20 px-3.5 py-2 hover:border-[#F2C601] whitespace-nowrap flex-shrink-0 transition-colors"
           >
             <FaArrowLeft size={10} /> RETURN
           </Link>
@@ -93,25 +93,25 @@ export default function AdminLoginPage() {
         {/* Central Form Area */}
         <div className="w-full max-w-md mx-auto my-auto py-8 sm:py-12 flex-1 flex flex-col justify-center">
           <div className="mb-10">
-            <p className="font-mono text-[10px] text-[#F2C601] tracking-[0.4em] uppercase mb-2">SECURE ENDPOINT</p>
-            <h1 className="font-elagern text-4xl sm:text-5xl tracking-wide font-normal text-white mb-3 leading-none">
+            <p className="font-akira text-[10px] sm:text-xs text-[#F2C601] tracking-[0.3em] uppercase mb-3">SECURE ENDPOINT</p>
+            <h1 className="font-elagern text-5xl sm:text-6xl tracking-wide font-normal text-white mb-4 leading-none">
               Authentication.
             </h1>
-            <p className="text-xs sm:text-sm font-sans text-white/70 leading-relaxed font-light">
+            <p className="font-elagern text-sm sm:text-base text-white/80 leading-relaxed font-light italic">
               Restricted administrative access. Please authenticate using verified staff credentials to enter the CMS console.
             </p>
           </div>
 
           {/* Notices */}
           {error && (
-            <div className="mb-6 p-4 bg-red-950/40 border border-red-500/40 text-red-400 text-xs font-mono flex items-center gap-3">
+            <div className="mb-6 p-4 bg-red-950/40 border border-red-500/40 text-red-400 font-elagern text-xs flex items-center gap-3 tracking-wide">
               <span className="w-2 h-2 bg-red-500 flex-shrink-0" />
               <p>{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 p-4 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs font-mono flex items-center gap-3">
+            <div className="mb-6 p-4 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 font-elagern text-xs flex items-center gap-3 tracking-wide">
               <FaCheck size={12} className="text-emerald-400 flex-shrink-0" />
               <p>{success}</p>
             </div>
@@ -120,7 +120,7 @@ export default function AdminLoginPage() {
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <label className="block font-mono text-xs text-[#F2C601] uppercase tracking-widest">
+              <label className="block font-akira text-[11px] sm:text-xs text-[#F2C601] tracking-wider uppercase">
                 STAFF EMAIL
               </label>
               <div className="relative">
@@ -133,13 +133,13 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@sre-pens.com"
-                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
+                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-elagern text-base tracking-wide"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block font-mono text-xs text-[#F2C601] uppercase tracking-widest">
+              <label className="block font-akira text-[11px] sm:text-xs text-[#F2C601] tracking-wider uppercase">
                 PASSPHRASE
               </label>
               <div className="relative">
@@ -152,7 +152,7 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-mono text-sm"
+                  className="w-full bg-transparent border border-white/25 rounded-none py-3.5 pl-12 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-[#F2C601] font-elagern text-base tracking-wide"
                 />
                 <button
                   type="button"
@@ -165,7 +165,7 @@ export default function AdminLoginPage() {
             </div>
 
             {/* Remember & Forgot */}
-            <div className="flex items-center justify-between text-xs font-mono pt-2">
+            <div className="flex items-center justify-between pt-2 font-akira text-[10px]">
               <label className="flex items-center gap-2.5 cursor-pointer text-white/70 hover:text-white">
                 <input
                   type="checkbox"
@@ -173,12 +173,12 @@ export default function AdminLoginPage() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded-none border-white/30 bg-transparent text-[#F2C601] focus:ring-0 focus:ring-offset-0 cursor-pointer accent-[#F2C601]"
                 />
-                <span className="text-[11px] sm:text-xs uppercase tracking-wider">REMEMBER SESSION</span>
+                <span className="uppercase tracking-widest pt-0.5">REMEMBER SESSION</span>
               </label>
               <button
                 type="button"
                 onClick={() => alert("Please contact the Super Admin (superadmin@sre-pens.com) to reset staff credentials.")}
-                className="text-[11px] sm:text-xs text-white/60 hover:text-[#F2C601] uppercase tracking-wider underline underline-offset-4"
+                className="text-white/60 hover:text-[#F2C601] uppercase tracking-widest underline underline-offset-4 pt-0.5"
               >
                 FORGOT PASSWORD?
               </button>
@@ -187,7 +187,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading || success !== null}
-              className="w-full bg-[#F2C601] text-[#011a12] hover:bg-white hover:text-black font-bold py-4 rounded-none font-mono text-sm tracking-[0.2em] uppercase transition-colors disabled:opacity-50 flex items-center justify-center gap-3 mt-8"
+              className="w-full bg-[#F2C601] text-[#011a12] hover:bg-white hover:text-black py-4 rounded-none font-akira text-xs sm:text-sm tracking-[0.2em] uppercase transition-colors disabled:opacity-50 flex items-center justify-center gap-3 mt-8 font-bold"
             >
               {loading ? (
                 <span>VERIFYING CREDENTIALS...</span>
@@ -201,7 +201,7 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Editorial Footer */}
-        <div className="pt-6 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between font-mono text-[10px] text-white/40 uppercase tracking-widest gap-2 flex-shrink-0">
+        <div className="pt-6 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between font-elagern text-xs text-white/50 tracking-widest uppercase gap-2 flex-shrink-0">
           <span>© 2026 SOCIETY OF RENEWABLE ENERGY</span>
           <span>SECURED BY SUPABASE RLS</span>
         </div>
@@ -209,7 +209,7 @@ export default function AdminLoginPage() {
 
       {/* Right Column: Framed Editorial Visual Section */}
       <div className="hidden lg:flex flex-col justify-between p-8 md:p-12 bg-[#011a12] border-l border-white/15 min-h-screen lg:min-h-0">
-        <div className="text-right font-mono text-[10px] text-white/50 uppercase tracking-[0.3em] flex-shrink-0">
+        <div className="text-right font-elagern text-xs text-white/60 tracking-[0.2em] uppercase flex-shrink-0">
           ARCHIVAL REPOSITORY / 01-26
         </div>
 
@@ -228,23 +228,23 @@ export default function AdminLoginPage() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
           </div>
 
-          <div className="mt-4 pt-3 border-t border-white/15 flex items-start justify-between font-mono text-xs">
+          <div className="mt-4 pt-3 border-t border-white/15 flex items-start justify-between font-akira">
             <div>
-              <span className="text-[#F2C601] font-bold block tracking-wider uppercase">FIG. 01 — WIND POWER GENERATOR</span>
-              <span className="text-[10px] text-white/60 tracking-wider">OFFSHORE INSTALLATION SERIES / ARCHIVE 2026</span>
+              <span className="text-[#F2C601] text-xs sm:text-sm tracking-wider uppercase block">FIG. 01 — WIND POWER GENERATOR</span>
+              <span className="font-elagern text-xs text-white/70 tracking-wide italic mt-1 block">OFFSHORE INSTALLATION SERIES / ARCHIVE 2026</span>
             </div>
-            <span className="text-[10px] px-2 py-1 bg-white/10 border border-white/20 text-white font-bold">RAW / 4K</span>
+            <span className="text-[10px] px-2.5 py-1 bg-white/10 border border-white/20 text-white font-bold tracking-wider">RAW / 4K</span>
           </div>
         </div>
 
-        <div className="border-t border-white/15 pt-6 grid grid-cols-2 font-mono text-[10px] text-white/60 uppercase tracking-widest flex-shrink-0">
+        <div className="border-t border-white/15 pt-6 grid grid-cols-2 flex-shrink-0">
           <div>
-            <span className="text-white block font-bold mb-1">SYSTEM STATUS</span>
-            <span className="text-[#F2C601]">ONLINE & ACTIVE</span>
+            <span className="font-akira text-[10px] text-white tracking-wider uppercase block mb-1.5">SYSTEM STATUS</span>
+            <span className="font-elagern text-xs text-[#F2C601] tracking-wider uppercase">ONLINE & ACTIVE</span>
           </div>
           <div className="text-right">
-            <span className="text-white block font-bold mb-1">ENCRYPTION LEVEL</span>
-            <span>AES-256 / SHA-256</span>
+            <span className="font-akira text-[10px] text-white tracking-wider uppercase block mb-1.5">ENCRYPTION LEVEL</span>
+            <span className="font-elagern text-xs tracking-wider uppercase text-white/80">AES-256 / SHA-256</span>
           </div>
         </div>
       </div>
