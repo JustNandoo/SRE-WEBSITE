@@ -77,9 +77,17 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
         </button>
       </div>
 
-      {/* Sticky Minimalist Sidebar */}
+      {/* Mobile Backdrop overlay */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden animate-fade-in"
+        />
+      )}
+
+      {/* Fixed Minimalist Sidebar */}
       <aside
-        className={`w-full md:w-72 bg-[#012e21] border-r border-white/10 flex flex-col flex-shrink-0 transition-all duration-300 fixed md:sticky top-0 z-40 h-screen overflow-y-auto scrollbar-hide shadow-2xl ${
+        className={`w-72 bg-[#012e21] border-r border-white/10 flex flex-col flex-shrink-0 transition-transform duration-300 fixed top-0 left-0 z-40 h-screen overflow-y-auto scrollbar-hide shadow-2xl ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -149,7 +157,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 min-w-0 p-6 sm:p-8 md:p-14 overflow-y-auto min-h-screen">
+      <main className="flex-1 min-w-0 md:ml-72 p-6 sm:p-8 md:p-14 overflow-y-auto min-h-screen">
         {children}
       </main>
     </div>
