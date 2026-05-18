@@ -62,6 +62,7 @@ export default function SectionMember() {
             divisionsData.map((dept, index) => (
               <div
                 key={dept.id}
+                id={`wrapper-${dept.id}`}
                 className="flex flex-col md:flex-row gap-8 md:gap-10 border-t border-[#012e21]/10 pt-10 md:pt-0 md:border-none"
               >
                 

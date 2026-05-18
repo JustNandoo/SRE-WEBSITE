@@ -110,7 +110,7 @@ export async function fetchStaffDivisions(): Promise<Division[] | null> {
     .order('order_index', { ascending: true });
 
   if (divError || memError || !divisions || !members || members.length < 20) {
-    console.error("Supabase fetchStaffDivisions error or unseeded DB:", divError || memError);
+    console.log("Using local dummy staff data fallback (Supabase unseeded or offline).");
     return null;
   }
 
