@@ -318,10 +318,10 @@ DELETE FROM auth.users WHERE email IN ('superadmin@sre-pens.com', 'admin@sre-pen
 INSERT INTO auth.users (
   instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, recovery_sent_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, email_change, email_change_token_new, recovery_token
 ) VALUES 
-('00000000-0000-0000-0000-000000000000', 'e7b99c0d-c052-442a-8991-89736c05eb77', 'authenticated', 'authenticated', 'superadmin@sre-pens.com', crypt('SRE_sUp3rAdm1n_9x2K#Lz!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"super-admin"}', NOW(), NOW(), '', '', '', ''),
-('00000000-0000-0000-0000-000000000000', '6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', 'authenticated', 'authenticated', 'admin@sre-pens.com', crypt('SRE_Adm1n_4v7M@Np9?', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"admin"}', NOW(), NOW(), '', '', '', ''),
-('00000000-0000-0000-0000-000000000000', '92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', 'authenticated', 'authenticated', 'staff@sre-pens.com', crypt('SRE_St4ff_7b2D%Wx8!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"staff"}', NOW(), NOW(), '', '', '', ''),
-('00000000-0000-0000-0000-000000000000', 'd3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'authenticated', 'authenticated', 'plevel@sre-pens.com', crypt('SRE_pL3v3l_3r8F$Qp2!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"p-level"}', NOW(), NOW(), '', '', '', '')
+('00000000-0000-0000-0000-000000000000', 'e7b99c0d-c052-442a-8991-89736c05eb77', 'authenticated', 'authenticated', 'superadmin@sre-pens.com', crypt('superadminSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"super-admin"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', 'authenticated', 'authenticated', 'admin@sre-pens.com', crypt('adminSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"admin"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', 'authenticated', 'authenticated', 'staff@sre-pens.com', crypt('staffSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"staff"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', 'd3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'authenticated', 'authenticated', 'plevel@sre-pens.com', crypt('plevelSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"p-level"}', NOW(), NOW(), '', '', '', '')
 ON CONFLICT (id) DO UPDATE SET 
   encrypted_password = EXCLUDED.encrypted_password,
   email_confirmed_at = NOW();
@@ -334,10 +334,10 @@ INSERT INTO auth.identities (id, user_id, identity_data, provider, provider_id, 
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.user_roles (id, email, role, password_text) VALUES 
-('e7b99c0d-c052-442a-8991-89736c05eb77', 'superadmin@sre-pens.com', 'super-admin', 'SRE_sUp3rAdm1n_9x2K#Lz!'),
-('6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', 'admin@sre-pens.com', 'admin', 'SRE_Adm1n_4v7M@Np9?'),
-('92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', 'staff@sre-pens.com', 'staff', 'SRE_St4ff_7b2D%Wx8!'),
-('d3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'plevel@sre-pens.com', 'p-level', 'SRE_pL3v3l_3r8F$Qp2!')
+('e7b99c0d-c052-442a-8991-89736c05eb77', 'superadmin@sre-pens.com', 'super-admin', 'superadminSRE2026!'),
+('6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', 'admin@sre-pens.com', 'admin', 'adminSRE2026!'),
+('92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', 'staff@sre-pens.com', 'staff', 'staffSRE2026!'),
+('d3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'plevel@sre-pens.com', 'p-level', 'plevelSRE2026!')
 ON CONFLICT (id) DO UPDATE SET 
   role = EXCLUDED.role,
   password_text = EXCLUDED.password_text;
