@@ -17,6 +17,8 @@ import {
   FaTimes,
   FaUserCircle,
   FaExternalLinkAlt,
+  FaGlobe,
+  FaTasks,
 } from "react-icons/fa";
 import Image from "next/image";
 
@@ -57,6 +59,8 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     { name: "Articles", path: "/admin-sre/articles", icon: FaNewspaper },
     { name: "Merchandise", path: "/admin-sre/merchandise", icon: FaTshirt },
     { name: "Divisions & Staff", path: "/admin-sre/staff", icon: FaUserTie },
+    { name: "External Relations", path: "/admin-sre/external-relations", icon: FaGlobe },
+    { name: "Semester Projects", path: "/admin-sre/projects", icon: FaTasks },
   ];
 
   return (

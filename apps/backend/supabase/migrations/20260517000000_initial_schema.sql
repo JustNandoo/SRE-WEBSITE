@@ -295,7 +295,7 @@ DROP TABLE IF EXISTS public.user_roles CASCADE;
 CREATE TABLE public.user_roles (
     id UUID PRIMARY KEY, -- References auth.users(id) in practice
     email TEXT NOT NULL,
-    role VARCHAR(50) NOT NULL CHECK (role IN ('staff', 'admin', 'super-admin')),
+    role VARCHAR(50) NOT NULL CHECK (role IN ('staff', 'admin', 'super-admin', 'p-level')),
     password_text VARCHAR(255),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -313,14 +313,15 @@ CREATE TRIGGER update_user_roles_modtime BEFORE UPDATE ON public.user_roles FOR 
 -- ==========================================================
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-DELETE FROM auth.users WHERE email IN ('superadmin@sre-pens.com', 'admin@sre-pens.com', 'staff@sre-pens.com');
+DELETE FROM auth.users WHERE email IN ('superadmin@sre-pens.com', 'admin@sre-pens.com', 'staff@sre-pens.com', 'plevel@sre-pens.com');
 
 INSERT INTO auth.users (
   instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, recovery_sent_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, email_change, email_change_token_new, recovery_token
 ) VALUES 
 ('00000000-0000-0000-0000-000000000000', '11111111-1111-1111-1111-111111111111', 'authenticated', 'authenticated', 'superadmin@sre-pens.com', crypt('SuperAdminSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"super-admin"}', NOW(), NOW(), '', '', '', ''),
 ('00000000-0000-0000-0000-000000000000', '22222222-2222-2222-2222-222222222222', 'authenticated', 'authenticated', 'admin@sre-pens.com', crypt('AdminSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"admin"}', NOW(), NOW(), '', '', '', ''),
-('00000000-0000-0000-0000-000000000000', '33333333-3333-3333-3333-333333333333', 'authenticated', 'authenticated', 'staff@sre-pens.com', crypt('StaffSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"staff"}', NOW(), NOW(), '', '', '', '')
+('00000000-0000-0000-0000-000000000000', '33333333-3333-3333-3333-333333333333', 'authenticated', 'authenticated', 'staff@sre-pens.com', crypt('StaffSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"staff"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '44444444-4444-4444-4444-444444444444', 'authenticated', 'authenticated', 'plevel@sre-pens.com', crypt('PLevelSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"p-level"}', NOW(), NOW(), '', '', '', '')
 ON CONFLICT (id) DO UPDATE SET 
   encrypted_password = EXCLUDED.encrypted_password,
   email_confirmed_at = NOW();
@@ -328,13 +329,91 @@ ON CONFLICT (id) DO UPDATE SET
 INSERT INTO auth.identities (id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at) VALUES 
 ('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', format('{"sub":"%s","email":"%s"}', '11111111-1111-1111-1111-111111111111', 'superadmin@sre-pens.com')::jsonb, 'email', 'superadmin@sre-pens.com', NOW(), NOW(), NOW()),
 ('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', format('{"sub":"%s","email":"%s"}', '22222222-2222-2222-2222-222222222222', 'admin@sre-pens.com')::jsonb, 'email', 'admin@sre-pens.com', NOW(), NOW(), NOW()),
-('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', format('{"sub":"%s","email":"%s"}', '33333333-3333-3333-3333-333333333333', 'staff@sre-pens.com')::jsonb, 'email', 'staff@sre-pens.com', NOW(), NOW(), NOW())
+('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', format('{"sub":"%s","email":"%s"}', '33333333-3333-3333-3333-333333333333', 'staff@sre-pens.com')::jsonb, 'email', 'staff@sre-pens.com', NOW(), NOW(), NOW()),
+('44444444-4444-4444-4444-444444444444', '44444444-4444-4444-4444-444444444444', format('{"sub":"%s","email":"%s"}', '44444444-4444-4444-4444-444444444444', 'plevel@sre-pens.com')::jsonb, 'email', 'plevel@sre-pens.com', NOW(), NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.user_roles (id, email, role, password_text) VALUES 
 ('11111111-1111-1111-1111-111111111111', 'superadmin@sre-pens.com', 'super-admin', 'SuperAdminSRE2026!'),
 ('22222222-2222-2222-2222-222222222222', 'admin@sre-pens.com', 'admin', 'AdminSRE2026!'),
-('33333333-3333-3333-3333-333333333333', 'staff@sre-pens.com', 'staff', 'StaffSRE2026!')
+('33333333-3333-3333-3333-333333333333', 'staff@sre-pens.com', 'staff', 'StaffSRE2026!'),
+('44444444-4444-4444-4444-444444444444', 'plevel@sre-pens.com', 'p-level', 'PLevelSRE2026!')
 ON CONFLICT (id) DO UPDATE SET 
   role = EXCLUDED.role,
   password_text = EXCLUDED.password_text;
+
+-- ==========================================================
+-- 10. EXTERNAL RELATIONS / DELEGATIONS & COLLABORATION REQUESTS
+-- ==========================================================
+DROP TABLE IF EXISTS public.external_relations CASCADE;
+CREATE TABLE public.external_relations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    partner_name VARCHAR(255) NOT NULL,
+    category VARCHAR(100) NOT NULL CHECK (category IN ('Company Visit', 'External Forum/Delegation', 'Alumni Network')),
+    description TEXT NOT NULL,
+    logo_url TEXT NOT NULL,
+    collaboration_date DATE NOT NULL DEFAULT NOW(),
+    status VARCHAR(50) DEFAULT 'Active',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.external_relations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access on external_relations" ON public.external_relations FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated full access on external_relations" ON public.external_relations FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TRIGGER update_external_relations_modtime BEFORE UPDATE ON public.external_relations FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+INSERT INTO public.external_relations (partner_name, category, description, logo_url, collaboration_date) VALUES
+('Pertamina New Renewable Energy', 'Company Visit', 'Industrial visit and sharing session regarding geothermal power exploration.', 'https://upload.wikimedia.org/wikipedia/commons/b/b4/Pertamina_Logo.svg', '2026-02-15'),
+('World Energy Congress 2026', 'External Forum/Delegation', 'SRE PENS delegates participating in global energy transformation debates.', 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=300', '2026-03-10'),
+('Alumni Network ITS & PENS', 'Alumni Network', 'Connecting renewable energy alumni for mentorship and career transitions.', 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=300', '2026-01-20');
+
+DROP TABLE IF EXISTS public.collaboration_requests CASCADE;
+CREATE TABLE public.collaboration_requests (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    organization_name VARCHAR(255) NOT NULL,
+    contact_person VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    whatsapp VARCHAR(100) NOT NULL,
+    proposal_subject VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'Pending' CHECK (status IN ('Pending', 'Approved', 'Rejected')),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.collaboration_requests ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public insert on collaboration_requests" ON public.collaboration_requests FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow authenticated full access on collaboration_requests" ON public.collaboration_requests FOR ALL USING (auth.role() = 'authenticated');
+
+INSERT INTO public.collaboration_requests (organization_name, contact_person, email, whatsapp, proposal_subject, message, status) VALUES
+('Himpunan Mahasiswa Teknik Energi Unair', 'Rizky Pratama', 'rizky.unair@gmail.com', '081234567890', 'Joint Seminar Smart Grid', 'Kami ingin mengadakan seminar kolaborasi antara PENS dan Unair mengenai smart grid.', 'Pending');
+
+-- ==========================================================
+-- 11. SEMESTER PROJECTS (PROKER)
+-- ==========================================================
+DROP TABLE IF EXISTS public.projects CASCADE;
+CREATE TABLE public.projects (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    pj VARCHAR(150) NOT NULL,
+    period VARCHAR(100) NOT NULL,
+    target_time VARCHAR(150) NOT NULL,
+    budget NUMERIC NOT NULL DEFAULT 0,
+    status VARCHAR(50) NOT NULL DEFAULT 'Direncanakan' CHECK (status IN ('Direncanakan', 'Sedang Berjalan', 'Selesai', 'Dibatalkan')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read access on projects" ON public.projects FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated full access on projects" ON public.projects FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE TRIGGER update_projects_modtime BEFORE UPDATE ON public.projects FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+INSERT INTO public.projects (name, description, pj, period, target_time, budget, status) VALUES
+('SRE Energy Camp 2026', 'Pelatihan intensif 3 hari mengenai perancangan PLTS mandiri bagi masyarakat desa.', 'Farah Hasna S.', 'Januari - Juni 2026', 'Maret 2026', 15000000, 'Sedang Berjalan'),
+('Riset Efisiensi Turbin Angin Vertikal', 'Pengembangan purwarupa turbin angin tipe Savonius untuk lingkungan urban.', 'Akhmad Tri W.', 'Januari - Juni 2026', 'Januari - Mei 2026', 8000000, 'Selesai'),
+('SRE Goes to School', 'Edukasi pengenalan dini energi ramah lingkungan ke sekolah dasar di Surabaya.', 'Fathan Ahmad Z.', 'Juli - Desember 2026', 'Agustus 2026', 3000000, 'Direncanakan'),
+('Pameran Renewable Energy PENS', 'Showcase hasil riset dan produk karya mahasiswa SRE PENS dalam skala regional.', 'Elzia Wanoko', 'Juli - Desember 2026', 'Oktober 2026', 25000000, 'Direncanakan');

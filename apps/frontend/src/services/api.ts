@@ -132,3 +132,79 @@ export async function fetchStaffDivisions(): Promise<Division[] | null> {
       })),
   }));
 }
+
+export interface ExternalRelation {
+  id: string;
+  partner_name: string;
+  category: 'Company Visit' | 'External Forum/Delegation' | 'Alumni Network';
+  description: string;
+  logo_url: string;
+  collaboration_date: string;
+  status: string;
+}
+
+export interface CollaborationRequest {
+  id: string;
+  organization_name: string;
+  contact_person: string;
+  email: string;
+  whatsapp: string;
+  proposal_subject: string;
+  message: string;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  created_at: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  pj: string;
+  period: string;
+  target_time: string;
+  budget: number;
+  status: 'Direncanakan' | 'Sedang Berjalan' | 'Selesai' | 'Dibatalkan';
+}
+
+export async function fetchExternalRelations(): Promise<ExternalRelation[] | null> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('external_relations')
+    .select('*')
+    .order('collaboration_date', { ascending: false });
+
+  if (error || !data) {
+    console.error("Supabase fetchExternalRelations error:", error);
+    return null;
+  }
+  return data;
+}
+
+export async function fetchCollaborationRequests(): Promise<CollaborationRequest[] | null> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('collaboration_requests')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error || !data) {
+    console.error("Supabase fetchCollaborationRequests error:", error);
+    return null;
+  }
+  return data;
+}
+
+export async function fetchProjects(): Promise<Project[] | null> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error || !data) {
+    console.error("Supabase fetchProjects error:", error);
+    return null;
+  }
+  return data;
+}
+

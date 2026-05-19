@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { fetchAcademics, fetchActivities, fetchArticles, fetchMerchandise, fetchStaffDivisions } from "@/services/api";
-import { FaBook, FaCalendarAlt, FaNewspaper, FaTshirt, FaUserTie, FaArrowRight, FaSpinner, FaPlus, FaCheckCircle, FaSyncAlt } from "react-icons/fa";
+import { fetchAcademics, fetchActivities, fetchArticles, fetchMerchandise, fetchStaffDivisions, fetchExternalRelations, fetchProjects } from "@/services/api";
+import { FaBook, FaCalendarAlt, FaNewspaper, FaTshirt, FaUserTie, FaArrowRight, FaSpinner, FaPlus, FaCheckCircle, FaSyncAlt, FaGlobe, FaTasks } from "react-icons/fa";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 
@@ -20,17 +20,19 @@ const akira = localFont({
 });
 
 export default function AdminDashboardOverview() {
-  const [counts, setCounts] = useState({ academics: 0, activities: 0, articles: 0, merchandise: 0, staff: 0 });
+  const [counts, setCounts] = useState({ academics: 0, activities: 0, articles: 0, merchandise: 0, staff: 0, external: 0, projects: 0 });
   const [loading, setLoading] = useState(true);
 
   const loadStats = async () => {
     setLoading(true);
-    const [acads, acts, arts, merch, divs] = await Promise.all([
+    const [acads, acts, arts, merch, divs, partners, projectsData] = await Promise.all([
       fetchAcademics(),
       fetchActivities(),
       fetchArticles(),
       fetchMerchandise(),
       fetchStaffDivisions(),
+      fetchExternalRelations(),
+      fetchProjects(),
     ]);
 
     const totalMembers = divs ? divs.reduce((sum, d) => sum + (d.members?.length || 0), 0) : 0;
@@ -41,6 +43,8 @@ export default function AdminDashboardOverview() {
       articles: arts?.length || 0,
       merchandise: merch?.length || 0,
       staff: totalMembers,
+      external: partners?.length || 0,
+      projects: projectsData?.length || 0,
     });
     setLoading(false);
   };
@@ -55,6 +59,8 @@ export default function AdminDashboardOverview() {
     { name: "Articles", count: counts.articles, icon: FaNewspaper, text: "text-amber-300", path: "/admin-sre/articles" },
     { name: "Merchandise", count: counts.merchandise, icon: FaTshirt, text: "text-[#fff0aa]", path: "/admin-sre/merchandise" },
     { name: "Active Members", count: counts.staff, icon: FaUserTie, text: "text-teal-300", path: "/admin-sre/staff" },
+    { name: "External Partners", count: counts.external, icon: FaGlobe, text: "text-sky-400", path: "/admin-sre/external-relations" },
+    { name: "Work Programs", count: counts.projects, icon: FaTasks, text: "text-rose-400", path: "/admin-sre/projects" },
   ];
 
   return (
