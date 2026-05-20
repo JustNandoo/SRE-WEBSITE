@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { FaPlus, FaEdit, FaTrash, FaSpinner, FaSearch, FaTimes, FaSave, FaCheckCircle, FaExclamationCircle, FaToggleOn, FaToggleOff } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash, FaSpinner, FaSearch, FaTimes, FaSave, FaCheckCircle, FaExclamationCircle, FaToggleOn, FaToggleOff, FaLock } from "react-icons/fa";
 import { MerchandiseEntity } from "@sre-pens/shared-types";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
@@ -28,6 +28,7 @@ export default function AdminMerchandisePage() {
   const [editingMerch, setEditingMerch] = useState<MerchandiseEntity | null>(null);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -57,8 +58,19 @@ export default function AdminMerchandisePage() {
     setLoading(false);
   };
 
+  const fetchUserRole = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase.from("user_roles").select("role").eq("id", user.id).single();
+      if (data) {
+        setUserRole(data.role);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchMerchandise();
+    fetchUserRole();
   }, []);
 
   const openNewModal = () => {
@@ -163,6 +175,22 @@ export default function AdminMerchandisePage() {
       m.category.toLowerCase().includes(search.toLowerCase())
   );
 
+  const isWritable = userRole === "super-admin" || userRole === "p-level" || userRole === "finance";
+
+  if (userRole && userRole !== "super-admin" && userRole !== "p-level" && userRole !== "staff" && userRole !== "finance") {
+    return (
+      <div className="max-w-xl mx-auto py-20 text-center space-y-6 font-poppins text-white">
+        <div className="w-16 h-16 bg-red-950/40 border border-red-500/40 text-red-400 mx-auto flex items-center justify-center rounded-full">
+          <FaLock size={24} />
+        </div>
+        <h2 className="font-akira text-lg text-red-400 uppercase tracking-wider">Access Denied</h2>
+        <p className="text-sm text-white/70 leading-relaxed font-light">
+          Your account role (<strong className="text-[#fff0aa]">{userRole}</strong>) is unauthorized to access this panel. Only <strong className="text-white">super-admin</strong>, <strong className="text-white">p-level</strong>, <strong className="text-white">staff</strong>, and <strong className="text-white">finance</strong> roles are permitted.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={`space-y-8 ${poppins.variable} ${akira.variable} font-sans text-white`}>
       {/* Minimalist Header Banner */}
@@ -172,12 +200,14 @@ export default function AdminMerchandisePage() {
           <h1 className="font-akira text-2xl sm:text-3xl uppercase tracking-tighter text-white mb-2">MERCHANDISE CATALOG</h1>
           <p className="text-xs sm:text-sm font-poppins font-light text-white/70">Manage SRE store catalog, pricing, availability tags, and order links.</p>
         </div>
-        <button
-          onClick={openNewModal}
-          className="relative z-10 flex items-center gap-3 px-7 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
-        >
-          <FaPlus size={14} /> ADD NEW MERCH
-        </button>
+        {isWritable && (
+          <button
+            onClick={openNewModal}
+            className="relative z-10 flex items-center gap-3 px-7 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
+          >
+            <FaPlus size={14} /> ADD NEW MERCHANDISE
+          </button>
+        )}
       </div>
 
       {/* Notices */}
@@ -251,30 +281,38 @@ export default function AdminMerchandisePage() {
                 </div>
 
                 <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs">
-                  <button
-                    onClick={() => toggleAvailability(item)}
-                    className={`flex items-center gap-2 px-3.5 py-2 font-semibold uppercase tracking-wider transition-all border ${item.is_available ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black" : "bg-red-950/40 border-red-500/40 text-red-400 hover:bg-red-500 hover:text-white"}`}
-                  >
-                    {item.is_available ? <FaToggleOn size={16} /> : <FaToggleOff size={16} />}
-                    <span>{item.is_available ? "IN STOCK" : "SOLD OUT"}</span>
-                  </button>
+                  {isWritable ? (
+                    <button
+                      onClick={() => toggleAvailability(item)}
+                      className={`flex items-center gap-2 px-3.5 py-2 font-semibold uppercase tracking-wider transition-all border ${item.is_available ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-black" : "bg-red-950/40 border-red-500/40 text-red-400 hover:bg-red-500 hover:text-white"}`}
+                    >
+                      {item.is_available ? <FaToggleOn size={16} /> : <FaToggleOff size={16} />}
+                      <span>{item.is_available ? "IN STOCK" : "SOLD OUT"}</span>
+                    </button>
+                  ) : (
+                    <span className={`inline-block px-3.5 py-2 font-semibold uppercase tracking-wider border ${item.is_available ? "bg-emerald-950/20 border-emerald-500/20 text-emerald-400" : "bg-red-950/20 border-red-500/20 text-red-400"}`}>
+                      {item.is_available ? "IN STOCK" : "SOLD OUT"}
+                    </span>
+                  )}
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => openEditModal(item)}
-                      className="p-2.5 bg-white/5 hover:bg-blue-600 hover:text-white border border-white/15 transition-all text-blue-300"
-                      title="Edit Merch"
-                    >
-                      <FaEdit size={14} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="p-2.5 bg-white/5 hover:bg-red-600 hover:text-white border border-white/15 transition-all text-red-300"
-                      title="Delete Merch"
-                    >
-                      <FaTrash size={14} />
-                    </button>
-                  </div>
+                  {isWritable && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => openEditModal(item)}
+                        className="p-2.5 bg-white/5 hover:bg-blue-600 hover:text-white border border-white/15 transition-all text-blue-300"
+                        title="Edit Merch"
+                      >
+                        <FaEdit size={14} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="p-2.5 bg-white/5 hover:bg-red-600 hover:text-white border border-white/15 transition-all text-red-300"
+                        title="Delete Merch"
+                      >
+                        <FaTrash size={14} />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

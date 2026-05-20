@@ -195,8 +195,9 @@ export default function AdminExternalRelationsPage() {
     );
   }
 
-  // Strictly enforce super-admin or p-level
-  if (userRole !== "super-admin" && userRole !== "p-level") {
+  const isWritable = userRole === "super-admin" || userRole === "p-level";
+
+  if (userRole && userRole !== "super-admin" && userRole !== "p-level" && userRole !== "staff") {
     return (
       <div className="max-w-xl mx-auto py-20 text-center space-y-6 font-poppins text-white">
         <div className="w-16 h-16 bg-red-950/40 border border-red-500/40 text-red-400 mx-auto flex items-center justify-center rounded-full">
@@ -204,7 +205,7 @@ export default function AdminExternalRelationsPage() {
         </div>
         <h2 className="font-akira text-lg text-red-400 uppercase tracking-wider">Access Denied</h2>
         <p className="text-sm text-white/70 leading-relaxed font-light">
-          Your account role (<strong className="text-[#fff0aa]">{userRole || "unknown"}</strong>) is unauthorized to access this panel. Only <strong className="text-white">super-admin</strong> and <strong className="text-white">p-level</strong> roles are permitted.
+          Your account role (<strong className="text-[#fff0aa]">{userRole}</strong>) is unauthorized to access this panel. Only <strong className="text-white">super-admin</strong>, <strong className="text-white">p-level</strong>, and <strong className="text-white">staff</strong> roles are permitted.
         </p>
       </div>
     );
@@ -219,12 +220,14 @@ export default function AdminExternalRelationsPage() {
           <h1 className="font-akira text-2xl sm:text-3xl uppercase tracking-tighter text-white mb-2">EXTERNAL RELATIONS</h1>
           <p className="text-xs sm:text-sm font-poppins font-light text-white/70">Manage corporate partners, alumni, and track proposal requests in real-time.</p>
         </div>
-        <button
-          onClick={openNewModal}
-          className="relative z-10 flex items-center gap-3 px-7 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
-        >
-          <FaPlus size={14} /> ADD NEW PARTNER
-        </button>
+        {isWritable && (
+          <button
+            onClick={openNewModal}
+            className="relative z-10 flex items-center gap-3 px-7 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
+          >
+            <FaPlus size={14} /> ADD NEW PARTNER
+          </button>
+        )}
       </div>
 
       {/* Notices */}
@@ -277,20 +280,24 @@ export default function AdminExternalRelationsPage() {
                       <td className="py-4 px-4 text-white/70 max-w-xs truncate">{partner.description}</td>
                       <td className="py-4 px-4 text-white/50 text-xs font-mono">{partner.collaboration_date}</td>
                       <td className="py-4 px-4 text-right space-x-2">
-                        <button
-                          onClick={() => openEditModal(partner)}
-                          className="p-2 bg-white/5 hover:bg-[#fff0aa] hover:text-[#011f16] border border-white/10 transition-all"
-                          title="Edit"
-                        >
-                          <FaEdit size={12} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(partner.id)}
-                          className="p-2 bg-red-950/20 hover:bg-red-600 hover:text-white border border-red-500/20 transition-all"
-                          title="Delete"
-                        >
-                          <FaTrash size={12} />
-                        </button>
+                        {isWritable && (
+                          <>
+                            <button
+                              onClick={() => openEditModal(partner)}
+                              className="p-2 bg-white/5 hover:bg-[#fff0aa] hover:text-[#011f16] border border-white/10 transition-all"
+                              title="Edit"
+                            >
+                              <FaEdit size={12} />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(partner.id)}
+                              className="p-2 bg-red-950/20 hover:bg-red-600 hover:text-white border border-red-500/20 transition-all"
+                              title="Delete"
+                            >
+                              <FaTrash size={12} />
+                            </button>
+                          </>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -351,7 +358,7 @@ export default function AdminExternalRelationsPage() {
                         </span>
                       </td>
                       <td className="py-4 px-4 text-right space-x-2">
-                        {req.status === "Pending" && (
+                        {isWritable && req.status === "Pending" && (
                           <>
                             <button
                               onClick={() => handleUpdateStatus(req.id, "Approved")}

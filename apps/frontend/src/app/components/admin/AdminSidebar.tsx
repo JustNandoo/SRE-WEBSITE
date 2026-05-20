@@ -19,6 +19,25 @@ import {
   FaExternalLinkAlt,
   FaGlobe,
   FaTasks,
+  FaFileAlt,
+  FaFolderOpen,
+  FaInfoCircle,
+  FaUsers,
+  FaRegListAlt,
+  FaGraduationCap,
+  FaLeaf,
+  FaRobot,
+  FaInstagram,
+  FaChartLine,
+  FaFlask,
+  FaTrophy,
+  FaLightbulb,
+  FaArchive,
+  FaAward,
+  FaUsersCog,
+  FaFileInvoiceDollar,
+  FaHandHoldingHeart,
+  FaPalette,
 } from "react-icons/fa";
 import Image from "next/image";
 
@@ -27,15 +46,31 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   const router = useRouter();
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       setUser(user);
+      if (user) {
+        const { data } = await supabase.from("user_roles").select("role").eq("id", user.id).single();
+        if (data) {
+          setUserRole(data.role);
+        }
+      }
     });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        const { data } = await supabase.from("user_roles").select("role").eq("id", u.id).single();
+        if (data) {
+          setUserRole(data.role);
+        }
+      } else {
+        setUserRole(null);
+      }
     });
 
     return () => {
@@ -52,16 +87,124 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     return <div className="admin-viewport min-h-screen w-full bg-[#012e21]">{children}</div>;
   }
 
-  const navItems = [
-    { name: "Overview", path: "/admin-sre", icon: FaHome },
-    { name: "Academics", path: "/admin-sre/academics", icon: FaBook },
-    { name: "Activities", path: "/admin-sre/activities", icon: FaCalendarAlt },
-    { name: "Articles", path: "/admin-sre/articles", icon: FaNewspaper },
-    { name: "Merchandise", path: "/admin-sre/merchandise", icon: FaTshirt },
-    { name: "Divisions & Staff", path: "/admin-sre/staff", icon: FaUserTie },
-    { name: "External Relations", path: "/admin-sre/external-relations", icon: FaGlobe },
-    { name: "Semester Projects", path: "/admin-sre/projects", icon: FaTasks },
-  ];
+  const getNavItemsByRole = (role: string | null) => {
+    if (!role) return [];
+
+    if (role === "super-admin" || role === "p-level") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Academics", path: "/admin-sre/academics", icon: FaBook },
+        { name: "Activities", path: "/admin-sre/activities", icon: FaCalendarAlt },
+        { name: "Articles", path: "/admin-sre/articles", icon: FaNewspaper },
+        { name: "Merchandise", path: "/admin-sre/merchandise", icon: FaTshirt },
+        { name: "Divisions & Staff", path: "/admin-sre/staff", icon: FaUserTie },
+        { name: "External Relations", path: "/admin-sre/external-relations", icon: FaGlobe },
+        { name: "Semester Projects", path: "/admin-sre/projects", icon: FaTasks },
+      ];
+    }
+
+    if (role === "staff") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Academics", path: "/admin-sre/academics", icon: FaBook },
+        { name: "Activities", path: "/admin-sre/activities", icon: FaCalendarAlt },
+        { name: "Articles", path: "/admin-sre/articles", icon: FaNewspaper },
+        { name: "Merchandise", path: "/admin-sre/merchandise", icon: FaTshirt },
+        { name: "Divisions & Staff", path: "/admin-sre/staff", icon: FaUserTie },
+        { name: "External Relations", path: "/admin-sre/external-relations", icon: FaGlobe },
+        { name: "Semester Projects", path: "/admin-sre/projects", icon: FaTasks },
+      ];
+    }
+
+    if (role === "secretary") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Laporan LPJ", path: "/admin-sre/lpj", icon: FaFileAlt },
+        { name: "Agenda & Kalendar", path: "/admin-sre/agenda", icon: FaCalendarAlt },
+        { name: "Pusat Informasi", path: "/admin-sre/pusat-informasi", icon: FaInfoCircle },
+        { name: "Arsip Surat", path: "/admin-sre/arsip-surat", icon: FaFolderOpen },
+        { name: "Database Anggota", path: "/admin-sre/database-anggota", icon: FaUsers },
+      ];
+    }
+
+    if (role === "treasurer") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Laporan Keuangan", path: "/admin-sre/laporan-keuangan-publik", icon: FaFileInvoiceDollar },
+        { name: "Donasi & Pendanaan", path: "/admin-sre/donasi-pendanaan", icon: FaHandHoldingHeart },
+        { name: "Manajemen Anggaran", path: "/admin-sre/manajemen-anggaran", icon: FaTasks },
+      ];
+    }
+
+    if (role === "education") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Articles", path: "/admin-sre/articles", icon: FaNewspaper },
+        { name: "Academics", path: "/admin-sre/academics", icon: FaBook },
+        { name: "Learning Center", path: "/admin-sre/learning-center", icon: FaGraduationCap },
+        { name: "Green Energy Update", path: "/admin-sre/green-energy-update", icon: FaLeaf },
+      ];
+    }
+
+    if (role === "content-marketing") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Engagement Feed", path: "/admin-sre/engagement-feed", icon: FaInstagram },
+        { name: "Account Insight", path: "/admin-sre/account-insight", icon: FaChartLine },
+        { name: "AI Analisis", path: "/admin-sre/ai-analisis", icon: FaRobot },
+      ];
+    }
+
+    if (role === "crd") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Program Kerja CRD", path: "/admin-sre/program-kerja-crd", icon: FaTasks },
+        { name: "Project & Research", path: "/admin-sre/project-research-development", icon: FaFlask },
+        { name: "Competition Center", path: "/admin-sre/competition-center", icon: FaTrophy },
+        { name: "Delegasi Lomba", path: "/admin-sre/delegasi-lomba", icon: FaGlobe },
+        { name: "Medium Archive", path: "/admin-sre/idea-medium-archive", icon: FaLightbulb },
+        { name: "Research Archive", path: "/admin-sre/research-archive", icon: FaArchive },
+        { name: "Arsip Prestasi", path: "/admin-sre/prestasi-crd", icon: FaAward },
+      ];
+    }
+
+    if (role === "hr") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Divisions & Staff", path: "/admin-sre/staff", icon: FaUserTie },
+        { name: "Monitoring Staff", path: "/admin-sre/monitoring-staff", icon: FaUsersCog },
+        { name: "Administrasi Staff", path: "/admin-sre/administrasi", icon: FaRegListAlt },
+      ];
+    }
+
+    if (role === "pr") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Tracker Program", path: "/admin-sre/tracker-program", icon: FaTasks },
+        { name: "Sub Divisi Jobdesk", path: "/admin-sre/sub-divisi-jobdesk", icon: FaGlobe },
+        { name: "Kontak Staff PR", path: "/admin-sre/kontak-sosmed-staff", icon: FaUsers },
+      ];
+    }
+
+    if (role === "graphic-design") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Brand Identity", path: "/admin-sre/graphic-assets", icon: FaPalette },
+        { name: "Design Showcase", path: "/admin-sre/design-showcase", icon: FaAward },
+      ];
+    }
+
+    if (role === "finance") {
+      return [
+        { name: "Overview", path: "/admin-sre", icon: FaHome },
+        { name: "Merchandise", path: "/admin-sre/merchandise", icon: FaTshirt },
+      ];
+    }
+
+    return [];
+  };
+
+  const navItems = getNavItemsByRole(userRole);
 
   return (
     <div className="admin-viewport min-h-screen flex flex-col md:flex-row bg-[#011f16] text-white font-sans selection:bg-[#fff0aa] selection:text-[#011f16]">
@@ -103,7 +246,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
             </div>
             <div>
               <h2 className="font-akira text-lg tracking-wider uppercase text-white leading-none">SRE PENS</h2>
-              <span className="font-poppins text-[10px] font-semibold text-[#fff0aa] tracking-[0.2em] uppercase block mt-1.5">STAFF CONSOLE</span>
+              <span className="font-poppins text-[10px] font-semibold text-[#fff0aa] tracking-[0.2em] uppercase block mt-1.5">{userRole ? `${userRole.replace("-", " ")} console` : "CONSOLE"}</span>
             </div>
           </div>
           <Link

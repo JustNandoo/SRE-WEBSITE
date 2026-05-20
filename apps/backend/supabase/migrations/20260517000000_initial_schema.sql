@@ -295,7 +295,7 @@ DROP TABLE IF EXISTS public.user_roles CASCADE;
 CREATE TABLE public.user_roles (
     id UUID PRIMARY KEY, -- References auth.users(id) in practice
     email TEXT NOT NULL,
-    role VARCHAR(50) NOT NULL CHECK (role IN ('staff', 'admin', 'super-admin', 'p-level')),
+    role VARCHAR(50) NOT NULL CHECK (role IN ('staff', 'super-admin', 'p-level', 'secretary', 'treasurer', 'education', 'content-marketing', 'crd', 'hr', 'pr', 'graphic-design', 'finance')),
     password_text VARCHAR(255),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -313,31 +313,59 @@ CREATE TRIGGER update_user_roles_modtime BEFORE UPDATE ON public.user_roles FOR 
 -- ==========================================================
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-DELETE FROM auth.users WHERE email IN ('superadmin@sre-pens.com', 'admin@sre-pens.com', 'staff@sre-pens.com', 'plevel@sre-pens.com');
+DELETE FROM auth.users WHERE email IN (
+  'superadmin@sre-pens.com', 'admin@sre-pens.com', 'staff@sre-pens.com', 'plevel@sre-pens.com',
+  'secretary@sre-pens.com', 'treasurer@sre-pens.com', 'education@sre-pens.com', 'contentmarketing@sre-pens.com',
+  'crd@sre-pens.com', 'hr@sre-pens.com', 'pr@sre-pens.com', 'graphicdesign@sre-pens.com', 'finance@sre-pens.com'
+);
 
 INSERT INTO auth.users (
   instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, recovery_sent_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, email_change, email_change_token_new, recovery_token
 ) VALUES 
 ('00000000-0000-0000-0000-000000000000', 'e7b99c0d-c052-442a-8991-89736c05eb77', 'authenticated', 'authenticated', 'superadmin@sre-pens.com', crypt('superadminSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"super-admin"}', NOW(), NOW(), '', '', '', ''),
-('00000000-0000-0000-0000-000000000000', '6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', 'authenticated', 'authenticated', 'admin@sre-pens.com', crypt('adminSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"admin"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', 'd3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'authenticated', 'authenticated', 'plevel@sre-pens.com', crypt('plevelSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"p-level"}', NOW(), NOW(), '', '', '', ''),
 ('00000000-0000-0000-0000-000000000000', '92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', 'authenticated', 'authenticated', 'staff@sre-pens.com', crypt('staffSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"staff"}', NOW(), NOW(), '', '', '', ''),
-('00000000-0000-0000-0000-000000000000', 'd3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'authenticated', 'authenticated', 'plevel@sre-pens.com', crypt('plevelSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"p-level"}', NOW(), NOW(), '', '', '', '')
+('00000000-0000-0000-0000-000000000000', 'a4f91040-df2b-42ab-b78b-d779cbde4f33', 'authenticated', 'authenticated', 'secretary@sre-pens.com', crypt('secretarySRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"secretary"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', 'dbe49102-127e-4001-9c88-b22da19fbc74', 'authenticated', 'authenticated', 'treasurer@sre-pens.com', crypt('treasurerSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"treasurer"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', 'c3cf1d0f-488f-4cfc-b847-e17f0a8d6e99', 'authenticated', 'authenticated', 'education@sre-pens.com', crypt('educationSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"education"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '87f651d2-092f-410a-9d90-ba3e1dbf3df4', 'authenticated', 'authenticated', 'contentmarketing@sre-pens.com', crypt('contentmarketingSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"content-marketing"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '3b9f49ac-f21e-450f-ba1c-ea23df1f0ca3', 'authenticated', 'authenticated', 'crd@sre-pens.com', crypt('crdSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"crd"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '7d9bc4a3-de01-4467-9fb8-a62bbcc2fca4', 'authenticated', 'authenticated', 'hr@sre-pens.com', crypt('hrSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"hr"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', 'e62a2bb7-f58d-4cb8-9cb8-6f9c49a35c06', 'authenticated', 'authenticated', 'pr@sre-pens.com', crypt('prSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"pr"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', 'b8c14c6e-8260-4b2b-15cc-9bf6028ad3b8', 'authenticated', 'authenticated', 'graphicdesign@sre-pens.com', crypt('graphicdesignSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"graphic-design"}', NOW(), NOW(), '', '', '', ''),
+('00000000-0000-0000-0000-000000000000', '9d2cb390-1c0b-4d45-9833-2895ea9f5e1f', 'authenticated', 'authenticated', 'finance@sre-pens.com', crypt('financeSRE2026!', gen_salt('bf')), NOW(), NOW(), NOW(), '{"provider":"email","providers":["email"]}', '{"role":"finance"}', NOW(), NOW(), '', '', '', '')
 ON CONFLICT (id) DO UPDATE SET 
   encrypted_password = EXCLUDED.encrypted_password,
   email_confirmed_at = NOW();
 
 INSERT INTO auth.identities (id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at) VALUES 
 ('e7b99c0d-c052-442a-8991-89736c05eb77', 'e7b99c0d-c052-442a-8991-89736c05eb77', format('{"sub":"%s","email":"%s"}', 'e7b99c0d-c052-442a-8991-89736c05eb77', 'superadmin@sre-pens.com')::jsonb, 'email', 'superadmin@sre-pens.com', NOW(), NOW(), NOW()),
-('6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', '6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', format('{"sub":"%s","email":"%s"}', '6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', 'admin@sre-pens.com')::jsonb, 'email', 'admin@sre-pens.com', NOW(), NOW(), NOW()),
+('d3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'd3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', format('{"sub":"%s","email":"%s"}', 'd3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'plevel@sre-pens.com')::jsonb, 'email', 'plevel@sre-pens.com', NOW(), NOW(), NOW()),
 ('92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', '92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', format('{"sub":"%s","email":"%s"}', '92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', 'staff@sre-pens.com')::jsonb, 'email', 'staff@sre-pens.com', NOW(), NOW(), NOW()),
-('d3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'd3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', format('{"sub":"%s","email":"%s"}', 'd3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'plevel@sre-pens.com')::jsonb, 'email', 'plevel@sre-pens.com', NOW(), NOW(), NOW())
+('a4f91040-df2b-42ab-b78b-d779cbde4f33', 'a4f91040-df2b-42ab-b78b-d779cbde4f33', format('{"sub":"%s","email":"%s"}', 'a4f91040-df2b-42ab-b78b-d779cbde4f33', 'secretary@sre-pens.com')::jsonb, 'email', 'secretary@sre-pens.com', NOW(), NOW(), NOW()),
+('dbe49102-127e-4001-9c88-b22da19fbc74', 'dbe49102-127e-4001-9c88-b22da19fbc74', format('{"sub":"%s","email":"%s"}', 'dbe49102-127e-4001-9c88-b22da19fbc74', 'treasurer@sre-pens.com')::jsonb, 'email', 'treasurer@sre-pens.com', NOW(), NOW(), NOW()),
+('c3cf1d0f-488f-4cfc-b847-e17f0a8d6e99', 'c3cf1d0f-488f-4cfc-b847-e17f0a8d6e99', format('{"sub":"%s","email":"%s"}', 'c3cf1d0f-488f-4cfc-b847-e17f0a8d6e99', 'education@sre-pens.com')::jsonb, 'email', 'education@sre-pens.com', NOW(), NOW(), NOW()),
+('87f651d2-092f-410a-9d90-ba3e1dbf3df4', '87f651d2-092f-410a-9d90-ba3e1dbf3df4', format('{"sub":"%s","email":"%s"}', '87f651d2-092f-410a-9d90-ba3e1dbf3df4', 'contentmarketing@sre-pens.com')::jsonb, 'email', 'contentmarketing@sre-pens.com', NOW(), NOW(), NOW()),
+('3b9f49ac-f21e-450f-ba1c-ea23df1f0ca3', '3b9f49ac-f21e-450f-ba1c-ea23df1f0ca3', format('{"sub":"%s","email":"%s"}', '3b9f49ac-f21e-450f-ba1c-ea23df1f0ca3', 'crd@sre-pens.com')::jsonb, 'email', 'crd@sre-pens.com', NOW(), NOW(), NOW()),
+('7d9bc4a3-de01-4467-9fb8-a62bbcc2fca4', '7d9bc4a3-de01-4467-9fb8-a62bbcc2fca4', format('{"sub":"%s","email":"%s"}', '7d9bc4a3-de01-4467-9fb8-a62bbcc2fca4', 'hr@sre-pens.com')::jsonb, 'email', 'hr@sre-pens.com', NOW(), NOW(), NOW()),
+('e62a2bb7-f58d-4cb8-9cb8-6f9c49a35c06', 'e62a2bb7-f58d-4cb8-9cb8-6f9c49a35c06', format('{"sub":"%s","email":"%s"}', 'e62a2bb7-f58d-4cb8-9cb8-6f9c49a35c06', 'pr@sre-pens.com')::jsonb, 'email', 'pr@sre-pens.com', NOW(), NOW(), NOW()),
+('b8c14c6e-8260-4b2b-15cc-9bf6028ad3b8', 'b8c14c6e-8260-4b2b-15cc-9bf6028ad3b8', format('{"sub":"%s","email":"%s"}', 'b8c14c6e-8260-4b2b-15cc-9bf6028ad3b8', 'graphicdesign@sre-pens.com')::jsonb, 'email', 'graphicdesign@sre-pens.com', NOW(), NOW(), NOW()),
+('9d2cb390-1c0b-4d45-9833-2895ea9f5e1f', '9d2cb390-1c0b-4d45-9833-2895ea9f5e1f', format('{"sub":"%s","email":"%s"}', '9d2cb390-1c0b-4d45-9833-2895ea9f5e1f', 'finance@sre-pens.com')::jsonb, 'email', 'finance@sre-pens.com', NOW(), NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO public.user_roles (id, email, role, password_text) VALUES 
 ('e7b99c0d-c052-442a-8991-89736c05eb77', 'superadmin@sre-pens.com', 'super-admin', 'superadminSRE2026!'),
-('6f9c49a3-5c06-4447-9cb8-e62a2bb7f58d', 'admin@sre-pens.com', 'admin', 'adminSRE2026!'),
 ('92e10e6e-2b5e-4bfe-9f2d-7bb0dbbf01fb', 'staff@sre-pens.com', 'staff', 'staffSRE2026!'),
-('d3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'plevel@sre-pens.com', 'p-level', 'plevelSRE2026!')
+('d3b84f2b-b8c1-4c6e-8260-15cc9bf6028a', 'plevel@sre-pens.com', 'p-level', 'plevelSRE2026!'),
+('a4f91040-df2b-42ab-b78b-d779cbde4f33', 'secretary@sre-pens.com', 'secretary', 'secretarySRE2026!'),
+('dbe49102-127e-4001-9c88-b22da19fbc74', 'treasurer@sre-pens.com', 'treasurer', 'treasurerSRE2026!'),
+('c3cf1d0f-488f-4cfc-b847-e17f0a8d6e99', 'education@sre-pens.com', 'education', 'educationSRE2026!'),
+('87f651d2-092f-410a-9d90-ba3e1dbf3df4', 'contentmarketing@sre-pens.com', 'content-marketing', 'contentmarketingSRE2026!'),
+('3b9f49ac-f21e-450f-ba1c-ea23df1f0ca3', 'crd@sre-pens.com', 'crd', 'crdSRE2026!'),
+('7d9bc4a3-de01-4467-9fb8-a62bbcc2fca4', 'hr@sre-pens.com', 'hr', 'hrSRE2026!'),
+('e62a2bb7-f58d-4cb8-9cb8-6f9c49a35c06', 'pr@sre-pens.com', 'pr', 'prSRE2026!'),
+('b8c14c6e-8260-4b2b-15cc-9bf6028ad3b8', 'graphicdesign@sre-pens.com', 'graphic-design', 'graphicdesignSRE2026!'),
+('9d2cb390-1c0b-4d45-9833-2895ea9f5e1f', 'finance@sre-pens.com', 'finance', 'financeSRE2026!')
 ON CONFLICT (id) DO UPDATE SET 
   role = EXCLUDED.role,
   password_text = EXCLUDED.password_text;

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { FaPlus, FaEdit, FaTrash, FaSpinner, FaSearch, FaTimes, FaSave, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash, FaSpinner, FaSearch, FaTimes, FaSave, FaCheckCircle, FaExclamationCircle, FaLock } from "react-icons/fa";
 import { ArticleEntity } from "@sre-pens/shared-types";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
@@ -28,6 +28,9 @@ export default function AdminArticlesPage() {
   const [editingArticle, setEditingArticle] = useState<ArticleEntity | null>(null);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   // Form State
   const [formData, setFormData] = useState({
@@ -57,8 +60,19 @@ export default function AdminArticlesPage() {
     setLoading(false);
   };
 
+  const fetchUserRole = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase.from("user_roles").select("role").eq("id", user.id).single();
+      if (data) {
+        setUserRole(data.role);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchArticles();
+    fetchUserRole();
   }, []);
 
   const openNewModal = () => {
@@ -149,6 +163,30 @@ export default function AdminArticlesPage() {
       a.created_by.toLowerCase().includes(search.toLowerCase())
   );
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedArticles = filteredArticles.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
+
+  const isWritable = userRole === "super-admin" || userRole === "p-level" || userRole === "education";
+
+  if (userRole && userRole !== "super-admin" && userRole !== "p-level" && userRole !== "staff" && userRole !== "education") {
+    return (
+      <div className="max-w-xl mx-auto py-20 text-center space-y-6 font-poppins text-white">
+        <div className="w-16 h-16 bg-red-950/40 border border-red-500/40 text-red-400 mx-auto flex items-center justify-center rounded-full">
+          <FaLock size={24} />
+        </div>
+        <h2 className="font-akira text-lg text-red-400 uppercase tracking-wider">Access Denied</h2>
+        <p className="text-sm text-white/70 leading-relaxed font-light">
+          Your account role (<strong className="text-[#fff0aa]">{userRole}</strong>) is unauthorized to access this panel. Only <strong className="text-white">super-admin</strong>, <strong className="text-white">p-level</strong>, <strong className="text-white">staff</strong>, and <strong className="text-white">education</strong> roles are permitted.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className={`space-y-8 ${poppins.variable} ${akira.variable} font-sans text-white`}>
       {/* Minimalist Header Banner */}
@@ -158,12 +196,14 @@ export default function AdminArticlesPage() {
           <h1 className="font-akira text-2xl sm:text-3xl uppercase tracking-tighter text-white mb-2">ARTICLE MANAGEMENT</h1>
           <p className="text-xs sm:text-sm font-poppins font-light text-white/70">Create, edit, and organize news publications & research articles.</p>
         </div>
-        <button
-          onClick={openNewModal}
-          className="relative z-10 flex items-center gap-3 px-7 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
-        >
-          <FaPlus size={14} /> PUBLISH NEW ARTICLE
-        </button>
+        {isWritable && (
+          <button
+            onClick={openNewModal}
+            className="relative z-10 flex items-center gap-3 px-7 py-4 bg-[#fff0aa] hover:bg-white text-[#012e21] font-bold font-poppins font-semibold text-xs uppercase tracking-widest transition-all shadow-md"
+          >
+            <FaPlus size={14} /> PUBLISH NEW ARTICLE
+          </button>
+        )}
       </div>
 
       {/* Notices */}
@@ -204,53 +244,98 @@ export default function AdminArticlesPage() {
           <p>No articles found matching your criteria.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredArticles.map((article) => (
-            <div
-              key={article.id}
-              className="bg-white/5 border border-white/10 hover:border-[#fff0aa] overflow-hidden transition-all duration-300 flex flex-col group shadow-lg"
-            >
-              <div className="relative h-52 w-full bg-black/40 overflow-hidden">
-                <Image
-                  src={article.image || "https://images.unsplash.com/photo-1518770660439-4636190af475"}
-                  alt={article.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-4 left-4 px-3.5 py-1 bg-[#012e21]/90 backdrop-blur-sm font-poppins font-semibold text-[10px] text-[#fff0aa] uppercase tracking-widest border border-white/20">
-                  {article.published_date}
-                </div>
-              </div>
-
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <h3 className="font-poppins font-semibold text-lg line-clamp-2 mb-2 group-hover:text-[#fff0aa] transition-colors">{article.title}</h3>
-                  <p className="text-xs text-white/70 font-poppins font-light line-clamp-3 leading-relaxed mb-4">{article.description}</p>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {paginatedArticles.map((article) => (
+              <div
+                key={article.id}
+                className="bg-white/5 border border-white/10 hover:border-[#fff0aa] overflow-hidden transition-all duration-300 flex flex-col group shadow-lg"
+              >
+                <div className="relative h-52 w-full bg-black/40 overflow-hidden">
+                  <Image
+                    src={article.image || "https://images.unsplash.com/photo-1518770660439-4636190af475"}
+                    alt={article.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 left-4 px-3.5 py-1 bg-[#012e21]/90 backdrop-blur-sm font-poppins font-semibold text-[10px] text-[#fff0aa] uppercase tracking-widest border border-white/20">
+                    {article.published_date}
+                  </div>
                 </div>
 
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-poppins">
-                  <span className="text-white/50 truncate max-w-[150px] font-medium">By {article.created_by}</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => openEditModal(article)}
-                      className="p-2.5 bg-white/5 hover:bg-blue-600 hover:text-white border border-white/15 transition-all text-blue-300"
-                      title="Edit Article"
-                    >
-                      <FaEdit size={14} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(article.id)}
-                      className="p-2.5 bg-white/5 hover:bg-red-600 hover:text-white border border-white/15 transition-all text-red-300"
-                      title="Delete Article"
-                    >
-                      <FaTrash size={14} />
-                    </button>
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <h3 className="font-poppins font-semibold text-lg line-clamp-2 mb-2 group-hover:text-[#fff0aa] transition-colors">{article.title}</h3>
+                    <p className="text-xs text-white/70 font-poppins font-light line-clamp-3 leading-relaxed mb-4">{article.description}</p>
+                  </div>
+
+                  <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-poppins">
+                    <span className="text-white/50 truncate max-w-[150px] font-medium">By {article.created_by}</span>
+                    {isWritable && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openEditModal(article)}
+                          className="p-2.5 bg-white/5 hover:bg-blue-600 hover:text-white border border-white/15 transition-all text-blue-300"
+                          title="Edit Article"
+                        >
+                          <FaEdit size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(article.id)}
+                          className="p-2.5 bg-white/5 hover:bg-red-600 hover:text-white border border-white/15 transition-all text-red-300"
+                          title="Delete Article"
+                        >
+                          <FaTrash size={14} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between border-t border-white/10 pt-6 mt-8 font-poppins text-xs gap-4">
+              <div className="text-white/60">
+                Showing <span className="font-semibold text-[#fff0aa]">{startIndex + 1}</span> to{" "}
+                <span className="font-semibold text-[#fff0aa]">
+                  {Math.min(startIndex + itemsPerPage, filteredArticles.length)}
+                </span>{" "}
+                of <span className="font-semibold text-[#fff0aa]">{filteredArticles.length}</span> articles
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3.5 py-2 bg-white/5 border border-white/10 hover:border-[#fff0aa] disabled:opacity-30 disabled:hover:border-white/10 transition-all font-semibold uppercase tracking-wider text-[10px]"
+                >
+                  Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-9 h-9 flex items-center justify-center border font-bold ${
+                      currentPage === page
+                        ? "bg-[#fff0aa] text-[#012e21] border-[#fff0aa]"
+                        : "bg-white/5 border-white/10 text-white hover:border-[#fff0aa]"
+                    } transition-all`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3.5 py-2 bg-white/5 border border-white/10 hover:border-[#fff0aa] disabled:opacity-30 disabled:hover:border-white/10 transition-all font-semibold uppercase tracking-wider text-[10px]"
+                >
+                  Next
+                </button>
+              </div>
             </div>
-          ))}
+          )}
         </div>
       )}
 
