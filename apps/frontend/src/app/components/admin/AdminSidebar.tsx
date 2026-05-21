@@ -88,6 +88,18 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     setUserRole(null);
     localStorage.clear();
     sessionStorage.clear();
+    
+    // Hard purge all cookies in the browser to prevent Next.js middleware caching issues
+    if (typeof document !== "undefined") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      }
+    }
+    
     window.location.href = "/admin-sre/login";
   };
 
@@ -104,6 +116,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
           groupName: "Main Overview",
           items: [
             { name: "Overview", path: "/admin-sre", icon: FaHome },
+            { name: "Manage Accounts", path: "/admin-sre/accounts", icon: FaUsersCog },
             { name: "Academics", path: "/admin-sre/academics", icon: FaBook },
             { name: "Activities", path: "/admin-sre/activities", icon: FaCalendarAlt },
             { name: "Articles", path: "/admin-sre/articles", icon: FaNewspaper },

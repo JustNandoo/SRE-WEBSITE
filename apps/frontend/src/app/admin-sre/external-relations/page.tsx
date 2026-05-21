@@ -90,7 +90,7 @@ export default function AdminExternalRelationsPage() {
   }, []);
 
   useEffect(() => {
-    if (userRole === "super-admin" || userRole === "p-level") {
+    if (userRole === "super-admin" || userRole === "p-level" || userRole === "staff") {
       loadData();
     }
   }, [userRole]);
