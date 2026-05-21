@@ -73,6 +73,43 @@ export default function AdminDashboardOverview() {
     switch (role) {
       case "super-admin":
       case "p-level":
+        return [
+          { name: "Academics", table: "academics", icon: FaBook, color: "text-[#fff0aa]", path: "/admin-sre/academics" },
+          { name: "Activities", table: "activities", icon: FaCalendarAlt, color: "text-emerald-400", path: "/admin-sre/activities" },
+          { name: "Articles", table: "articles", icon: FaNewspaper, color: "text-amber-300", path: "/admin-sre/articles" },
+          { name: "Merchandise", table: "merchandise", icon: FaTshirt, color: "text-[#fff0aa]", path: "/admin-sre/merchandise" },
+          { name: "Active Members", table: "staff", icon: FaUserTie, color: "text-teal-300", path: "/admin-sre/staff" },
+          { name: "External Partners", table: "external_relations", icon: FaGlobe, color: "text-sky-400", path: "/admin-sre/external-relations" },
+          { name: "Work Programs", table: "projects", icon: FaTasks, color: "text-rose-400", path: "/admin-sre/projects" },
+          { name: "Laporan LPJ", table: "lpj", icon: FaFileAlt, color: "text-teal-300", path: "/admin-sre/lpj" },
+          { name: "Agenda & Kalendar", table: "agenda", icon: FaCalendarAlt, color: "text-[#fff0aa]", path: "/admin-sre/agenda" },
+          { name: "Pusat Informasi", table: "pusat_informasi", icon: FaInfoCircle, color: "text-sky-400", path: "/admin-sre/pusat-informasi" },
+          { name: "Arsip Surat", table: "arsip_surat", icon: FaFolderOpen, color: "text-amber-300", path: "/admin-sre/arsip-surat" },
+          { name: "Database Anggota", table: "database_anggota", icon: FaUsers, color: "text-rose-400", path: "/admin-sre/database-anggota" },
+          { name: "Laporan Keuangan", table: "laporan_keuangan_publik", icon: FaFileInvoiceDollar, color: "text-[#fff0aa]", path: "/admin-sre/laporan-keuangan-publik" },
+          { name: "Donasi & Pendanaan", table: "donasi_pendanaan", icon: FaHandHoldingHeart, color: "text-emerald-400", path: "/admin-sre/donasi-pendanaan" },
+          { name: "Manajemen Anggaran", table: "manajemen_anggaran", icon: FaTasks, color: "text-teal-300", path: "/admin-sre/manajemen-anggaran" },
+          { name: "Learning Center", table: "learning_center", icon: FaGraduationCap, color: "text-teal-300", path: "/admin-sre/learning-center" },
+          { name: "Green Energy Update", table: "green_energy_update", icon: FaLeaf, color: "text-emerald-400", path: "/admin-sre/green-energy-update" },
+          { name: "Engagement Feed", table: "engagement_feed", icon: FaInstagram, color: "text-rose-400", path: "/admin-sre/engagement-feed" },
+          { name: "Account Insight", table: "account_insight", icon: FaChartLine, color: "text-[#fff0aa]", path: "/admin-sre/account-insight" },
+          { name: "AI Analisis", table: "ai_analisis", icon: FaRobot, color: "text-sky-400", path: "/admin-sre/ai-analisis" },
+          { name: "Program Kerja CRD", table: "program_kerja_crd", icon: FaTasks, color: "text-teal-300", path: "/admin-sre/program-kerja-crd" },
+          { name: "Project & Research", table: "project_research_development", icon: FaFlask, color: "text-emerald-400", path: "/admin-sre/project-research-development" },
+          { name: "Competition Center", table: "competition_center", icon: FaTrophy, color: "text-[#fff0aa]", path: "/admin-sre/competition-center" },
+          { name: "Delegasi Lomba", table: "delegasi_lomba", icon: FaGlobe, color: "text-sky-400", path: "/admin-sre/delegasi-lomba" },
+          { name: "Medium Archive", table: "idea_medium_archive", icon: FaLightbulb, color: "text-amber-300", path: "/admin-sre/idea-medium-archive" },
+          { name: "Research Archive", table: "research_archive", icon: FaArchive, color: "text-rose-400", path: "/admin-sre/research-archive" },
+          { name: "Arsip Prestasi", table: "prestasi_crd", icon: FaAward, color: "text-[#fff0aa]", path: "/admin-sre/prestasi-crd" },
+          { name: "Monitoring Staff", table: "monitoring_staff", icon: FaUsersCog, color: "text-teal-300", path: "/admin-sre/monitoring-staff" },
+          { name: "Administrasi Staff", table: "administrasi", icon: FaRegListAlt, color: "text-sky-400", path: "/admin-sre/administrasi" },
+          { name: "Tracker Program", table: "tracker_program", icon: FaTasks, color: "text-rose-400", path: "/admin-sre/tracker-program" },
+          { name: "Sub Divisi Jobdesk", table: "sub_divisi_jobdesk", icon: FaGlobe, color: "text-teal-300", path: "/admin-sre/sub-divisi-jobdesk" },
+          { name: "Kontak Staff PR", table: "kontak_sosmed_staff", icon: FaUsers, color: "text-[#fff0aa]", path: "/admin-sre/kontak-sosmed-staff" },
+          { name: "Brand Identity", table: "graphic_assets", icon: FaPalette, color: "text-amber-300", path: "/admin-sre/graphic-assets" },
+          { name: "Design Showcase", table: "design_showcase", icon: FaAward, color: "text-emerald-400", path: "/admin-sre/design-showcase" },
+        ];
+
       case "staff":
         return [
           { name: "Academics", table: "academics", icon: FaBook, color: "text-[#fff0aa]", path: "/admin-sre/academics" },

@@ -79,8 +79,16 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   }, [supabase.auth]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/admin-sre/login");
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error("Signout error:", e);
+    }
+    setUser(null);
+    setUserRole(null);
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "/admin-sre/login";
   };
 
   if (pathname === "/admin-sre/login") {
@@ -356,7 +364,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
 
       {/* Fixed Minimalist Sidebar */}
       <aside
-        className={`w-72 bg-[#012e21] border-r border-white/10 flex flex-col flex-shrink-0 transition-transform duration-300 fixed top-0 left-0 z-40 h-screen overflow-y-auto scrollbar-hide shadow-2xl ${
+        className={`w-72 bg-[#012e21] border-r border-white/10 flex flex-col flex-shrink-0 transition-transform duration-300 fixed top-0 left-0 z-40 h-screen shadow-2xl ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -390,7 +398,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 px-6 space-y-4 mb-8 font-poppins">
+        <nav className="flex-1 px-6 space-y-4 mb-8 font-poppins overflow-y-auto scrollbar-hide">
           {navGroups.map((group, groupIdx) => (
             <div key={groupIdx} className="space-y-1">
               <p className="px-4 text-[9px] font-bold text-white/40 tracking-[0.2em] uppercase mb-2 mt-4">{group.groupName}</p>
