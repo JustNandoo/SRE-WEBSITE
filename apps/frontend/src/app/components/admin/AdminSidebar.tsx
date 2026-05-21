@@ -101,7 +101,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     if (role === "super-admin" || role === "p-level") {
       return [
         {
-          groupName: "Overview & Utama",
+          groupName: "Main Overview",
           items: [
             { name: "Overview", path: "/admin-sre", icon: FaHome },
             { name: "Academics", path: "/admin-sre/academics", icon: FaBook },
@@ -114,7 +114,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
           ]
         },
         {
-          groupName: "Sekretaris & Administrasi",
+          groupName: "Secretary & Administration",
           items: [
             { name: "Laporan LPJ", path: "/admin-sre/lpj", icon: FaFileAlt },
             { name: "Agenda & Kalendar", path: "/admin-sre/agenda", icon: FaCalendarAlt },
@@ -124,7 +124,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
           ]
         },
         {
-          groupName: "Kebendaharaan & Keuangan",
+          groupName: "Treasurer",
           items: [
             { name: "Laporan Keuangan", path: "/admin-sre/laporan-keuangan-publik", icon: FaFileInvoiceDollar },
             { name: "Donasi & Pendanaan", path: "/admin-sre/donasi-pendanaan", icon: FaHandHoldingHeart },
@@ -132,7 +132,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
           ]
         },
         {
-          groupName: "Pendidikan & Riset",
+          groupName: "Education & Research",
           items: [
             { name: "Learning Center", path: "/admin-sre/learning-center", icon: FaGraduationCap },
             { name: "Green Energy Update", path: "/admin-sre/green-energy-update", icon: FaLeaf },
@@ -147,7 +147,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
           ]
         },
         {
-          groupName: "Corporate & Relation (CRD)",
+          groupName: "Competition & Research Development",
           items: [
             { name: "Program Kerja CRD", path: "/admin-sre/program-kerja-crd", icon: FaTasks },
             { name: "Project & Research", path: "/admin-sre/project-research-development", icon: FaFlask },
@@ -204,7 +204,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     if (role === "secretary") {
       return [
         {
-          groupName: "Sekretariat",
+          groupName: "Secretary",
           items: [
             { name: "Overview", path: "/admin-sre", icon: FaHome },
             { name: "Laporan LPJ", path: "/admin-sre/lpj", icon: FaFileAlt },
@@ -220,7 +220,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     if (role === "treasurer") {
       return [
         {
-          groupName: "Bendahara",
+          groupName: "Treasurer",
           items: [
             { name: "Overview", path: "/admin-sre", icon: FaHome },
             { name: "Laporan Keuangan", path: "/admin-sre/laporan-keuangan-publik", icon: FaFileInvoiceDollar },
@@ -234,7 +234,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     if (role === "education") {
       return [
         {
-          groupName: "Pendidikan & Riset",
+          groupName: "Education",
           items: [
             { name: "Overview", path: "/admin-sre", icon: FaHome },
             { name: "Articles", path: "/admin-sre/articles", icon: FaNewspaper },
@@ -263,7 +263,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     if (role === "crd") {
       return [
         {
-          groupName: "Corporate & Relation",
+          groupName: "Competition & Research Development",
           items: [
             { name: "Overview", path: "/admin-sre", icon: FaHome },
             { name: "Program Kerja CRD", path: "/admin-sre/program-kerja-crd", icon: FaTasks },
