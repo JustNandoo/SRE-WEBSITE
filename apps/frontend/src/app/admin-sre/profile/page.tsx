@@ -60,11 +60,6 @@ export default function ProfilePage() {
     e.preventDefault();
     setNotice(null);
 
-    if (!email) {
-      setNotice({ type: "error", message: "Email is required." });
-      return;
-    }
-    
     if (password && password !== confirmPassword) {
       setNotice({ type: "error", message: "Passwords do not match." });
       return;
@@ -80,7 +75,6 @@ export default function ProfilePage() {
     try {
       // Use the secure RPC we created to update the profile without email confirmation overhead
       const { data, error } = await supabase.rpc("update_own_profile", {
-        new_email: email,
         new_password: password
       });
 
@@ -170,18 +164,16 @@ export default function ProfilePage() {
                 />
               </div>
 
-              {/* Email */}
+              {/* Email (Disabled) */}
               <div className="space-y-2">
                 <label className="text-[10px] uppercase tracking-widest text-[#fff0aa] font-bold block">
                   Email Address
                 </label>
                 <input
                   type="email"
-                  required
+                  disabled
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-transparent border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#fff0aa] transition-colors"
-                  placeholder="admin@sre-pens.com"
+                  className="w-full bg-white/5 border border-white/10 px-4 py-3 text-sm text-white/50 cursor-not-allowed"
                 />
               </div>
 
