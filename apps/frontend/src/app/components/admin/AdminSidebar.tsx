@@ -38,6 +38,7 @@ import {
   FaFileInvoiceDollar,
   FaHandHoldingHeart,
   FaPalette,
+  FaUserCog,
 } from "react-icons/fa";
 import Image from "next/image";
 
@@ -348,6 +349,15 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   };
 
   const navGroups = getNavItemsByRole(userRole);
+
+  if (userRole) {
+    navGroups.push({
+      groupName: "Settings",
+      items: [
+        { name: "Profile Settings", path: "/admin-sre/profile", icon: FaUserCog }
+      ]
+    });
+  }
 
   return (
     <div className="admin-viewport min-h-screen flex flex-col md:flex-row bg-[#011f16] text-white font-sans selection:bg-[#fff0aa] selection:text-[#011f16]">
