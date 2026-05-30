@@ -46,16 +46,22 @@ export default function NotFound() {
       });
 
       // 3. Mouse Interaction (Magnetic Button & Distort)
+      let requestRef: number;
+      
       const handleMouseMove = (e: MouseEvent) => {
-        const { clientX, clientY } = e;
-        const xPos = (clientX / window.innerWidth - 0.5) * 20;
-        const yPos = (clientY / window.innerHeight - 0.5) * 20;
+        if (requestRef) cancelAnimationFrame(requestRef);
+        
+        requestRef = requestAnimationFrame(() => {
+          const { clientX, clientY } = e;
+          const xPos = (clientX / window.innerWidth - 0.5) * 20;
+          const yPos = (clientY / window.innerHeight - 0.5) * 20;
 
-        gsap.to(".interactive-layer", {
-          x: xPos,
-          y: yPos,
-          duration: 1,
-          ease: "power2.out"
+          gsap.to(".interactive-layer", {
+            x: xPos,
+            y: yPos,
+            duration: 1,
+            ease: "power2.out"
+          });
         });
       };
 

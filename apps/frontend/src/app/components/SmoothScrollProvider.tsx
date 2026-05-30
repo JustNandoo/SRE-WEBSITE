@@ -85,7 +85,7 @@ export default function SmoothScrollProvider({ children }: Props) {
           scrollInstance = new LocomotiveScroll({
             el: containerRef.current,
             smooth: true,
-            lerp: 0.075, // Settingan portofoliomu
+            lerp: 0.1, // Increased from 0.075 to reduce CPU load
             multiplier: 1,
             class: "is-reveal",
             // Paksa reset agar tidak konflik dengan native scroll browser
@@ -95,8 +95,14 @@ export default function SmoothScrollProvider({ children }: Props) {
           scrollRef.current = scrollInstance;
 
           // Resize Observer (Penting untuk konten dinamis/gambar)
+          let resizeTimeout: NodeJS.Timeout;
           const resizeObserver = new ResizeObserver(() => {
-            scrollInstance.update();
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+              if (scrollInstance && typeof scrollInstance.update === 'function') {
+                scrollInstance.update();
+              }
+            }, 150);
           });
           resizeObserver.observe(containerRef.current);
 

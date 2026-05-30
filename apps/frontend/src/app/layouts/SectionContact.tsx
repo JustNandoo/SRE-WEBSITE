@@ -3,14 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  FaLinkedin,
-  FaInstagram,
-  FaYoutube,
-  FaTiktok,
-  FaArrowRight,
-} from "react-icons/fa";
+import { FaLinkedin, FaInstagram, FaYoutube, FaTiktok, FaArrowRight, FaArrowUp } from "react-icons/fa";
 import { motion, Variants } from "framer-motion";
+import MotionSwitch from "@/app/components/MotionSwitch";
 import localFont from "next/font/local";
 import { Poppins } from "next/font/google";
 
@@ -74,139 +69,132 @@ const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.1 } },
 };
 
-// ================= SINGLE ITEM COMPONENT (New) =================
-// Kita pisahkan itemnya agar tidak terjadi double loop
-function SocialItem({ social, index }: { social: any; index: number }) {
+// ================= SINGLE ITEM COMPONENT =================
+function SocialItem({ social, index }: { social: (typeof socialLinks)[number]; index: number }) {
   return (
     <Link
       href={social.url}
       target="_blank"
-      className="group relative flex items-center justify-between py-8 md:py-10 border-b border-[#fff0aa]/20 hover:bg-[#fff0aa] transition-colors px-2 md:px-4"
+      rel="noopener noreferrer"
+      className="group relative flex items-center justify-between py-6 sm:py-8 md:py-10 border-b border-[#fff0aa]/15 hover:bg-[#fff0aa] transition-all duration-500 px-3 sm:px-4 md:px-6"
     >
       {/* LEFT */}
-      <div className="flex items-center gap-6 md:gap-12">
-        <span className="text-xs opacity-50 group-hover:text-[#012e21]">
+      <div className="flex items-center gap-4 sm:gap-6 md:gap-12">
+        <span className="font-poppins text-[10px] sm:text-xs tabular-nums opacity-40 group-hover:text-[#012e21] transition-colors duration-500">
           0{index + 1}
         </span>
-        <span className="font-akira text-2xl md:text-4xl lg:text-5xl group-hover:text-[#012e21] group-hover:translate-x-4 transition-all">
+        <span className="font-akira text-xl sm:text-2xl md:text-4xl lg:text-5xl group-hover:text-[#012e21] group-hover:translate-x-2 md:group-hover:translate-x-4 transition-all duration-500 ease-out">
           {social.name}
         </span>
       </div>
 
       {/* RIGHT */}
-      <div className="flex items-center gap-4 md:gap-8">
-        <span className="hidden md:block text-sm tracking-widest uppercase group-hover:text-[#012e21]">
+      <div className="flex items-center gap-3 sm:gap-4 md:gap-8">
+        <span className="hidden sm:block font-poppins text-xs sm:text-sm tracking-widest uppercase opacity-60 group-hover:text-[#012e21] group-hover:opacity-100 transition-all duration-500">
           {social.handle}
         </span>
 
         {/* Circle Button */}
-        <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full border border-[#fff0aa]/30 flex items-center justify-center overflow-hidden group-hover:bg-[#012e21] group-hover:border-[#012e21]">
-          
+        <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full border border-[#fff0aa]/25 flex items-center justify-center overflow-hidden group-hover:bg-[#012e21] group-hover:border-[#012e21] transition-all duration-500 flex-shrink-0">
           {/* Default Icon (Slide Up) */}
-          <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 group-hover:-translate-y-full">
-            {social.icon}
-          </div>
-          
-          {/* Hover Arrow (Slide In) */}
-          <div className="absolute inset-0 flex items-center justify-center translate-y-full transition-transform duration-500 group-hover:translate-y-0 text-[#fff0aa]">
-            <FaArrowRight className="-rotate-45" />
+          <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-out group-hover:-translate-y-full">
+            <span className="text-sm sm:text-base">{social.icon}</span>
           </div>
 
+          {/* Hover Arrow (Slide In) */}
+          <div className="absolute inset-0 flex items-center justify-center translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 text-[#fff0aa]">
+            <FaArrowRight className="-rotate-45 text-sm sm:text-base" />
+          </div>
         </div>
       </div>
     </Link>
   );
 }
 
-// ================= MOBILE / TABLET =================
-function ContactStatic() {
-  return (
-    <div className="w-full flex flex-col border-t border-[#fff0aa]/20">
-      {/* Loop di sini untuk versi statis */}
-      {socialLinks.map((social, index) => (
-        <SocialItem key={social.id} social={social} index={index} />
-      ))}
-    </div>
-  );
-}
-
-// ================= DESKTOP =================
-function ContactMotion() {
-  return (
-    <motion.div
-      variants={stagger}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      className="w-full flex flex-col border-t border-[#fff0aa]/20"
-    >
-      {/* Loop di sini untuk versi animasi */}
-      {socialLinks.map((social, index) => (
-        <motion.div key={social.id} variants={fadeUp}>
-          <SocialItem social={social} index={index} />
-        </motion.div>
-      ))}
-    </motion.div>
-  );
-}
+// The static and motion components have been combined using MotionSwitch below
 
 // ================= MAIN =================
 export default function SectionContact() {
+  const handleBackToTop = () => {
+    // Try Locomotive Scroll first (desktop), fall back to native scroll
+    const scrollContainer = document.querySelector("[data-scroll-container]");
+    if (scrollContainer && (scrollContainer as any).__locomotiveScroll) {
+      (scrollContainer as any).__locomotiveScroll.scrollTo(0, { duration: 1200 });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <footer
       data-scroll-section
-      className={`relative min-h-screen bg-[#012e21] text-[#fff0aa] pt-32 pb-10 overflow-hidden ${poppins.variable} ${akira.variable}`}
+      className={`relative min-h-screen bg-[#012e21] text-[#fff0aa] pt-20 sm:pt-28 md:pt-32 pb-8 sm:pb-10 overflow-hidden ${poppins.variable} ${akira.variable}`}
     >
-      {/* BACKGROUND */}
+      {/* BACKGROUND PARALLAX IMAGE */}
       <div
-        className="absolute inset-0 h-[120%] -top-[10%] opacity-20 pointer-events-none"
+        className="absolute inset-0 h-[120%] -top-[10%] opacity-15 pointer-events-none"
         data-scroll
         data-scroll-speed="-0.3"
       >
         <Image
           src="/img/bg/bg3.png"
-          alt="Background"
+          alt="Background texture"
           fill
           className="object-cover grayscale"
+          sizes="100vw"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-[#012e21] via-[#012e21]/40 to-[#012e21]/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#012e21] via-[#012e21]/50 to-[#012e21]/80" />
       </div>
 
-      <div className="container mx-auto px-6 md:px-10 lg:px-20 relative z-10 flex flex-col h-full justify-between">
-        {/* HEADER */}
-        <div className="mb-20">
-          <p className="tracking-[0.3em] uppercase text-sm opacity-70 mb-4 font-poppins">
+      <div className="container mx-auto px-5 sm:px-6 md:px-10 lg:px-20 relative z-10 flex flex-col min-h-[80vh] justify-between">
+        {/* ==================== HEADER ==================== */}
+        <div className="mb-12 sm:mb-16 md:mb-20">
+          <p className="font-poppins tracking-[0.3em] uppercase text-xs sm:text-sm opacity-60 mb-3 sm:mb-4">
             Stay in the loop
           </p>
-          <h1 className="font-akira text-[11vw] leading-[0.85] uppercase">
+          <h1 className="font-akira text-[12vw] sm:text-[10vw] md:text-[9vw] lg:text-[9.4vw] leading-[0.85] uppercase">
             LET&apos;S GET <br />
-            <span className="text-[#134576]">CONNECTED</span>
+            <span className="text-stroke">CONNECTED</span>
           </h1>
         </div>
 
-        {/* LIST (Responsive Switch) */}
-        <div className="block lg:hidden">
-          <ContactStatic />
+        {/* ==================== SOCIAL LINKS LIST ==================== */}
+        <div className="flex-1 flex items-start">
+          <MotionSwitch
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            className="w-full flex flex-col border-t border-[#fff0aa]/15"
+          >
+            {socialLinks.map((social, index) => (
+              <MotionSwitch key={social.id} variants={fadeUp}>
+                <SocialItem social={social} index={index} />
+              </MotionSwitch>
+            ))}
+          </MotionSwitch>
         </div>
 
-        <div className="hidden lg:block">
-          <ContactMotion />
-        </div>
+        {/* ==================== FOOTER BAR ==================== */}
+        <div className="mt-12 sm:mt-16 md:mt-20 pt-6 sm:pt-8 border-t border-[#fff0aa]/10">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 font-poppins text-[11px] sm:text-xs opacity-50">
+            {/* Left info */}
+            <div className="space-y-0.5">
+              <p className="tracking-widest uppercase">Surabaya, Indonesia</p>
+              <p className="tracking-widest uppercase">PENS — EEPIS</p>
+            </div>
 
-        {/* FOOTER */}
-        <div className="mt-20 flex flex-col md:flex-row justify-between text-xs opacity-60 font-poppins">
-          <div>
-            <p>SURABAYA, INDONESIA</p>
-            <p>PENS – EEPIS</p>
-          </div>
-          <div className="mt-4 md:mt-0 flex gap-6 justify-center">
-            <span>© 2025 SRE PENS</span>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="hover:underline uppercase"
-            >
-              Back to top
-            </button>
+            {/* Right actions */}
+            <div className="flex items-center gap-6 sm:gap-8">
+              <span className="tracking-wider">© 2024 SRE PENS</span>
+              <button
+                onClick={handleBackToTop}
+                className="flex items-center gap-2 uppercase tracking-wider hover:text-[#fff0aa] hover:opacity-100 transition-all duration-300 group"
+              >
+                <span>Back to top</span>
+                <FaArrowUp className="text-[10px] group-hover:-translate-y-0.5 transition-transform duration-300" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

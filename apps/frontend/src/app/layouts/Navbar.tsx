@@ -107,7 +107,7 @@ export default function NavbarSRE() {
               <Image
                 src="/logo/svg/sreLogoOne.svg"
                 alt="SRE Logo"
-                width={100}
+                width={120}
                 height={35}
                 className="object-contain brightness-0 invert"
                 priority
@@ -116,7 +116,7 @@ export default function NavbarSRE() {
           </Link>
         </div>
 
-        {/* --- DESKTOP NAVIGATION (TENGAH) --- */}
+        {/* --- DESKTOP NAVIGATION (TENGAH) ---
         <nav
           className={`hidden lg:flex items-center gap-2 absolute left-1/2 -translate-x-1/2 transition-opacity duration-300 ${
             isActive ? "opacity-0 pointer-events-none" : "opacity-100"
@@ -149,7 +149,7 @@ export default function NavbarSRE() {
             </div>
           </DesktopNavLink>
           <DesktopNavLink title="Contact" href="/contact" />
-        </nav>
+        </nav> */}
 
         {/* --- TOMBOL MENU BURGER (KANAN) --- */}
         <div className="z-50 shrink-0">
@@ -239,8 +239,8 @@ export default function NavbarSRE() {
                 <p>PENS Surabaya</p>
               </div>
               <div className="flex gap-4 text-xs md:text-sm font-medium">
-                <a href="#">Instagram</a>
-                <a href="#">LinkedIn</a>
+                <a href="https://www.instagram.com/sre_pens">Instagram</a>
+                <a href="https://www.linkedin.com/in/society-of-renewable-energy-politeknik-elektronika-negeri-surabaya">LinkedIn</a>
               </div>
             </motion.div>
           </motion.div>
