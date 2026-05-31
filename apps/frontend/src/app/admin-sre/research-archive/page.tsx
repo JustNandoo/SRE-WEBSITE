@@ -158,7 +158,7 @@ const fetchUserRole = async () => {
 
   const isWritable = userRole === "super-admin" || userRole === "p-level" || userRole === "crd";
 
-  const isAllowedToAccess = userRole === "super-admin" || userRole === "p-level" || userRole === "staff" || userRole === "crd";
+  const isAllowedToAccess = userRole === "super-admin" || userRole === "p-level" || userRole === "staff" || userRole === "crd" || userRole === "staff-crd";
 
   if (userRole && !isAllowedToAccess) {
     return (

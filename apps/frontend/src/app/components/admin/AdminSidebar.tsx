@@ -215,7 +215,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "secretary") {
+    if (role === "secretary" || role === "staff-secretary") {
       return [
         {
           groupName: "Secretary",
@@ -231,7 +231,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "treasurer") {
+    if (role === "treasurer" || role === "staff-treasurer") {
       return [
         {
           groupName: "Treasurer",
@@ -245,7 +245,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "education") {
+    if (role === "education" || role === "staff-education") {
       return [
         {
           groupName: "Education",
@@ -260,7 +260,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "content-marketing") {
+    if (role === "content-marketing" || role === "staff-content-marketing") {
       return [
         {
           groupName: "Content Marketing",
@@ -274,7 +274,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "crd") {
+    if (role === "crd" || role === "staff-crd") {
       return [
         {
           groupName: "Competition & Research Development",
@@ -292,7 +292,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "hr") {
+    if (role === "hr" || role === "staff-hr") {
       return [
         {
           groupName: "Human Resources",
@@ -306,7 +306,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "pr") {
+    if (role === "pr" || role === "staff-pr") {
       return [
         {
           groupName: "Public Relations",
@@ -320,7 +320,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "graphic-design") {
+    if (role === "graphic-design" || role === "staff-graphic-design") {
       return [
         {
           groupName: "Creative Design",
@@ -333,7 +333,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       ];
     }
 
-    if (role === "finance") {
+    if (role === "finance" || role === "staff-finance") {
       return [
         {
           groupName: "Finance",
