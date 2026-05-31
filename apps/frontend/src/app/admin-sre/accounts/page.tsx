@@ -304,7 +304,7 @@ export default function ManageAccountsPage() {
                 <tr className="bg-white/5 border-b border-white/10 text-[#fff0aa] uppercase text-[10px] tracking-wider">
                   <th className="py-4 px-4 font-semibold">Email Pengguna</th>
                   <th className="py-4 px-4 font-semibold">Peran (Role)</th>
-                  <th className="py-4 px-4 font-semibold">Sandi Akses (Plain-text)</th>
+                  {userRole === "super-admin" && <th className="py-4 px-4 font-semibold">Sandi Akses (Plain-text)</th>}
                   <th className="py-4 px-4 font-semibold text-right">Aksi Manajemen</th>
                 </tr>
               </thead>
@@ -325,18 +325,20 @@ export default function ManageAccountsPage() {
                         {acc.role}
                       </span>
                     </td>
-                    <td className="py-4 px-4 font-mono text-white/80">
-                      <div className="flex items-center gap-3">
-                        <FaKey size={12} className="text-white/30" />
-                        <span>{showPasswordMap[acc.id] ? acc.password_text : "••••••••"}</span>
-                        <button
-                          onClick={() => togglePasswordVisibility(acc.id)}
-                          className="opacity-55 hover:opacity-100 p-1 transition-opacity"
-                        >
-                          {showPasswordMap[acc.id] ? <FaEyeSlash size={14} /> : <FaEye size={14} />}
-                        </button>
-                      </div>
-                    </td>
+                    {userRole === "super-admin" && (
+                      <td className="py-4 px-4 font-mono text-white/80">
+                        <div className="flex items-center gap-3">
+                          <FaKey size={12} className="text-white/30" />
+                          <span>{showPasswordMap[acc.id] ? acc.password_text : "••••••••"}</span>
+                          <button
+                            onClick={() => togglePasswordVisibility(acc.id)}
+                            className="opacity-55 hover:opacity-100 p-1 transition-opacity"
+                          >
+                            {showPasswordMap[acc.id] ? <FaEyeSlash size={14} /> : <FaEye size={14} />}
+                          </button>
+                        </div>
+                      </td>
+                    )}
                     <td className="py-4 px-4 text-right space-x-2">
                       <button
                         onClick={() => openEditModal(acc)}
@@ -359,7 +361,7 @@ export default function ManageAccountsPage() {
                 ))}
                 {filteredAccounts.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-white/40">Data akun tidak ditemukan.</td>
+                    <td colSpan={userRole === "super-admin" ? 4 : 3} className="py-8 text-center text-white/40">Data akun tidak ditemukan.</td>
                   </tr>
                 )}
               </tbody>
