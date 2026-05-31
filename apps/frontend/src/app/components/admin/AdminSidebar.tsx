@@ -39,6 +39,7 @@ import {
   FaHandHoldingHeart,
   FaPalette,
   FaUserCog,
+  FaExclamationTriangle,
 } from "react-icons/fa";
 import Image from "next/image";
 
@@ -49,6 +50,8 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   const [user, setUser] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
@@ -80,6 +83,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   }, [supabase.auth]);
 
   const handleLogout = async () => {
+    setLoggingOut(true);
     try {
       await supabase.auth.signOut();
     } catch (e) {
@@ -451,7 +455,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
         {/* Logout Footer */}
         <div className="p-6 border-t border-white/10 mt-auto flex-shrink-0">
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-red-950/30 border border-red-500/30 text-red-300 hover:bg-red-500 hover:text-white transition-all font-poppins font-semibold text-xs tracking-wider uppercase shadow-sm"
           >
             <FaSignOutAlt size={15} />
@@ -459,6 +463,44 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
           </button>
         </div>
       </aside>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-[999] p-4 font-poppins">
+          <div className="bg-[#012e21] border border-white/15 w-full max-w-sm p-8 shadow-2xl relative animate-fade-in">
+            {/* Icon */}
+            <div className="flex justify-center mb-5">
+              <div className="w-16 h-16 rounded-full bg-red-950/40 border border-red-500/40 flex items-center justify-center">
+                <FaExclamationTriangle size={26} className="text-red-400" />
+              </div>
+            </div>
+            {/* Text */}
+            <h3 className="font-akira text-center text-sm text-white uppercase tracking-wider mb-3">Konfirmasi Logout</h3>
+            <p className="text-center text-white/60 text-xs leading-relaxed mb-8">
+              Apakah Anda yakin ingin keluar dari sesi ini?<br />
+              <span className="text-[#fff0aa] font-semibold">{user?.email}</span>
+            </p>
+            {/* Actions */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                disabled={loggingOut}
+                className="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-xs tracking-wider uppercase transition-all disabled:opacity-50"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-xs tracking-wider uppercase transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                <FaSignOutAlt size={12} />
+                {loggingOut ? "Keluar..." : "Ya, Logout"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1 min-w-0 md:ml-72 p-6 sm:p-8 md:p-14 overflow-y-auto min-h-screen">
