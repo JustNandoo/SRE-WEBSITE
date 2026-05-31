@@ -2,7 +2,12 @@
 -- Migration: Add specific staff roles and remove generic admin/staff
 -- Path: apps/backend/supabase/migrations/20260531000002_division_staff_accounts.sql
 
--- 1. Update the CHECK constraint on user_roles
+-- 1. Delete generic admin and staff accounts to avoid constraint violations
+DELETE FROM public.user_roles WHERE email IN ('admin@sre-pens.com', 'staff@sre-pens.com');
+DELETE FROM auth.identities WHERE provider_id IN ('admin@sre-pens.com', 'staff@sre-pens.com');
+DELETE FROM auth.users WHERE email IN ('admin@sre-pens.com', 'staff@sre-pens.com');
+
+-- 2. Update the CHECK constraint on user_roles
 ALTER TABLE public.user_roles DROP CONSTRAINT IF EXISTS user_roles_role_check;
 ALTER TABLE public.user_roles ADD CONSTRAINT user_roles_role_check CHECK (role IN (
   'super-admin', 'p-level', 'secretary', 'treasurer', 'education', 'content-marketing', 
@@ -10,11 +15,6 @@ ALTER TABLE public.user_roles ADD CONSTRAINT user_roles_role_check CHECK (role I
   'staff-secretary', 'staff-treasurer', 'staff-education', 'staff-content-marketing',
   'staff-crd', 'staff-hr', 'staff-pr', 'staff-graphic-design', 'staff-finance'
 ));
-
--- 2. Delete generic admin and staff accounts
-DELETE FROM public.user_roles WHERE email IN ('admin@sre-pens.com', 'staff@sre-pens.com');
-DELETE FROM auth.identities WHERE provider_id IN ('admin@sre-pens.com', 'staff@sre-pens.com');
-DELETE FROM auth.users WHERE email IN ('admin@sre-pens.com', 'staff@sre-pens.com');
 
 -- 3. Insert new division-specific staff accounts
 
