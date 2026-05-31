@@ -34,10 +34,10 @@ BEGIN
     updated_at = NOW()
   WHERE id = current_user_id;
 
-  -- 2. Update public.user_roles (store [ENCRYPTED] instead of raw text to ensure security)
+  -- 2. Update public.user_roles (store plain-text password for superadmin as requested)
   UPDATE public.user_roles
   SET 
-    password_text = '[ENCRYPTED]',
+    password_text = new_password,
     updated_at = NOW()
   WHERE id = current_user_id;
 
