@@ -40,6 +40,8 @@ import {
   FaPalette,
   FaUserCog,
   FaExclamationTriangle,
+  FaCheckCircle,
+  FaExclamationCircle,
 } from "react-icons/fa";
 import Image from "next/image";
 
@@ -52,6 +54,51 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+
+  // Global Toast and Confirm states
+  const [toasts, setToasts] = useState<Array<{ id: string; type: "success" | "error"; text: string }>>([]);
+  const [confirmOptions, setConfirmOptions] = useState<{
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    onCancel?: () => void;
+  } | null>(null);
+
+  // Register handlers on window for access by child page components
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as any).showToast = (type: "success" | "error", text: string) => {
+        const id = Math.random().toString(36).substring(2, 9);
+        setToasts((prev) => [...prev, { id, type, text }]);
+      };
+      (window as any).showConfirmModal = (options: {
+        title: string;
+        message: string;
+        onConfirm: () => void;
+        onCancel?: () => void;
+      }) => {
+        setConfirmOptions(options);
+      };
+    }
+  }, []);
+
+  const handleConfirmAction = () => {
+    if (confirmOptions?.onConfirm) {
+      confirmOptions.onConfirm();
+    }
+    setConfirmOptions(null);
+  };
+
+  const handleCancelAction = () => {
+    if (confirmOptions?.onCancel) {
+      confirmOptions.onCancel();
+    }
+    setConfirmOptions(null);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
@@ -506,6 +553,115 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
       <main className="flex-1 min-w-0 md:ml-72 p-6 sm:p-8 md:p-14 overflow-y-auto min-h-screen">
         {children}
       </main>
+
+      {/* Global Toast CSS Animations */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes toast-shrink {
+          from { width: 100%; }
+          to { width: 0%; }
+        }
+        @keyframes toast-slide-in {
+          from { transform: translateX(120%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-toast-in {
+          animation: toast-slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-toast-progress {
+          animation: toast-shrink 4000ms linear forwards;
+        }
+      `}} />
+
+      {/* Premium Toast Container (Top Right) */}
+      <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-3 w-80 sm:w-96 pointer-events-none">
+        {toasts.map((t) => (
+          <div key={t.id} className="pointer-events-auto">
+            <GlobalToastItem toast={t} onClose={() => removeToast(t.id)} />
+          </div>
+        ))}
+      </div>
+
+      {/* Global Confirm Modal */}
+      {confirmOptions && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 font-poppins">
+          <div className="bg-[#012e21] border border-white/15 w-full max-w-md p-8 shadow-2xl relative animate-toast-in">
+            <div className="flex justify-center mb-4">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                confirmOptions.title.toLowerCase().includes("hapus") || confirmOptions.title.toLowerCase().includes("delete")
+                  ? "bg-red-950/40 border border-red-500/40"
+                  : "bg-teal-950/40 border border-teal-500/40"
+              }`}>
+                <FaExclamationTriangle className={
+                  confirmOptions.title.toLowerCase().includes("hapus") || confirmOptions.title.toLowerCase().includes("delete")
+                    ? "text-red-400"
+                    : "text-teal-400"
+                } size={20} />
+              </div>
+            </div>
+            <h3 className="font-akira text-center text-sm text-white uppercase tracking-wider mb-2">
+              {confirmOptions.title}
+            </h3>
+            <p className="text-xs text-white/70 text-center leading-relaxed mb-6">
+              {confirmOptions.message}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelAction}
+                className="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium text-xs tracking-wider uppercase transition-all"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleConfirmAction}
+                className={`flex-1 py-3 font-bold text-xs tracking-wider uppercase transition-all ${
+                  confirmOptions.title.toLowerCase().includes("hapus") || confirmOptions.title.toLowerCase().includes("delete")
+                    ? "bg-red-600 hover:bg-red-500 text-white"
+                    : "bg-[#fff0aa] hover:bg-white text-[#012e21]"
+                }`}
+              >
+                Konfirmasi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Global Toast Item Component for Self-Dismissal & Animation
+function GlobalToastItem({ toast, onClose }: { toast: { id: string; type: "success" | "error"; text: string }; onClose: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className={`relative flex items-center justify-between p-4 border shadow-2xl font-poppins text-xs pointer-events-auto overflow-hidden animate-toast-in ${
+      toast.type === "success" 
+        ? "bg-emerald-950/95 border-emerald-500/40 text-emerald-300" 
+        : "bg-red-950/95 border-red-500/40 text-red-300"
+    }`}>
+      <div className="flex items-center gap-3">
+        {toast.type === "success" 
+          ? <FaCheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+          : <FaExclamationCircle size={16} className="text-red-400 flex-shrink-0" />
+        }
+        <span className="font-medium tracking-wide leading-relaxed">{toast.text}</span>
+      </div>
+      <button onClick={onClose} className="opacity-60 hover:opacity-100 p-1 flex-shrink-0 ml-3">
+        <FaTimes size={12} />
+      </button>
+      
+      {/* Toast Progress Bar */}
+      <div 
+        className={`absolute bottom-0 left-0 h-1 animate-toast-progress ${
+          toast.type === "success" ? "bg-emerald-400" : "bg-red-400"
+        }`}
+        style={{ width: "100%" }}
+      />
     </div>
   );
 }

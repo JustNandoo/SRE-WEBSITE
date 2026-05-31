@@ -28,6 +28,14 @@ export default function AdminAcademicsPage() {
   const [editingAcademic, setEditingAcademic] = useState<AcademicEntity | null>(null);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    if (notice) {
+      if (typeof window !== "undefined" && (window as any).showToast) {
+        (window as any).showToast(notice.type === "success" ? "success" : "error", (notice as any).text || (notice as any).message || "");
+      }
+    }
+  }, [notice]);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -98,7 +106,18 @@ export default function AdminAcademicsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to permanently delete this academic resource?")) return;
+    if (!(await new Promise((resolve) => {
+      if (typeof window !== "undefined" && (window as any).showConfirmModal) {
+        (window as any).showConfirmModal({
+          title: "Konfirmasi Hapus",
+          message: "Apakah Anda yakin ingin menghapus data ini secara permanen?",
+          onConfirm: () => resolve(true),
+          onCancel: () => resolve(false)
+        });
+      } else {
+        resolve(confirm("Apakah Anda yakin ingin menghapus data ini secara permanen?"));
+      }
+    }))) return;
 
     setLoading(true);
     const { error } = await supabase.from("academics").delete().eq("id", id);
@@ -113,6 +132,18 @@ export default function AdminAcademicsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!(await new Promise((resolve) => {
+      if (typeof window !== "undefined" && (window as any).showConfirmModal) {
+        (window as any).showConfirmModal({
+          title: "Konfirmasi Simpan",
+          message: "Apakah Anda yakin data yang dimasukkan sudah benar?",
+          onConfirm: () => resolve(true),
+          onCancel: () => resolve(false)
+        });
+      } else {
+        resolve(true);
+      }
+    }))) return;
     setSaving(true);
     setNotice(null);
 

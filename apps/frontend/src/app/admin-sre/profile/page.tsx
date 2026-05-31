@@ -37,6 +37,14 @@ export default function ProfilePage() {
   const [notice, setNotice] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   useEffect(() => {
+    if (notice) {
+      if (typeof window !== "undefined" && (window as any).showToast) {
+        (window as any).showToast(notice.type === "success" ? "success" : "error", (notice as any).text || (notice as any).message || "");
+      }
+    }
+  }, [notice]);
+
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -58,6 +66,18 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!(await new Promise((resolve) => {
+      if (typeof window !== "undefined" && (window as any).showConfirmModal) {
+        (window as any).showConfirmModal({
+          title: "Konfirmasi Simpan",
+          message: "Apakah Anda yakin data yang dimasukkan sudah benar?",
+          onConfirm: () => resolve(true),
+          onCancel: () => resolve(false)
+        });
+      } else {
+        resolve(true);
+      }
+    }))) return;
     setNotice(null);
 
     if (password && password !== confirmPassword) {
