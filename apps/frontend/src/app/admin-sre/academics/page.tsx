@@ -229,18 +229,7 @@ export default function AdminAcademicsPage() {
         )}
       </div>
 
-      {/* Notices */}
-      {notice && (
-        <div className={`p-4 border font-poppins text-xs flex items-center justify-between font-medium transition-all ${notice.type === "success" ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300" : "bg-red-950/40 border-red-500/40 text-red-300"}`}>
-          <div className="flex items-center gap-3">
-            {notice.type === "success" ? <FaCheckCircle size={16} className="text-emerald-400 flex-shrink-0" /> : <FaExclamationCircle size={16} className="text-red-400 flex-shrink-0" />}
-            <span>{notice.text}</span>
-          </div>
-          <button onClick={() => setNotice(null)} className="opacity-60 hover:opacity-100 p-1">
-            <FaTimes size={14} />
-          </button>
-        </div>
-      )}
+      
 
       {/* Search Input */}
       <div className="relative max-w-md">

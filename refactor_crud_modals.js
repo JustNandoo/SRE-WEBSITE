@@ -19,8 +19,8 @@ const walk = (dir) => {
 const files = walk('apps/frontend/src/app/admin-sre');
 
 files.forEach(file => {
-  // Skip accounts page as we already did it manually with specialized code
-  if (file.includes('accounts') || file.includes('login')) {
+  // Skip login & accounts
+  if (file.includes('login') || file.includes('accounts')) {
     return;
   }
 
@@ -28,7 +28,6 @@ files.forEach(file => {
   let changed = false;
 
   // 1. Inject useEffect to hook notice state changes to global toast
-  // Matches const [notice, setNotice] = useState<...>(...); even across lines
   const noticeRegex = /const\s+\[notice,\s*setNotice\]\s*=\s*useState[\s\S]*?\);/g;
   if (noticeRegex.test(content) && !content.includes('showToast(notice.type')) {
     content = content.replace(noticeRegex, (match) => {
@@ -81,8 +80,24 @@ files.forEach(file => {
     changed = true;
   }
 
+  // 4. Remove inline notices block
+  const noticeBlockRegex = /\{\/\*\s*Notices\s*\*\/\}\s*\{\s*notice\s*&&\s*\([\s\S]*?onClick\s*=\s*\{\s*\(\s*\)\s*=>\s*setNotice\(null\)\s*\}[\s\S]*?<\/button>\s*<\/div>\s*\)\s*\}/g;
+  if (noticeBlockRegex.test(content)) {
+    content = content.replace(noticeBlockRegex, '');
+    changed = true;
+  }
+
+  // 5. Special case for profile page
+  if (file.includes('profile')) {
+    const profileNoticeRegex = /\{\/\*\s*NOTICE\s*BAR\s*\*\/\}\s*\{\s*notice\s*&&\s*\([\s\S]*?<\/div>\s*\)\s*\}/g;
+    if (profileNoticeRegex.test(content)) {
+      content = content.replace(profileNoticeRegex, '');
+      changed = true;
+    }
+  }
+
   if (changed) {
     fs.writeFileSync(file, content, 'utf8');
-    console.log('Successfully refactored CRUD modals & Toast logic in:', file);
+    console.log('Successfully refactored CRUD modals, Toasts, and cleaned up notices in:', file);
   }
 });

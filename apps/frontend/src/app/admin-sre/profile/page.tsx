@@ -152,19 +152,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* NOTICE BAR */}
-        {notice && (
-          <div
-            className={`p-4 border font-medium text-sm flex items-center gap-3 shadow-sm ${
-              notice.type === "success"
-                ? "bg-emerald-950/40 border-emerald-500/30 text-emerald-300"
-                : "bg-red-950/40 border-red-500/30 text-red-300"
-            }`}
-          >
-            {notice.type === "success" ? <FaCheckCircle size={16} /> : <FaExclamationCircle size={16} />}
-            {notice.message}
-          </div>
-        )}
+        
 
         {/* PROFILE FORM */}
         <div className="p-8 border border-white/10 bg-[#011f16] shadow-xl">
