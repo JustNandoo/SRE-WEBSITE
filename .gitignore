@@ -46,3 +46,6 @@ next-env.d.ts
 
 # agents skills
 .agents
+
+# credentials (local only)
+KREDENSIAL_CMS.md
