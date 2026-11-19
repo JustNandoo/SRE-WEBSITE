@@ -46,3 +46,11 @@ next-env.d.ts
 
 # agents skills
 .agents
+
+# data dump & tooling internal (jangan di-commit)
+supabase-backup-*/
+dump_supabase.mjs
+db-migration-kit/
+
+# IDE
+.idea/

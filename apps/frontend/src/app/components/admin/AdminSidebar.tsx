@@ -24,6 +24,7 @@ import {
   FaFolderOpen,
   FaInfoCircle,
   FaUsers,
+  FaUserPlus,
   FaRegListAlt,
   FaGraduationCap,
   FaLeaf,
@@ -229,6 +230,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
           items: [
             { name: "Monitoring Staff", path: "/admin-sre/monitoring-staff", icon: FaUsersCog },
             { name: "Administrasi Staff", path: "/admin-sre/administrasi", icon: FaRegListAlt },
+            { name: "Data Pendaftar", path: "/admin-sre/pendaftar", icon: FaUserPlus },
           ]
         },
         {
@@ -353,6 +355,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
             { name: "Divisions & Staff", path: "/admin-sre/staff", icon: FaUserTie },
             { name: "Monitoring Staff", path: "/admin-sre/monitoring-staff", icon: FaUsersCog },
             { name: "Administrasi Staff", path: "/admin-sre/administrasi", icon: FaRegListAlt },
+            { name: "Data Pendaftar", path: "/admin-sre/pendaftar", icon: FaUserPlus },
           ]
         }
       ];

@@ -80,6 +80,11 @@ export default function ProfilePage() {
     }))) return;
     setNotice(null);
 
+    if (password && password.length < 8) {
+      setNotice({ type: "error", message: "Password must be at least 8 characters." });
+      return;
+    }
+
     if (password && password !== confirmPassword) {
       setNotice({ type: "error", message: "Passwords do not match." });
       return;

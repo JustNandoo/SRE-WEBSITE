@@ -34,19 +34,57 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
+  const redirectTo = (path: string, params?: Record<string, string>) => {
+    const url = request.nextUrl.clone();
+    url.pathname = path;
+    url.search = '';
+    Object.entries(params ?? {}).forEach(([key, value]) => url.searchParams.set(key, value));
+    const response = NextResponse.redirect(url);
+    // Bawa cookie sesi yang baru di-refresh agar tidak hilang saat redirect.
+    supabaseResponse.cookies.getAll().forEach((cookie) => response.cookies.set(cookie));
+    return response;
+  };
+
+  // ---------- CMS (/admin-sre) — hanya akun yang terdaftar di user_roles ----------
   const isAuthPage = pathname === '/admin-sre/login';
   const isAdminRoute = pathname.startsWith('/admin-sre');
 
-  if (isAdminRoute && !isAuthPage && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/admin-sre/login';
-    return NextResponse.redirect(url);
+  if (isAdminRoute) {
+    // Sejak ada akun pendaftar publik, "sudah login" belum tentu staf CMS.
+    let isCmsUser = false;
+    if (user) {
+      const { data: roleRow } = await supabase
+        .from('user_roles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+      isCmsUser = !!roleRow;
+    }
+
+    if (!isAuthPage && !isCmsUser) {
+      return user ? redirectTo('/') : redirectTo('/admin-sre/login');
+    }
+    if (isAuthPage && isCmsUser) {
+      return redirectTo('/admin-sre');
+    }
+    return supabaseResponse;
   }
 
-  if (isAuthPage && user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/admin-sre';
-    return NextResponse.redirect(url);
+  // ---------- Pendaftar Open Recruitment ----------
+  const applicantProtectedRoutes = ['/pendaftaran'];
+  const applicantAuthRoutes = ['/login', '/register'];
+  const matches = (routes: string[]) =>
+    routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+
+  if (matches(applicantProtectedRoutes) && !user) {
+    return redirectTo('/login', { next: pathname });
+  }
+
+  if (matches(applicantAuthRoutes) && user) {
+    const next = request.nextUrl.searchParams.get('next');
+    const safeNext =
+      next && next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/admin-sre') ? next : '/pendaftaran';
+    return redirectTo(safeNext);
   }
 
   return supabaseResponse;

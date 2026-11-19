@@ -7,7 +7,6 @@ const CustomScrollbar = () => {
   const pathname = usePathname();
   const [progress, setProgress] = useState(0);
 
-  if (pathname.startsWith("/admin-sre")) return null;
 
   useEffect(() => {
     // Jangan jalankan logic ini di mobile
@@ -23,6 +22,9 @@ const CustomScrollbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Dicek setelah semua hook agar urutan hook tetap sama saat pindah dari/ke /admin-sre.
+  if (pathname.startsWith("/admin-sre")) return null;
 
   // Class 'hidden lg:block' memastikan ini tidak dirender di mobile
   return (

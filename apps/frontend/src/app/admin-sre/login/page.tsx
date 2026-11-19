@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { fetchIsCmsUser } from "@/services/api";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaArrowLeft, FaCheck } from "react-icons/fa";
@@ -48,6 +49,15 @@ export default function AdminLoginPage() {
       email,
       password,
     });
+
+    // Akun pendaftar Open Recruitment juga bisa login lewat Supabase Auth,
+    // jadi pastikan akun ini terdaftar sebagai staf CMS (public.user_roles).
+    if (!authError && data.user && !(await fetchIsCmsUser(data.user.id))) {
+      await supabase.auth.signOut();
+      setLoading(false);
+      setError("This account is not registered as SRE PENS staff.");
+      return;
+    }
 
     setLoading(false);
 

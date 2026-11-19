@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaChevronDown } from "react-icons/fa";
+import { createClient } from "@/lib/supabase/client";
 
 // --- Sub-component Item Menu (Fullscreen) ---
 const MobileNavLink = ({ title, href, index, closeMenu }: any) => {
@@ -73,12 +74,26 @@ const DesktopNavLink = ({ title, href, hasDropdown = false, children }: any) => 
 
 export default function NavbarSRE() {
   const [isActive, setIsActive] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+
+  // Cek status login agar item "Login" hanya tampil untuk yang belum login.
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setIsLoggedIn(!!data.user));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session?.user);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   const fullScreenMenuItems = [
     { title: "Home", href: "/" },
     { title: "About", href: "/about" },
     { title: "Merchandise", href: "/merchandise" },
     { title: "Contact", href: "/contact" },
+    { title: "Pendaftaran", href: "/pendaftaran" },
+    // Tampilkan "Login" hanya jika sudah pasti belum login (hindari flicker saat null).
+    ...(isLoggedIn === false ? [{ title: "Login", href: "/login" }] : []),
   ];
 
   return (

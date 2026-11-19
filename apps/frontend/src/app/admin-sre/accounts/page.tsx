@@ -13,7 +13,6 @@ import {
   FaExclamationCircle,
   FaLock,
   FaUserShield,
-  FaKey,
   FaEye,
   FaEyeSlash,
   FaInfoCircle,
@@ -38,9 +37,12 @@ interface AccountType {
   id: string;
   email: string;
   role: string;
-  password_text: string;
   created_at?: string;
 }
+
+// Password hanya disimpan sebagai hash di auth.users (lihat migrasi
+// 20261118000000_secure_user_roles.sql), jadi tidak bisa ditampilkan lagi.
+const MIN_PASSWORD_LENGTH = 8;
 
 const AVAILABLE_ROLES = [
   { value: "super-admin", label: "Super Admin" },
@@ -79,7 +81,7 @@ export default function ManageAccountsPage() {
   const [editingAccount, setEditingAccount] = useState<AccountType | null>(null);
   const [saving, setSaving] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [showPasswordMap, setShowPasswordMap] = useState<Record<string, boolean>>({});
+  const [showPassword, setShowPassword] = useState(false);
 
   // Form Fields
   const [email, setEmail] = useState("");
@@ -121,7 +123,7 @@ export default function ManageAccountsPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("user_roles")
-      .select("*")
+      .select("id, email, role, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -146,6 +148,7 @@ export default function ManageAccountsPage() {
     setEditingAccount(null);
     setEmail("");
     setPassword("");
+    setShowPassword(false);
     setRole("staff-pr");
     setIsModalOpen(true);
   };
@@ -153,7 +156,8 @@ export default function ManageAccountsPage() {
   const openEditModal = (account: AccountType) => {
     setEditingAccount(account);
     setEmail(account.email);
-    setPassword(account.password_text || "");
+    setPassword(""); // kosong = password tidak diganti
+    setShowPassword(false);
     setRole(account.role);
     setIsModalOpen(true);
   };
@@ -181,7 +185,7 @@ export default function ManageAccountsPage() {
       action_type: "DELETE",
       user_id: accountToDelete.id,
       user_email: accountToDelete.email,
-      user_password: accountToDelete.password_text || "dummy_pw123",
+      user_password: "",
       user_role: accountToDelete.role
     });
 
@@ -200,6 +204,11 @@ export default function ManageAccountsPage() {
     e.preventDefault();
     if (userRole !== "super-admin") {
       addToast("error", "Hanya Super Admin yang berwenang menambah atau memperbarui akun.");
+      return;
+    }
+    const passwordRequired = !editingAccount;
+    if ((passwordRequired || password) && password.length < MIN_PASSWORD_LENGTH) {
+      addToast("error", `Password minimal ${MIN_PASSWORD_LENGTH} karakter.`);
       return;
     }
     setShowSaveConfirm(true);
@@ -251,10 +260,6 @@ export default function ManageAccountsPage() {
     } finally {
       setSaving(false);
     }
-  };
-
-  const togglePasswordVisibility = (id: string) => {
-    setShowPasswordMap((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const handleViewDetail = (account: AccountType) => {
@@ -346,7 +351,7 @@ export default function ManageAccountsPage() {
           <p className="font-semibold uppercase tracking-wider text-[10px] mb-1">Pemberitahuan Sistem Keamanan & Hak Akses</p>
           <p className="font-light leading-relaxed">
             {userRole === "super-admin" 
-              ? "Anda memiliki wewenang penuh (Super Admin) untuk melakukan CRUD, mereset password, serta melihat plain-text password demi kebutuhan administrasi tim Web Dev."
+              ? "Anda memiliki wewenang penuh (Super Admin) untuk membuat, mengubah, menghapus akun, dan mengatur ulang password. Password disimpan terenkripsi sehingga tidak dapat ditampilkan; untuk akun yang lupa password, buat password baru lewat tombol ubah."
               : "Anda memiliki hak akses terbatas (P-Level). Halaman ini bersifat Read-Only untuk Anda. Anda hanya diizinkan melihat daftar akun yang terdaftar tanpa hak mengubah data."}
           </p>
         </div>
@@ -379,7 +384,6 @@ export default function ManageAccountsPage() {
                 <tr className="bg-white/5 border-b border-white/10 text-[#fff0aa] uppercase text-[10px] tracking-wider">
                   <th className="py-4 px-4 font-semibold">Email Pengguna</th>
                   <th className="py-4 px-4 font-semibold">Peran (Role)</th>
-                  {userRole === "super-admin" && <th className="py-4 px-4 font-semibold">Sandi Akses (Plain-text)</th>}
                   <th className="py-4 px-4 font-semibold text-right">Tindakan</th>
                 </tr>
               </thead>
@@ -400,20 +404,6 @@ export default function ManageAccountsPage() {
                         {acc.role}
                       </span>
                     </td>
-                    {userRole === "super-admin" && (
-                      <td className="py-4 px-4 font-mono text-white/80">
-                        <div className="flex items-center gap-3">
-                          <FaKey size={12} className="text-white/30" />
-                          <span>{showPasswordMap[acc.id] ? acc.password_text : "••••••••"}</span>
-                          <button
-                            onClick={() => togglePasswordVisibility(acc.id)}
-                            className="opacity-55 hover:opacity-100 p-1 transition-opacity"
-                          >
-                            {showPasswordMap[acc.id] ? <FaEyeSlash size={14} /> : <FaEye size={14} />}
-                          </button>
-                        </div>
-                      </td>
-                    )}
                     <td className="py-4 px-4 text-right space-x-2">
                       <button
                         onClick={() => handleViewDetail(acc)}
@@ -447,7 +437,7 @@ export default function ManageAccountsPage() {
                 ))}
                 {filteredAccounts.length === 0 && (
                   <tr>
-                    <td colSpan={userRole === "super-admin" ? 4 : 3} className="py-8 text-center text-white/40">Data akun tidak ditemukan.</td>
+                    <td colSpan={3} className="py-8 text-center text-white/40">Data akun tidak ditemukan.</td>
                   </tr>
                 )}
               </tbody>
@@ -483,16 +473,32 @@ export default function ManageAccountsPage() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-white/60 font-semibold text-xs tracking-wider uppercase">Sandi Akses (Password)</label>
-                <input
-                  type="text"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Masukkan password akun"
-                  className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] py-3.5 px-4 text-white focus:outline-none transition-all rounded-none font-mono"
-                  required
-                  minLength={6}
-                />
+                <label className="text-white/60 font-semibold text-xs tracking-wider uppercase">
+                  {editingAccount ? "Password Baru" : "Sandi Akses (Password)"}
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={editingAccount ? "Kosongkan jika tidak diganti" : `Minimal ${MIN_PASSWORD_LENGTH} karakter`}
+                    autoComplete="new-password"
+                    className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] py-3.5 pl-4 pr-12 text-white focus:outline-none transition-all rounded-none font-mono"
+                    required={!editingAccount}
+                    minLength={MIN_PASSWORD_LENGTH}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-white/40 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <FaEyeSlash size={14} /> : <FaEye size={14} />}
+                  </button>
+                </div>
+                {editingAccount && (
+                  <span className="text-[11px] text-white/40">Password lama tidak dapat ditampilkan karena tersimpan terenkripsi.</span>
+                )}
               </div>
 
               <div className="flex flex-col gap-2">
@@ -628,12 +634,6 @@ export default function ManageAccountsPage() {
                 <span className="text-white/40 block uppercase tracking-wider text-[9px] mb-1">Peran / Role</span>
                 <span className="text-white/90 block font-semibold uppercase">{viewingAccount.role}</span>
               </div>
-              {userRole === "super-admin" && (
-                <div className="p-3 bg-white/5 border border-white/10">
-                  <span className="text-white/40 block uppercase tracking-wider text-[9px] mb-1">Password Plain-Text</span>
-                  <span className="font-mono text-[#fff0aa] block font-semibold">{viewingAccount.password_text}</span>
-                </div>
-              )}
             </div>
             <div className="mt-6 flex justify-end">
               <button

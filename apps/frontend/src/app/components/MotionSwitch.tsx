@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, HTMLMotionProps } from "framer-motion";
-import { useEffect, useState, ElementType } from "react";
+import { useEffect, useMemo, useState, ElementType } from "react";
 
 interface MotionSwitchProps extends HTMLMotionProps<any> {
   as?: ElementType;
@@ -15,6 +15,11 @@ export default function MotionSwitch({
 }: MotionSwitchProps) {
   const [isDesktop, setIsDesktop] = useState(false);
 
+  // Dibuat sekali per `Component`. Kalau dibuat di dalam render, tiap re-render
+  // menghasilkan tipe komponen baru -> React me-mount ulang seluruh isinya
+  // (form berkedip/menghilang saat diklik).
+  const MotionComponent = useMemo(() => motion(Component as any), [Component]);
+
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1024); // lg+
     check();
@@ -26,6 +31,5 @@ export default function MotionSwitch({
     return <Component className={motionProps.className}>{children}</Component>;
   }
 
-  const MotionComponent = motion(Component as any);
   return <MotionComponent {...motionProps}>{children}</MotionComponent>;
 }

@@ -82,7 +82,43 @@ export interface UserRoleEntity {
   id: string;
   email: string;
   role: RoleType;
-  password_text?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// ==========================================================
+// OPEN RECRUITMENT REGISTRATION (public.registrations)
+// ==========================================================
+
+export type RegistrationStatus = 'Menunggu' | 'Diproses' | 'Lolos' | 'Tidak Lolos';
+
+export type RegistrationDivisionId =
+  | 'hr'
+  | 'pr'
+  | 'finance'
+  | 'education'
+  | 'comp-research'
+  | 'content-marketing'
+  | 'graphic-design'
+  | 'web-dev'
+  | 'brand-ambassador'
+  | 'treasurer';
+
+export interface RegistrationEntity {
+  id: string;
+  user_id: string;
+  email: string;
+  full_name: string;
+  nrp: string;
+  study_program: string;
+  division_id: RegistrationDivisionId;
+  division_id_2?: RegistrationDivisionId | null;
+  cover_letter_path: string;
+  cv_path: string;
+  portfolio_url?: string | null;
+  mbti_result_path: string;
+  status: RegistrationStatus;
+  submitted_at: string;
   created_at: string;
   updated_at: string;
 }

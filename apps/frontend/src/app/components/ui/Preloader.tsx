@@ -68,7 +68,6 @@ export default function Preloader() {
   const [count, setCount] = useState(0);
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
 
-  if (pathname.startsWith("/admin-sre")) return null;
 
   // Kata-kata dikurangi agar pas dengan durasi loading
   const words = ["Hello", "Bonjour", "こんにちは", "Halo"];
@@ -123,6 +122,9 @@ export default function Preloader() {
       clearTimeout(timer);
     };
   }, []);
+
+  // Dicek setelah semua hook agar urutan hook tetap sama saat pindah dari/ke /admin-sre.
+  if (pathname.startsWith("/admin-sre")) return null;
 
   return (
     <AnimatePresence mode="wait">
