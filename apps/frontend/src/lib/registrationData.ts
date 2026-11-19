@@ -6,6 +6,12 @@ import type { RegistrationDivisionId, RegistrationStatus } from "@sre-pens/share
 
 export const MBTI_TEST_URL = "https://mistypeinvestigator.com";
 
+/** Twibbon wajib diunggah peserta sebagai syarat pendaftaran. */
+export const TWIBBON_URL = "https://twb.nz/twibbon-oprec-staff-sre-pens-2";
+
+/** Grup WhatsApp pendaftar — ditampilkan setelah pendaftaran terkirim. */
+export const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/KHdVIRJM6LE0AKSfyjwfVe?s=cl&p=a&iam=2";
+
 export const REGISTRATION_BUCKET = "registration-files";
 
 /** Batas ukuran tiap berkas (harus sama dengan file_size_limit bucket). */
@@ -58,7 +64,13 @@ export const studyProgramSuggestions: string[] = [
   "D4 Sains Data Terapan",
 ];
 
-export type RegistrationFileKind = "cover-letter" | "cv" | "mbti";
+export type RegistrationFileKind = "cover-letter" | "cv" | "mbti" | "twibbon";
+
+const IMAGE_FILE_RULE = {
+  accept: ".jpg,.jpeg,.png,image/jpeg,image/png",
+  mimeTypes: ["image/jpeg", "image/png"],
+  extensions: ["jpg", "jpeg", "png"],
+};
 
 export const registrationFileRules: Record<
   RegistrationFileKind,
@@ -66,11 +78,8 @@ export const registrationFileRules: Record<
 > = {
   "cover-letter": { accept: ".pdf,application/pdf", mimeTypes: ["application/pdf"], extensions: ["pdf"] },
   cv: { accept: ".pdf,application/pdf", mimeTypes: ["application/pdf"], extensions: ["pdf"] },
-  mbti: {
-    accept: ".jpg,.jpeg,.png,image/jpeg,image/png",
-    mimeTypes: ["image/jpeg", "image/png"],
-    extensions: ["jpg", "jpeg", "png"],
-  },
+  mbti: IMAGE_FILE_RULE,
+  twibbon: IMAGE_FILE_RULE,
 };
 
 /** Validasi berkas di sisi klien. Mengembalikan pesan error atau null. */

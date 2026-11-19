@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
-import { FaArrowDown, FaPaperPlane, FaFilePdf, FaImage, FaArrowRight, FaSignOutAlt, FaCheck } from "react-icons/fa";
+import { FaArrowDown, FaPaperPlane, FaFilePdf, FaImage, FaArrowRight, FaSignOutAlt, FaCheck, FaWhatsapp } from "react-icons/fa";
 import MotionSwitch from "@/app/components/MotionSwitch";
 import type { RegistrationDivisionId, RegistrationEntity } from "@sre-pens/shared-types";
 import {
@@ -19,9 +19,10 @@ import {
 import {
   MAX_FILE_SIZE_LABEL,
   MBTI_TEST_URL,
+  TWIBBON_URL,
+  WHATSAPP_GROUP_URL,
   NRP_PATTERN,
   divisionLabel,
-  divisionRequiresPortfolio,
   registrationDivisions,
   registrationFileRules,
   registrationStatusCopy,
@@ -57,6 +58,8 @@ const NoiseOverlay = () => (
 );
 
 // ================= FORM STATE =================
+type TwibbonMode = "file" | "link";
+
 interface FormState {
   fullName: string;
   nrp: string;
@@ -64,6 +67,8 @@ interface FormState {
   divisionId: RegistrationDivisionId | "";
   divisionId2: RegistrationDivisionId | "";
   portfolioUrl: string;
+  twibbonMode: TwibbonMode;
+  twibbonLink: string;
   agreed: boolean;
 }
 
@@ -71,6 +76,7 @@ interface FileState {
   "cover-letter": File | null;
   cv: File | null;
   mbti: File | null;
+  twibbon: File | null;
 }
 
 type FieldErrors = Partial<Record<keyof FormState | RegistrationFileKind, string>>;
@@ -108,7 +114,7 @@ function FileField({
   onChange: (file: File | null) => void;
   extra?: React.ReactNode;
 }) {
-  const Icon = kind === "mbti" ? FaImage : FaFilePdf;
+  const Icon = kind === "mbti" || kind === "twibbon" ? FaImage : FaFilePdf;
 
   return (
     <div>
@@ -227,6 +233,7 @@ function RegistrationSummary({ registration }: { registration: RegistrationEntit
     ["CV", "Terunggah (.pdf)"],
     ["Portofolio", registration.portfolio_url || "—"],
     ["Hasil Tes MBTI", "Terunggah"],
+    ["Bukti Twibbon", registration.twibbon_proof ? "Terkirim" : "—"],
     ["Dikirim", formatDate(registration.submitted_at)],
   ];
 
@@ -237,7 +244,31 @@ function RegistrationSummary({ registration }: { registration: RegistrationEntit
         <span className="font-mono text-xs uppercase tracking-widest">Status / {registration.status}</span>
       </div>
       <h3 className="text-3xl md:text-5xl font-bold leading-tight mb-6">{copy.title}</h3>
-      <p className="text-white/60 text-base md:text-lg leading-relaxed mb-12 max-w-xl">{copy.body}</p>
+      <p className="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-xl">{copy.body}</p>
+
+      {/* Gabung grup WhatsApp pendaftar — langkah wajib setelah mendaftar */}
+      <a
+        href={WHATSAPP_GROUP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group flex items-center gap-4 md:gap-5 mb-12 p-5 md:p-6 rounded-2xl border border-[#25D366]/40 bg-[#25D366]/10 hover:bg-[#25D366]/15 transition-colors"
+      >
+        <span className="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#25D366] text-[#012e21] flex items-center justify-center">
+          <FaWhatsapp className="text-2xl md:text-3xl" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-mono text-[11px] uppercase tracking-widest text-[#25D366] mb-1">
+            Langkah Terakhir — Wajib
+          </span>
+          <span className="block text-lg md:text-xl font-bold text-white">Gabung Grup WhatsApp Pendaftar</span>
+          <span className="block text-sm text-white/60 mt-1">
+            Semua info seleksi & pengumuman dibagikan di grup ini — jangan sampai ketinggalan.
+          </span>
+        </span>
+        <span className="shrink-0 hidden sm:inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#25D366] text-[#012e21] text-sm font-bold uppercase tracking-widest group-hover:opacity-90 transition">
+          Join <FaArrowRight />
+        </span>
+      </a>
 
       <dl className="border-t border-white/20">
         {rows.map(([label, value], i) => (
@@ -314,17 +345,15 @@ export default function SectionHome() {
     divisionId: "",
     divisionId2: "",
     portfolioUrl: "",
+    twibbonMode: "file",
+    twibbonLink: "",
     agreed: false,
   });
-  const [files, setFiles] = useState<FileState>({ "cover-letter": null, cv: null, mbti: null });
+  const [files, setFiles] = useState<FileState>({ "cover-letter": null, cv: null, mbti: null, twibbon: null });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [progress, setProgress] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
-
-  const portfolioRequired =
-    (form.divisionId !== "" && divisionRequiresPortfolio(form.divisionId)) ||
-    (form.divisionId2 !== "" && divisionRequiresPortfolio(form.divisionId2));
 
   // --- Load sesi & pendaftaran yang sudah ada ---
   useEffect(() => {
@@ -378,8 +407,16 @@ export default function SectionHome() {
       if (message) next[kind] = message;
     });
     const url = form.portfolioUrl.trim();
-    if (portfolioRequired && !url) next.portfolioUrl = "Portofolio wajib untuk divisi ini.";
-    else if (url && !/^https?:\/\/\S+\.\S+/i.test(url)) next.portfolioUrl = "Masukkan tautan lengkap, diawali https://";
+    if (url && !/^https?:\/\/\S+\.\S+/i.test(url)) next.portfolioUrl = "Masukkan tautan lengkap, diawali https://";
+    // Bukti twibbon wajib: screenshot atau tautan postingan.
+    if (form.twibbonMode === "file") {
+      const message = validateRegistrationFile("twibbon", files.twibbon);
+      if (message) next.twibbon = message;
+    } else {
+      const twibbon = form.twibbonLink.trim();
+      if (!twibbon) next.twibbonLink = "Tautan bukti twibbon wajib diisi.";
+      else if (!/^https?:\/\/\S+\.\S+/i.test(twibbon)) next.twibbonLink = "Masukkan tautan lengkap, diawali https://";
+    }
     if (!form.agreed) next.agreed = "Centang pernyataan ini sebelum mengirim.";
     return next;
   };
@@ -407,6 +444,8 @@ export default function SectionHome() {
         cv: files.cv!,
         portfolioUrl: form.portfolioUrl,
         mbtiResult: files.mbti!,
+        twibbonFile: form.twibbonMode === "file" ? files.twibbon : null,
+        twibbonLink: form.twibbonMode === "link" ? form.twibbonLink : "",
       },
       setProgress
     );
@@ -486,8 +525,9 @@ export default function SectionHome() {
                   <p className="text-xs font-mono uppercase tracking-widest text-white/40 mb-6">Siapkan Berkas</p>
                   <ul className="space-y-3 text-sm text-white/70">
                     <li className="flex gap-3"><span className="font-mono text-[#fff0aa]/70">—</span>Motivation letter & CV dalam format .pdf</li>
-                    <li className="flex gap-3"><span className="font-mono text-[#fff0aa]/70">—</span>Tautan portofolio untuk Content Marketing, Design Graphic, Web Development</li>
+                    <li className="flex gap-3"><span className="font-mono text-[#fff0aa]/70">—</span>Tautan portofolio (opsional) — disarankan untuk Konten, Design, Web Dev</li>
                     <li className="flex gap-3"><span className="font-mono text-[#fff0aa]/70">—</span>Screenshot hasil tes MBTI (.jpg / .png)</li>
+                    <li className="flex gap-3"><span className="font-mono text-[#fff0aa]/70">—</span>Bukti twibbon — screenshot atau tautan postingan</li>
                     <li className="flex gap-3"><span className="font-mono text-[#fff0aa]/70">—</span>Ukuran setiap berkas maksimal {MAX_FILE_SIZE_LABEL}</li>
                   </ul>
                 </div>
@@ -677,7 +717,7 @@ export default function SectionHome() {
                       {/* 07 — Portofolio */}
                       <div>
                         <label htmlFor="portfolioUrl" className={labelClass}>
-                          {`07 / Portofolio ${portfolioRequired ? "(wajib)" : "(khusus Design, Konten, Web Dev)"}`}
+                          07 / Portofolio (opsional)
                         </label>
                         <input
                           id="portfolioUrl"
@@ -715,6 +755,106 @@ export default function SectionHome() {
                           </a>
                         }
                       />
+
+                      {/* 09 — Twibbon (wajib: screenshot atau tautan) */}
+                      <div>
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 mb-3">
+                          <span className={`${labelClass} mb-0`}>09 / Bukti Twibbon (wajib)</span>
+                          <a
+                            href={TWIBBON_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-white/60 hover:text-[#fff0aa] transition-colors"
+                          >
+                            Buat twibbon <FaArrowRight className="-rotate-45" />
+                          </a>
+                        </div>
+                        <p className="font-poppins text-xs text-white/40 mb-5 -mt-1">
+                          Pasang twibbon di feed/story Instagram-mu, lalu kirim buktinya — boleh screenshot atau tautan postingan.
+                        </p>
+
+                        {/* Pilih cara kirim bukti */}
+                        <div className="inline-flex p-1 mb-6 rounded-full border border-white/15 bg-white/[0.03]">
+                          {([["file", "Unggah Screenshot"], ["link", "Tautan Postingan"]] as [TwibbonMode, string][]).map(
+                            ([mode, label]) => {
+                              const active = form.twibbonMode === mode;
+                              return (
+                                <button
+                                  key={mode}
+                                  type="button"
+                                  onClick={() => {
+                                    setForm((prev) => ({ ...prev, twibbonMode: mode }));
+                                    setErrors((prev) => ({ ...prev, twibbon: undefined, twibbonLink: undefined }));
+                                  }}
+                                  className={`px-4 py-2 rounded-full font-mono text-[11px] uppercase tracking-widest transition ${
+                                    active ? "bg-[#fff0aa] text-[#012e21] font-bold" : "text-white/60 hover:text-white"
+                                  }`}
+                                >
+                                  {label}
+                                </button>
+                              );
+                            }
+                          )}
+                        </div>
+
+                        {form.twibbonMode === "file" ? (
+                          <>
+                            <label
+                              htmlFor="twibbon"
+                              className={`group flex items-center justify-between gap-4 py-5 border-b cursor-pointer transition-colors ${
+                                errors.twibbon
+                                  ? "border-red-400/60"
+                                  : files.twibbon
+                                  ? "border-[#fff0aa]/60"
+                                  : "border-white/20 hover:border-[#fff0aa]"
+                              }`}
+                            >
+                              <span className="flex items-center gap-4 min-w-0">
+                                <FaImage
+                                  className={`shrink-0 text-xl ${
+                                    files.twibbon ? "text-[#fff0aa]" : "text-white/30 group-hover:text-[#fff0aa]"
+                                  } transition-colors`}
+                                />
+                                <span className="min-w-0">
+                                  <span className={`block truncate text-lg md:text-xl ${files.twibbon ? "text-white" : "text-white/30"}`}>
+                                    {files.twibbon ? files.twibbon.name : "Pilih screenshot"}
+                                  </span>
+                                  <span className="block font-poppins text-xs text-white/40 mt-1">
+                                    {files.twibbon ? formatBytes(files.twibbon.size) : `JPG / PNG, maksimal ${MAX_FILE_SIZE_LABEL}`}
+                                  </span>
+                                </span>
+                              </span>
+                              <span className="shrink-0 font-mono text-xs uppercase tracking-widest text-white/50 group-hover:text-[#fff0aa] transition-colors">
+                                {files.twibbon ? "Ganti" : "Unggah"}
+                              </span>
+                            </label>
+                            <input
+                              id="twibbon"
+                              type="file"
+                              accept={registrationFileRules.twibbon.accept}
+                              className="sr-only"
+                              onChange={(e) => updateFile("twibbon", e.target.files?.[0] ?? null)}
+                            />
+                            {errors.twibbon && <p className={errorClass}>{errors.twibbon}</p>}
+                          </>
+                        ) : (
+                          <>
+                            <input
+                              id="twibbonLink"
+                              type="url"
+                              inputMode="url"
+                              value={form.twibbonLink}
+                              onChange={(e) => updateField("twibbonLink", e.target.value)}
+                              placeholder="https://www.instagram.com/p/..."
+                              className={inputClass}
+                            />
+                            <p className="mt-3 font-poppins text-xs text-white/40">
+                              Tempel tautan postingan twibbon-mu. Pastikan postingan bersifat publik agar bisa dibuka.
+                            </p>
+                            {errors.twibbonLink && <p className={errorClass}>{errors.twibbonLink}</p>}
+                          </>
+                        )}
+                      </div>
 
                       {/* Pernyataan */}
                       <div>

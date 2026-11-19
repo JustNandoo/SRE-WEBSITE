@@ -117,6 +117,12 @@ export interface RegistrationEntity {
   cv_path: string;
   portfolio_url?: string | null;
   mbti_result_path: string;
+  /**
+   * Bukti unggah twibbon. Bisa berupa path storage (screenshot di bucket
+   * registration-files) atau tautan eksternal (diawali http). null = belum ada
+   * kolomnya / belum diisi (kompatibel dengan data lama sebelum migrasi twibbon).
+   */
+  twibbon_proof?: string | null;
   status: RegistrationStatus;
   submitted_at: string;
   created_at: string;

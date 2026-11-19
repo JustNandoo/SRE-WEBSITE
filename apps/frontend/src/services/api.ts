@@ -362,6 +362,9 @@ export interface RegistrationFormInput {
   cv: File;
   portfolioUrl: string;
   mbtiResult: File;
+  /** Bukti twibbon: salah satu dari screenshot (file) atau tautan postingan. */
+  twibbonFile: File | null;
+  twibbonLink: string;
 }
 
 // Tabel public.registrations & bucket registration-files dibuat oleh migrasi
@@ -409,6 +412,7 @@ const REGISTRATION_FILE_LABEL: Record<RegistrationFileKind, string> = {
   'cover-letter': 'motivation letter',
   cv: 'CV',
   mbti: 'hasil tes MBTI',
+  twibbon: 'screenshot twibbon',
 };
 
 /** Upload satu berkas ke bucket privat: <user_id>/<kind>.<ext>. Mengembalikan path. */
@@ -454,6 +458,18 @@ export async function submitRegistration(
   const mbti = await uploadRegistrationFile(user.id, 'mbti', input.mbtiResult);
   if (mbti.error) return { data: null, error: mbti.error };
 
+  // Bukti twibbon: screenshot diunggah ke bucket, atau tautan disimpan apa adanya.
+  let twibbonProof: string | null = null;
+  if (input.twibbonFile) {
+    onProgress?.('Mengunggah bukti twibbon...');
+    const twibbon = await uploadRegistrationFile(user.id, 'twibbon', input.twibbonFile);
+    if (twibbon.error) return { data: null, error: twibbon.error };
+    twibbonProof = twibbon.data;
+  } else {
+    const link = input.twibbonLink.trim();
+    twibbonProof = link === '' ? null : link;
+  }
+
   onProgress?.('Menyimpan pendaftaran...');
   const portfolio = input.portfolioUrl.trim();
   const { data, error } = await supabase
@@ -470,6 +486,7 @@ export async function submitRegistration(
       cv_path: cv.data,
       portfolio_url: portfolio === '' ? null : portfolio,
       mbti_result_path: mbti.data,
+      twibbon_proof: twibbonProof,
     })
     .select('*')
     .single();
@@ -477,6 +494,8 @@ export async function submitRegistration(
   if (error) {
     logRegistrationError('submitRegistration', error);
     if (isRegistrationSetupMissing(error)) return { data: null, error: REGISTRATION_NOT_READY_APPLICANT };
+    if (error.code === 'PGRST204' && /twibbon_proof/i.test(error.message ?? ''))
+      return { data: null, error: 'Kolom twibbon belum ada. Jalankan migrasi 20261120000000_registration_twibbon.sql dulu.' };
     if (error.code === '23505') return { data: null, error: 'Kamu sudah pernah mengirim pendaftaran.' };
     if (error.code === '23514') return { data: null, error: 'Ada data yang tidak valid. Periksa kembali isian form.' };
     return { data: null, error: 'Gagal menyimpan pendaftaran. Coba lagi.' };

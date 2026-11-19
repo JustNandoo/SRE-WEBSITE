@@ -345,6 +345,16 @@ export default function PendaftarAdminPage() {
                             <FaLink size={11} /> Porto
                           </a>
                         )}
+                        {item.twibbon_proof &&
+                          (item.twibbon_proof.startsWith("http") ? (
+                            <a href={item.twibbon_proof} target="_blank" rel="noopener noreferrer" className={fileButton} title="Bukti twibbon (tautan)">
+                              <FaLink size={11} /> Twibbon
+                            </a>
+                          ) : (
+                            <button onClick={() => openFile(item.twibbon_proof!)} className={fileButton} title="Bukti twibbon (screenshot)">
+                              <FaImage size={11} /> Twibbon
+                            </button>
+                          ))}
                       </div>
                     </td>
                     <td className="py-4 px-4 align-top">
