@@ -54,3 +54,5 @@ db-migration-kit/
 
 # IDE
 .idea/
+# credentials (local only)
+KREDENSIAL_CMS.md
