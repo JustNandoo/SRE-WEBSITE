@@ -226,11 +226,16 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
           ]
         },
         {
+          groupName: "Pendaftaran (Open Recruitment)",
+          items: [
+            { name: "Data Pendaftar", path: "/admin-sre/pendaftar", icon: FaUserPlus },
+          ]
+        },
+        {
           groupName: "Human Resources (HR)",
           items: [
             { name: "Monitoring Staff", path: "/admin-sre/monitoring-staff", icon: FaUsersCog },
             { name: "Administrasi Staff", path: "/admin-sre/administrasi", icon: FaRegListAlt },
-            { name: "Data Pendaftar", path: "/admin-sre/pendaftar", icon: FaUserPlus },
           ]
         },
         {
@@ -355,6 +360,11 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
             { name: "Divisions & Staff", path: "/admin-sre/staff", icon: FaUserTie },
             { name: "Monitoring Staff", path: "/admin-sre/monitoring-staff", icon: FaUsersCog },
             { name: "Administrasi Staff", path: "/admin-sre/administrasi", icon: FaRegListAlt },
+          ]
+        },
+        {
+          groupName: "Pendaftaran (Open Recruitment)",
+          items: [
             { name: "Data Pendaftar", path: "/admin-sre/pendaftar", icon: FaUserPlus },
           ]
         }

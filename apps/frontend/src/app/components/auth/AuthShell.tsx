@@ -1,11 +1,12 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import { FaArrowLeft, FaCheck } from "react-icons/fa";
+import { fetchRecruitmentSettings, isRegistrationOpen } from "@/services/api";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -33,6 +34,18 @@ interface AuthShellProps {
  * zamrud #012e21 / #011f16, aksen emas #fff0aa, Akira + Poppins, sudut tegas.
  */
 export default function AuthShell({ eyebrow, title, description, children, footerNote }: AuthShellProps) {
+  // Status periode pendaftaran untuk label panel kanan (null = masih dicek).
+  const [regOpen, setRegOpen] = useState<boolean | null>(null);
+  useEffect(() => {
+    let active = true;
+    fetchRecruitmentSettings().then((res) => {
+      if (active) setRegOpen(isRegistrationOpen(res.data));
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <div
       className={`min-h-screen w-full grid grid-cols-1 lg:grid-cols-12 bg-[#012e21] text-white ${poppins.variable} ${akira.variable} font-sans selection:bg-[#fff0aa] selection:text-[#012e21]`}
@@ -86,7 +99,12 @@ export default function AuthShell({ eyebrow, title, description, children, foote
 
         <div className="relative z-10 flex items-center justify-between font-poppins text-xs text-white/60 tracking-wider uppercase flex-shrink-0">
           <span className="text-[#fff0aa] font-semibold">SRE PENS / OPEN RECRUITMENT 2026</span>
-          <span>PENDAFTARAN: <strong className="text-emerald-400 font-semibold">DIBUKA</strong></span>
+          <span>
+            PENDAFTARAN:{" "}
+            <strong className={`font-semibold ${regOpen === false ? "text-red-400" : "text-emerald-400"}`}>
+              {regOpen === null ? "..." : regOpen ? "DIBUKA" : "DITUTUP"}
+            </strong>
+          </span>
         </div>
 
         <div className="relative z-10 my-auto w-full max-w-2xl mx-auto border border-white/15 p-4 bg-[#012e21]/80 shadow-2xl backdrop-blur-sm">
