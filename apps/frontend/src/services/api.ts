@@ -6,7 +6,12 @@ import { MerchItem } from '@/lib/merchData';
 import { Division } from '@/lib/staffData';
 import { REGISTRATION_BUCKET, type RegistrationFileKind } from '@/lib/registrationData';
 import type { AuthError, User } from '@supabase/supabase-js';
-import type { RegistrationDivisionId, RegistrationEntity, RegistrationStatus } from '@sre-pens/shared-types';
+import type {
+  RecruitmentSettingsEntity,
+  RegistrationDivisionId,
+  RegistrationEntity,
+  RegistrationStatus,
+} from '@sre-pens/shared-types';
 
 export async function fetchAcademics(): Promise<AcademicCardProps[] | null> {
   const supabase = createClient();
@@ -550,6 +555,70 @@ export async function fetchRegistrationFileUrl(path: string, expiresInSeconds = 
     return { data: null, error: 'Gagal membuka berkas.' };
   }
   return { data: data.signedUrl, error: null };
+}
+
+// ==========================================================
+// PENGATURAN REKRUTMEN (periode pendaftaran + pengumuman)
+// ==========================================================
+
+const DEFAULT_RECRUITMENT_SETTINGS: RecruitmentSettingsEntity = {
+  id: 1,
+  registration_open: false,
+  registration_closes_at: null,
+  announcement_released: false,
+  invitation_url: null,
+  updated_at: new Date(0).toISOString(),
+};
+
+/**
+ * Pengaturan rekrutmen (baris singleton id=1). Jika tabel belum ada
+ * (migrasi belum dijalankan), kembalikan default "tutup" agar web tetap jalan.
+ */
+export async function fetchRecruitmentSettings(): Promise<ApiResult<RecruitmentSettingsEntity>> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('recruitment_settings')
+    .select('*')
+    .eq('id', 1)
+    .maybeSingle();
+
+  if (error) {
+    if (isRegistrationSetupMissing(error)) {
+      return { data: DEFAULT_RECRUITMENT_SETTINGS, error: null };
+    }
+    console.error('Supabase fetchRecruitmentSettings error:', error);
+    return { data: DEFAULT_RECRUITMENT_SETTINGS, error: 'Gagal memuat pengaturan rekrutmen.' };
+  }
+  return { data: (data as RecruitmentSettingsEntity | null) ?? DEFAULT_RECRUITMENT_SETTINGS, error: null };
+}
+
+/** Admin: ubah pengaturan rekrutmen (hanya staf CMS yang diizinkan RLS). */
+export async function updateRecruitmentSettings(
+  patch: Partial<Pick<
+    RecruitmentSettingsEntity,
+    'registration_open' | 'registration_closes_at' | 'announcement_released' | 'invitation_url'
+  >>
+): Promise<ApiResult<RecruitmentSettingsEntity>> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('recruitment_settings')
+    .update(patch)
+    .eq('id', 1)
+    .select('*')
+    .single();
+  if (error) {
+    console.error('Supabase updateRecruitmentSettings error:', error);
+    if (isRegistrationSetupMissing(error)) return { data: null, error: REGISTRATION_NOT_READY_CMS };
+    return { data: null, error: 'Gagal menyimpan pengaturan rekrutmen.' };
+  }
+  return { data: data as RecruitmentSettingsEntity, error: null };
+}
+
+/** Pendaftaran terbuka = saklar manual ON dan belum lewat tanggal tutup. */
+export function isRegistrationOpen(s: RecruitmentSettingsEntity | null | undefined): boolean {
+  if (!s || !s.registration_open) return false;
+  if (!s.registration_closes_at) return true;
+  return Date.now() < new Date(s.registration_closes_at).getTime();
 }
 
 export type RegistrationChange =

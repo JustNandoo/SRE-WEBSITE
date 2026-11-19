@@ -71,7 +71,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   // ---------- Pendaftar Open Recruitment ----------
-  const applicantProtectedRoutes = ['/pendaftaran'];
+  const applicantProtectedRoutes = ['/pendaftaran', '/profile'];
   const applicantAuthRoutes = ['/login', '/register'];
   const matches = (routes: string[]) =>
     routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));

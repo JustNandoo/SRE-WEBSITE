@@ -122,3 +122,20 @@ export interface RegistrationEntity {
   created_at: string;
   updated_at: string;
 }
+
+// ==========================================================
+// PENGATURAN REKRUTMEN (public.recruitment_settings, singleton id=1)
+// ==========================================================
+
+export interface RecruitmentSettingsEntity {
+  id: number;
+  /** Saklar manual buka/tutup pendaftaran. */
+  registration_open: boolean;
+  /** Tanggal tutup otomatis (ISO). null = tanpa auto-close. */
+  registration_closes_at: string | null;
+  /** Saklar global: pengumuman hasil sudah dirilis ke semua pelamar. */
+  announcement_released: boolean;
+  /** Satu link undangan untuk semua pelamar yang Lolos. */
+  invitation_url: string | null;
+  updated_at: string;
+}

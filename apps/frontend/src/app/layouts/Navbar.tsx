@@ -92,7 +92,9 @@ export default function NavbarSRE() {
     { title: "Merchandise", href: "/merchandise" },
     { title: "Contact", href: "/contact" },
     { title: "Pendaftaran", href: "/pendaftaran" },
-    // Tampilkan "Login" hanya jika sudah pasti belum login (hindari flicker saat null).
+    // Sudah login -> "Profile"; belum login -> "Login".
+    // (isLoggedIn null = masih dicek, jangan tampilkan apa pun dulu agar tak flicker.)
+    ...(isLoggedIn === true ? [{ title: "Profile", href: "/profile" }] : []),
     ...(isLoggedIn === false ? [{ title: "Login", href: "/login" }] : []),
   ];
 

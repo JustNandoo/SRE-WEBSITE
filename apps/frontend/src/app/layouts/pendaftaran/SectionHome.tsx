@@ -10,6 +10,8 @@ import type { RegistrationDivisionId, RegistrationEntity } from "@sre-pens/share
 import {
   fetchCurrentApplicant,
   fetchMyRegistration,
+  fetchRecruitmentSettings,
+  isRegistrationOpen,
   signOutApplicant,
   submitRegistration,
   type ApplicantUser,
@@ -259,6 +261,41 @@ function RegistrationSummary({ registration }: { registration: RegistrationEntit
   );
 }
 
+// ================= PENDAFTARAN DITUTUP =================
+function RegistrationClosed() {
+  return (
+    <div className="py-20 md:py-28 px-4 md:px-16 lg:px-20">
+      <div className="flex items-center gap-3 mb-6 text-[#fff0aa]">
+        <span className="w-2 h-2 rounded-full bg-[#fff0aa]/60" />
+        <span className="font-mono text-xs uppercase tracking-widest">Status / Tutup</span>
+      </div>
+      <h3 className="text-3xl md:text-5xl font-bold leading-tight mb-6">
+        Pendaftaran untuk saat ini <span className="text-[#fff0aa]">telah ditutup.</span>
+      </h3>
+      <p className="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-xl">
+        Periode Open Recruitment sedang tidak dibuka. Terima kasih atas antusiasmemu — nantikan
+        informasi gelombang berikutnya dan pengumuman selanjutnya melalui kanal resmi SRE PENS.
+      </p>
+      <div className="flex flex-wrap gap-4">
+        <a
+          href="https://www.instagram.com/sre_pens"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#fff0aa] text-[#012e21] text-sm font-bold uppercase tracking-widest hover:opacity-90 transition"
+        >
+          Instagram SRE PENS
+        </a>
+        <a
+          href="/"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 text-sm font-bold uppercase tracking-widest text-white/70 hover:text-[#012e21] hover:bg-[#fff0aa] hover:border-[#fff0aa] transition"
+        >
+          Kembali ke Beranda
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // ================= MAIN SECTION =================
 export default function SectionHome() {
   const router = useRouter();
@@ -266,6 +303,9 @@ export default function SectionHome() {
   const [registration, setRegistration] = useState<RegistrationEntity | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  // Periode pendaftaran (diatur admin). null = belum termuat.
+  const [regOpen, setRegOpen] = useState<boolean | null>(null);
+  const [closesAt, setClosesAt] = useState<string | null>(null);
 
   const [form, setForm] = useState<FormState>({
     fullName: "",
@@ -299,10 +339,15 @@ export default function SectionHome() {
       setApplicant(user);
       setForm((prev) => ({ ...prev, fullName: prev.fullName || user.fullName }));
 
-      const { data, error } = await fetchMyRegistration();
+      const [{ data, error }, settingsRes] = await Promise.all([
+        fetchMyRegistration(),
+        fetchRecruitmentSettings(),
+      ]);
       if (!active) return;
       if (error) setLoadError(error);
       setRegistration(data);
+      setRegOpen(isRegistrationOpen(settingsRes.data));
+      setClosesAt(settingsRes.data?.registration_closes_at ?? null);
       setLoading(false);
     })();
     return () => {
@@ -477,7 +522,7 @@ export default function SectionHome() {
                 data-scroll
                 data-scroll-speed="-0.1"
               >
-                {registration ? "TERIMA KASIH" : "FORMULIR SRE PENS"}
+                {registration ? "TERIMA KASIH" : regOpen === false ? "DITUTUP" : "FORMULIR SRE PENS"}
               </h2>
             </div>
 
@@ -493,6 +538,8 @@ export default function SectionHome() {
                 </div>
               ) : registration ? (
                 <RegistrationSummary registration={registration} />
+              ) : regOpen === false ? (
+                <RegistrationClosed />
               ) : (
                 <div className="py-12 px-4 md:px-16 lg:px-20">
                   {/* <form> biasa: MotionSwitch versi mobile hanya meneruskan className (onSubmit akan hilang). */}

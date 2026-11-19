@@ -22,6 +22,7 @@ import {
   registrationDivisions,
   registrationStatuses,
 } from "@/lib/registrationData";
+import RecruitmentControlPanel from "@/app/components/admin/RecruitmentControlPanel";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -227,6 +228,9 @@ export default function PendaftarAdminPage() {
           </button>
         </div>
       </div>
+
+      {/* Kontrol Rekrutmen: periode pendaftaran + pengumuman */}
+      <RecruitmentControlPanel writable={isWritable} />
 
       {/* Stats Counter */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
