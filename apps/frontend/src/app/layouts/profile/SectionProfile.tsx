@@ -5,14 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
-import {
-  FaSignOutAlt,
-  FaClock,
-  FaArrowRight,
-  FaEnvelopeOpenText,
-  FaRegEye,
-  FaCheck,
-} from "react-icons/fa";
+import { FaSignOutAlt, FaClock, FaArrowRight, FaCheck } from "react-icons/fa";
+import AnnouncementReveal from "@/app/components/profile/AnnouncementReveal";
 import {
   fetchCurrentApplicant,
   fetchMyRegistration,
@@ -45,7 +39,6 @@ export default function SectionProfile() {
   const [registration, setRegistration] = useState<RegistrationEntity | null>(null);
   const [settings, setSettings] = useState<RecruitmentSettingsEntity | null>(null);
   const [loading, setLoading] = useState(true);
-  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -176,65 +169,9 @@ export default function SectionProfile() {
                         pantau terus halaman ini dan kanal resmi SRE PENS ya.
                       </p>
                     </div>
-                  ) : !revealed ? (
-                    // Pengumuman dirilis, tapi hasil belum dibuka (jangan spoiler)
-                    <div className="border-t border-white/10 pt-6">
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#fff0aa]/15 border border-[#fff0aa]/40 mb-4">
-                        <span className="w-2 h-2 rounded-full bg-[#fff0aa] animate-pulse" />
-                        <span className="text-xs font-bold uppercase tracking-widest text-[#fff0aa]">Pengumuman Telah Dirilis</span>
-                      </div>
-                      <p className="text-white/60 leading-relaxed max-w-lg mb-6">
-                        Hasil seleksi sudah keluar. Tarik napas dulu, lalu buka hasilmu saat kamu siap.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setRevealed(true)}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#fff0aa] text-[#012e21] text-sm font-bold uppercase tracking-widest hover:opacity-90 transition"
-                      >
-                        <FaRegEye /> Lihat Hasil Seleksi
-                      </button>
-                    </div>
-                  ) : accepted ? (
-                    // Hasil dibuka: LOLOS
-                    <div className="border-t border-white/10 pt-6">
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/40 mb-4">
-                        <FaCheck className="text-emerald-400" />
-                        <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Selamat, Kamu Lolos!</span>
-                      </div>
-                      <h3 className="text-2xl md:text-3xl font-bold mb-3">
-                        Welcome to the <span className="text-[#fff0aa]">Society.</span>
-                      </h3>
-                      <p className="text-white/60 leading-relaxed max-w-lg mb-6">
-                        Kamu dinyatakan diterima sebagai staf SRE PENS. Buka undangan di bawah untuk langkah
-                        selanjutnya.
-                      </p>
-                      {invitationUrl ? (
-                        <a
-                          href={invitationUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#fff0aa] text-[#012e21] text-sm font-bold uppercase tracking-widest hover:opacity-90 transition"
-                        >
-                          <FaEnvelopeOpenText /> Buka Undangan
-                        </a>
-                      ) : (
-                        <p className="font-mono text-xs uppercase tracking-widest text-white/40">
-                          Link undangan akan segera tersedia di sini.
-                        </p>
-                      )}
-                    </div>
                   ) : (
-                    // Hasil dibuka: BELUM LOLOS (atau masih diproses)
-                    <div className="border-t border-white/10 pt-6">
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/15 mb-4">
-                        <span className="text-xs font-bold uppercase tracking-widest text-white/70">Hasil Seleksi</span>
-                      </div>
-                      <h3 className="text-2xl md:text-3xl font-bold mb-3">Belum berhasil kali ini.</h3>
-                      <p className="text-white/60 leading-relaxed max-w-lg">
-                        Terima kasih sudah berproses bersama kami. Perjalananmu tidak berhenti di sini — teruslah
-                        berkembang, dan sampai jumpa di kesempatan berikutnya. 💛
-                      </p>
-                    </div>
+                    // Pengumuman dirilis: cek hasil -> animasi suspense -> hasil.
+                    <AnnouncementReveal accepted={accepted} invitationUrl={invitationUrl} />
                   )}
                 </div>
               )}
