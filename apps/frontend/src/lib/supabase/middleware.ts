@@ -81,6 +81,14 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (matches(applicantAuthRoutes) && user) {
+    // Akun staf CMS diarahkan ke dashboard admin, bukan alur pendaftar.
+    const { data: roleRow } = await supabase
+      .from('user_roles')
+      .select('id')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (roleRow) return redirectTo('/admin-sre');
+
     const next = request.nextUrl.searchParams.get('next');
     const safeNext =
       next && next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/admin-sre') ? next : '/pendaftaran';

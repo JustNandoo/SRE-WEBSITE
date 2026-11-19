@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import AuthShell, { AuthField, AuthNotice, AuthSubmitButton } from "@/app/components/auth/AuthShell";
-import { signInApplicant, resendApplicantConfirmation } from "@/services/api";
+import { signInApplicant, resendApplicantConfirmation, fetchIsCmsUser } from "@/services/api";
 
 const safeNext = (value: string | null) =>
   value && value.startsWith("/") && !value.startsWith("//") && !value.startsWith("/admin-sre") ? value : "/pendaftaran";
@@ -48,8 +48,11 @@ export default function SectionLogin() {
       return;
     }
 
+    // Akun staf CMS (punya baris di user_roles) diarahkan ke dashboard admin,
+    // bukan ke alur pendaftar.
+    const isCms = await fetchIsCmsUser(data.id);
     setSuccess("Berhasil masuk. Mengalihkan...");
-    router.replace(next);
+    router.replace(isCms ? "/admin-sre" : next);
     router.refresh();
   };
 
