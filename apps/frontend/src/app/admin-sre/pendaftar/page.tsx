@@ -62,6 +62,7 @@ export default function PendaftarAdminPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [live, setLive] = useState(false);
+  const [realtimeTimedOut, setRealtimeTimedOut] = useState(false);
   const [freshIds, setFreshIds] = useState<Set<string>>(new Set());
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
@@ -146,7 +147,23 @@ export default function PendaftarAdminPage() {
       loadStats();
     };
 
-    return subscribeToRegistrations(handleChange, setLive);
+    // Jika Realtime tak tersambung dalam 12 dtk (mis. tabel belum di-publish ke
+    // realtime), berhenti menampilkan "Menghubungkan..." dan tandai nonaktif.
+    setRealtimeTimedOut(false);
+    const timeout = window.setTimeout(() => setRealtimeTimedOut(true), 12000);
+    const handleStatus = (connected: boolean) => {
+      setLive(connected);
+      if (connected) {
+        window.clearTimeout(timeout);
+        setRealtimeTimedOut(false);
+      }
+    };
+
+    const unsubscribe = subscribeToRegistrations(handleChange, handleStatus);
+    return () => {
+      window.clearTimeout(timeout);
+      unsubscribe();
+    };
   }, [isAllowedToAccess, loadStats]);
 
   // --- Actions ---
@@ -214,8 +231,12 @@ export default function PendaftarAdminPage() {
         </div>
         <div className="relative z-10 flex items-center gap-3">
           <span className="flex items-center gap-2 px-4 py-3 border border-white/15 bg-white/5 font-poppins text-[10px] font-semibold uppercase tracking-widest">
-            <span className={`w-2 h-2 rounded-full ${live ? "bg-emerald-400 animate-pulse" : "bg-white/30"}`} />
-            {live ? "Live" : "Menghubungkan..."}
+            <span
+              className={`w-2 h-2 rounded-full ${
+                live ? "bg-emerald-400 animate-pulse" : realtimeTimedOut ? "bg-white/25" : "bg-amber-400 animate-pulse"
+              }`}
+            />
+            {live ? "Live" : realtimeTimedOut ? "Realtime nonaktif" : "Menghubungkan..."}
           </span>
           <button
             onClick={() => {

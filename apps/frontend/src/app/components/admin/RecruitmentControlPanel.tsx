@@ -14,6 +14,16 @@ const showToast = (type: "success" | "error", text: string) => {
   if (w.showToast) w.showToast(type, text);
 };
 
+/** Nilai aman saat pengaturan gagal/lambat dimuat, agar panel tetap tampil. */
+const FALLBACK_SETTINGS: RecruitmentSettingsEntity = {
+  id: 1,
+  registration_open: false,
+  registration_closes_at: null,
+  announcement_released: false,
+  invitation_url: null,
+  updated_at: new Date(0).toISOString(),
+};
+
 /** ISO -> nilai untuk <input type="datetime-local"> dalam zona waktu lokal. */
 function isoToLocalInput(iso: string | null): string {
   if (!iso) return "";
@@ -34,17 +44,33 @@ export default function RecruitmentControlPanel({ writable }: { writable: boolea
 
   useEffect(() => {
     let active = true;
-    (async () => {
-      const { data } = await fetchRecruitmentSettings();
-      if (!active || !data) return;
-      setSettings(data);
-      setOpen(data.registration_open);
-      setClosesAt(isoToLocalInput(data.registration_closes_at));
-      setInvitationUrl(data.invitation_url ?? "");
+    const applySettings = (s: RecruitmentSettingsEntity) => {
+      setSettings(s);
+      setOpen(s.registration_open);
+      setClosesAt(isoToLocalInput(s.registration_closes_at));
+      setInvitationUrl(s.invitation_url ?? "");
+    };
+    // Jaring pengaman: kalau pengaturan tak kunjung termuat (request lambat/hang),
+    // jangan biarkan panel nyangkut di "Memuat..." selamanya — tampilkan default.
+    const safety = window.setTimeout(() => {
+      if (!active) return;
+      setSettings((prev) => prev ?? FALLBACK_SETTINGS);
       setLoading(false);
+    }, 8000);
+    (async () => {
+      try {
+        const { data } = await fetchRecruitmentSettings();
+        if (!active) return;
+        applySettings(data ?? FALLBACK_SETTINGS);
+      } catch {
+        if (active) applySettings(FALLBACK_SETTINGS);
+      } finally {
+        if (active) setLoading(false);
+      }
     })();
     return () => {
       active = false;
+      window.clearTimeout(safety);
     };
   }, []);
 
