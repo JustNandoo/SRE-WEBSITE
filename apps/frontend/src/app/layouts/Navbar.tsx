@@ -79,11 +79,31 @@ export default function NavbarSRE() {
   // Cek status login agar item "Login" hanya tampil untuk yang belum login.
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setIsLoggedIn(!!data.user));
+    let active = true;
+    // getSession() membaca sesi dari penyimpanan lokal (tanpa jaringan), jadi
+    // status login langsung ketahuan dan menu tak pernah kosong menggantung
+    // menunggu respons server. onAuthStateChange menjaga tetap sinkron.
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (active) setIsLoggedIn(!!data.session?.user);
+      })
+      .catch(() => {
+        if (active) setIsLoggedIn(false);
+      });
+    // Jaring pengaman: apa pun yang terjadi, jangan biarkan status menggantung
+    // di "belum ketahuan" (null) lebih dari 5 detik.
+    const timer = window.setTimeout(() => {
+      setIsLoggedIn((v) => (v === null ? false : v));
+    }, 5000);
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(!!session?.user);
     });
-    return () => listener.subscription.unsubscribe();
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   const fullScreenMenuItems = [
