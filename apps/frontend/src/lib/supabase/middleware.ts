@@ -29,6 +29,10 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
+  // getUser() wajib di middleware: selain memvalidasi token ke server auth,
+  // ia juga ME-REFRESH token yang hampir kedaluwarsa dan menuliskan cookie
+  // baru. Tanpa ini, token basi dibiarkan lewat sehingga semua query data
+  // gagal ("fetching terus"). getSession() tidak melakukan refresh.
   const {
     data: { user },
   } = await supabase.auth.getUser();

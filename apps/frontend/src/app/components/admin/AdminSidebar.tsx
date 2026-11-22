@@ -103,11 +103,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   };
 
   useEffect(() => {
-    // getSession() membaca sesi dari cookie (tanpa round-trip jaringan ekstra),
-    // jadi dashboard tidak lama menunggu saat reload. Middleware sudah menjadi
-    // gerbang keamanan server-side, ini hanya untuk mengambil peran menu.
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const user = session?.user ?? null;
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       setUser(user);
       if (user) {
         const { data } = await supabase.from("user_roles").select("role").eq("id", user.id).single();
