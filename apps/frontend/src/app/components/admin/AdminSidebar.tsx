@@ -104,26 +104,26 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   };
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user }, error }) => {
-      console.log("[sidebar] getUser:", user?.email ?? "(null)", error ? "err=" + error.message : "");
-      setUser(user);
-      if (user) {
-        const role = await fetchUserRoleById(user.id);
-        console.log("[sidebar] role resolved:", role);
-        if (role) setUserRole(role);
-      }
-    });
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+    // PENTING (anti-deadlock): JANGAN memanggil operasi Supabase (getUser atau
+    // query DB) langsung di dalam callback onAuthStateChange. Callback berjalan
+    // sambil MEMEGANG lock sesi, sehingga operasi lain yang butuh lock akan
+    // menggantung selamanya — gejalanya: role tak ter-resolve, dashboard kosong,
+    // "fetching terus" (terutama saat halaman di-refresh). onAuthStateChange
+    // sudah mengirim sesi awal saat mount, jadi kita baca user dari situ lalu
+    // mengambil role DI LUAR lock lewat setTimeout(0).
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       const u = session?.user ?? null;
       console.log("[sidebar] authStateChange:", event, u?.email ?? "(null)");
       setUser(u);
-      if (u) {
-        const role = await fetchUserRoleById(u.id);
-        if (role) setUserRole(role);
-      } else {
+      if (!u) {
         setUserRole(null);
+        return;
       }
+      setTimeout(async () => {
+        const role = await fetchUserRoleById(u.id);
+        console.log("[sidebar] role resolved:", role);
+        if (role) setUserRole(role);
+      }, 0);
     });
 
     return () => {
