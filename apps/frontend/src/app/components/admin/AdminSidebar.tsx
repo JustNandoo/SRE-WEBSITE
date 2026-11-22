@@ -131,36 +131,34 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
     };
   }, [supabase.auth]);
 
-  const handleLogout = async () => {
+  // Logout SINKRON: hapus sesi lokal + cookie lalu langsung redirect, TANPA
+  // menunggu jaringan. Sebelumnya `await supabase.auth.signOut()` bisa
+  // menggantung sehingga tombol "KELUAR..." macet dan tak pernah keluar.
+  // Membersihkan cookie sb-*-auth-token (path=/) sudah terbukti efektif,
+  // jadi middleware di /admin-sre/login melihat tidak ada sesi lagi.
+  const handleLogout = () => {
     setLoggingOut(true);
+    // Revoke di server best-effort, TANPA ditunggu (tidak boleh memblokir).
     try {
-      // scope "local": hapus sesi dari penyimpanan/cookie TANPA round-trip ke
-      // server. Dengan ini logout tidak pernah menggantung menunggu jaringan
-      // (penyebab tombol "KELUAR..." macet). Token akan kedaluwarsa sendiri.
-      await supabase.auth.signOut({ scope: "local" });
+      void supabase.auth.signOut({ scope: "local" });
     } catch (e) {
       console.error("Signout error:", e);
     }
-    setUser(null);
-    setUserRole(null);
     try {
       localStorage.clear();
       sessionStorage.clear();
     } catch {
       // Abaikan bila storage tidak tersedia (mode privat, dll).
     }
-
-    // Hard purge all cookies in the browser to prevent Next.js middleware caching issues
     if (typeof document !== "undefined") {
-      const cookies = document.cookie.split(";");
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i];
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
-        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      }
+      document.cookie.split(";").forEach((c) => {
+        const name = c.split("=")[0]?.trim();
+        if (!name) return;
+        // Host-only (path=/) dan varian berdomain, untuk jaga-jaga.
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+      });
     }
-    
     window.location.href = "/admin-sre/login";
   };
 
