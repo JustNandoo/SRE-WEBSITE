@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { fetchIsCmsUser } from "@/services/api";
 import { Poppins } from "next/font/google";
@@ -30,7 +29,6 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const router = useRouter();
   const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -65,9 +63,10 @@ export default function AdminLoginPage() {
       setError(authError.message || "Invalid login credentials.");
     } else if (data.session) {
       setSuccess("Granted. Redirecting...");
-      setTimeout(() => {
-        router.push("/admin-sre");
-      }, 1000);
+      // Hard navigation (bukan router.push): memastikan server membaca cookie
+      // sesi yang baru di-set, sehingga dashboard langsung termuat dan tidak
+      // terlempar balik ke halaman login.
+      window.location.assign("/admin-sre");
     }
   };
 

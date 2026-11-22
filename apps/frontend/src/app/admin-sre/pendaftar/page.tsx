@@ -184,14 +184,17 @@ export default function PendaftarAdminPage() {
   const openFile = async (path: string) => {
     // Buka tab lebih dulu (sinkron dengan klik) agar tidak diblokir popup blocker.
     const tab = window.open("", "_blank");
-    const { data, error } = await fetchRegistrationFileUrl(path);
-    if (error || !data) {
+    let res = await fetchRegistrationFileUrl(path);
+    // Coba sekali lagi bila gagal — tangkap kegagalan sesaat (sesi baru
+    // di-refresh atau jaringan) agar berkas tidak "susah dibuka".
+    if (res.error || !res.data) res = await fetchRegistrationFileUrl(path);
+    if (res.error || !res.data) {
       tab?.close();
-      showToast("error", error ?? "Gagal membuka berkas.");
+      showToast("error", res.error ?? "Gagal membuka berkas.");
       return;
     }
-    if (tab) tab.location.href = data;
-    else window.location.href = data;
+    if (tab) tab.location.href = res.data;
+    else window.location.href = res.data;
   };
 
   const filteredItems = useMemo(() => {
