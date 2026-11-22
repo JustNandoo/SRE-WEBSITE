@@ -308,7 +308,9 @@ export async function signInApplicant(email: string, password: string): Promise<
 
 export async function signOutApplicant(): Promise<void> {
   const supabase = createClient();
-  const { error } = await supabase.auth.signOut();
+  // scope "local": bersihkan sesi tanpa round-trip ke server agar logout tidak
+  // menggantung bila jaringan/endpoint logout lambat.
+  const { error } = await supabase.auth.signOut({ scope: 'local' });
   if (error) console.error('Supabase signOutApplicant error:', error);
 }
 

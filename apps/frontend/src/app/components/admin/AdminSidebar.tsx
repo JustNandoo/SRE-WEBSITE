@@ -134,15 +134,22 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   const handleLogout = async () => {
     setLoggingOut(true);
     try {
-      await supabase.auth.signOut();
+      // scope "local": hapus sesi dari penyimpanan/cookie TANPA round-trip ke
+      // server. Dengan ini logout tidak pernah menggantung menunggu jaringan
+      // (penyebab tombol "KELUAR..." macet). Token akan kedaluwarsa sendiri.
+      await supabase.auth.signOut({ scope: "local" });
     } catch (e) {
       console.error("Signout error:", e);
     }
     setUser(null);
     setUserRole(null);
-    localStorage.clear();
-    sessionStorage.clear();
-    
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch {
+      // Abaikan bila storage tidak tersedia (mode privat, dll).
+    }
+
     // Hard purge all cookies in the browser to prevent Next.js middleware caching issues
     if (typeof document !== "undefined") {
       const cookies = document.cookie.split(";");
