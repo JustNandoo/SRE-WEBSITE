@@ -76,19 +76,26 @@ export async function updateSession(request: NextRequest) {
   const matches = (routes: string[]) =>
     routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 
-  if (matches(applicantProtectedRoutes) && !user) {
-    return redirectTo('/login', { next: pathname });
-  }
-
-  if (matches(applicantAuthRoutes) && user) {
-    // Akun staf CMS diarahkan ke dashboard admin, bukan alur pendaftar.
+  // Staf CMS yang sudah login tidak pernah berada di sisi pengguna: beranda,
+  // area pendaftar, dan halaman login/daftar langsung diarahkan ke dashboard
+  // admin. Jadi saat superadmin membuka kembali situs, ia masuk ke admin —
+  // bukan terdampar di tampilan user.
+  if (user && (pathname === '/' || matches(applicantProtectedRoutes) || matches(applicantAuthRoutes))) {
     const { data: roleRow } = await supabase
       .from('user_roles')
       .select('id')
       .eq('id', user.id)
       .maybeSingle();
     if (roleRow) return redirectTo('/admin-sre');
+  }
 
+  // Pendaftar belum login mencoba membuka area terproteksi -> ke halaman login.
+  if (matches(applicantProtectedRoutes) && !user) {
+    return redirectTo('/login', { next: pathname });
+  }
+
+  // Pendaftar (non-CMS) yang sudah login pada /login atau /register -> pendaftaran.
+  if (matches(applicantAuthRoutes) && user) {
     const next = request.nextUrl.searchParams.get('next');
     const safeNext =
       next && next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/admin-sre') ? next : '/pendaftaran';

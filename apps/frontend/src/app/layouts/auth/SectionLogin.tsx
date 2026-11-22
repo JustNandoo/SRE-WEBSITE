@@ -52,7 +52,13 @@ export default function SectionLogin() {
     // bukan ke alur pendaftar.
     const isCms = await fetchIsCmsUser(data.id);
     setSuccess("Berhasil masuk. Mengalihkan...");
-    router.replace(isCms ? "/admin-sre" : next);
+    if (isCms) {
+      // Hard navigation agar server membaca cookie sesi baru -> langsung ke
+      // dashboard admin, tidak terdampar di sisi pengguna.
+      window.location.assign("/admin-sre");
+      return;
+    }
+    router.replace(next);
     router.refresh();
   };
 

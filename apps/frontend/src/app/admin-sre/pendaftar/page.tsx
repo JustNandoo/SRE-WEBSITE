@@ -9,7 +9,6 @@ import type { RegistrationEntity, RegistrationStatus } from "@sre-pens/shared-ty
 import {
   fetchRegistrations,
   fetchRegistrationStats,
-  fetchRegistrationFileUrl,
   subscribeToRegistrations,
   updateRegistrationStatus,
   type RegistrationChange,
@@ -23,6 +22,7 @@ import {
   registrationStatuses,
 } from "@/lib/registrationData";
 import RecruitmentControlPanel from "@/app/components/admin/RecruitmentControlPanel";
+import RegistrantDetailModal from "@/app/components/admin/RegistrantDetailModal";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -65,6 +65,9 @@ export default function PendaftarAdminPage() {
   const [realtimeTimedOut, setRealtimeTimedOut] = useState(false);
   const [freshIds, setFreshIds] = useState<Set<string>>(new Set());
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  // Detail pendaftar yang sedang dibuka (modal). key = tab berkas awal (opsional).
+  const [detail, setDetail] = useState<{ id: string; key?: string } | null>(null);
+  const openDetail = (id: string, key?: string) => setDetail({ id, key });
 
   // Filter terbaru dibaca handler realtime tanpa harus subscribe ulang.
   const divisionRef = useRef<RegistrationDivisionFilter>("all");
@@ -179,22 +182,6 @@ export default function PendaftarAdminPage() {
     setItems((prev) => prev.map((r) => (r.id === data.id ? data : r)));
     showToast("success", `Status ${data.full_name} diubah menjadi ${data.status}.`);
     loadStats();
-  };
-
-  const openFile = async (path: string) => {
-    // Buka tab lebih dulu (sinkron dengan klik) agar tidak diblokir popup blocker.
-    const tab = window.open("", "_blank");
-    let res = await fetchRegistrationFileUrl(path);
-    // Coba sekali lagi bila gagal — tangkap kegagalan sesaat (sesi baru
-    // di-refresh atau jaringan) agar berkas tidak "susah dibuka".
-    if (res.error || !res.data) res = await fetchRegistrationFileUrl(path);
-    if (res.error || !res.data) {
-      tab?.close();
-      showToast("error", res.error ?? "Gagal membuka berkas.");
-      return;
-    }
-    if (tab) tab.location.href = res.data;
-    else window.location.href = res.data;
   };
 
   const filteredItems = useMemo(() => {
@@ -335,7 +322,9 @@ export default function PendaftarAdminPage() {
                 filteredItems.map((item) => (
                   <tr
                     key={item.id}
-                    className={`transition-colors ${freshIds.has(item.id) ? "bg-[#fff0aa]/10" : "hover:bg-white/5"}`}
+                    onClick={() => openDetail(item.id)}
+                    title="Klik untuk lihat detail & berkas"
+                    className={`cursor-pointer transition-colors ${freshIds.has(item.id) ? "bg-[#fff0aa]/10" : "hover:bg-white/5"}`}
                   >
                     <td className="py-4 px-4 align-top">
                       <div className="flex items-center gap-2">
@@ -355,33 +344,33 @@ export default function PendaftarAdminPage() {
                     </td>
                     <td className="py-4 px-4 align-top">
                       <div className="flex flex-wrap gap-1.5">
-                        <button onClick={() => openFile(item.cover_letter_path)} className={fileButton} title="Motivation letter">
+                        <button onClick={(e) => { e.stopPropagation(); openDetail(item.id, "cover"); }} className={fileButton} title="Motivation letter">
                           <FaFilePdf size={11} /> Motlet
                         </button>
-                        <button onClick={() => openFile(item.cv_path)} className={fileButton} title="Curriculum vitae">
+                        <button onClick={(e) => { e.stopPropagation(); openDetail(item.id, "cv"); }} className={fileButton} title="Curriculum vitae">
                           <FaFilePdf size={11} /> CV
                         </button>
-                        <button onClick={() => openFile(item.mbti_result_path)} className={fileButton} title="Hasil tes MBTI">
+                        <button onClick={(e) => { e.stopPropagation(); openDetail(item.id, "mbti"); }} className={fileButton} title="Hasil tes MBTI">
                           <FaImage size={11} /> MBTI
                         </button>
                         {item.portfolio_url && (
-                          <a href={item.portfolio_url} target="_blank" rel="noopener noreferrer" className={fileButton} title={item.portfolio_url}>
+                          <a href={item.portfolio_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={fileButton} title={item.portfolio_url}>
                             <FaLink size={11} /> Porto
                           </a>
                         )}
                         {item.twibbon_proof &&
                           (item.twibbon_proof.startsWith("http") ? (
-                            <a href={item.twibbon_proof} target="_blank" rel="noopener noreferrer" className={fileButton} title="Bukti twibbon (tautan)">
+                            <a href={item.twibbon_proof} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className={fileButton} title="Bukti twibbon (tautan)">
                               <FaLink size={11} /> Twibbon
                             </a>
                           ) : (
-                            <button onClick={() => openFile(item.twibbon_proof!)} className={fileButton} title="Bukti twibbon (screenshot)">
+                            <button onClick={(e) => { e.stopPropagation(); openDetail(item.id, "twibbon"); }} className={fileButton} title="Bukti twibbon (screenshot)">
                               <FaImage size={11} /> Twibbon
                             </button>
                           ))}
                       </div>
                     </td>
-                    <td className="py-4 px-4 align-top">
+                    <td className="py-4 px-4 align-top" onClick={(e) => e.stopPropagation()}>
                       {isWritable ? (
                         <div className="flex items-center gap-2">
                           <select
@@ -419,6 +408,22 @@ export default function PendaftarAdminPage() {
           </table>
         </div>
       </div>
+
+      {detail &&
+        (() => {
+          const item = items.find((i) => i.id === detail.id);
+          if (!item) return null;
+          return (
+            <RegistrantDetailModal
+              registration={item}
+              isWritable={isWritable}
+              updating={updatingId === item.id}
+              initialKey={detail.key}
+              onStatusChange={handleStatusChange}
+              onClose={() => setDetail(null)}
+            />
+          );
+        })()}
     </div>
   );
 }
