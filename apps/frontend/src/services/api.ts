@@ -350,6 +350,49 @@ export async function fetchIsCmsUser(userId: string): Promise<boolean> {
   return !!data;
 }
 
+/**
+ * Ambil role staf CMS dari user_roles, dengan retry + refresh token + log.
+ *
+ * Gejala "login pertama bisa, setelah refresh gagal" hampir selalu karena
+ * access token sempat BASI saat halaman di-reload: query pertama kena 401
+ * sehingga role tidak ter-resolve (menu/cards kosong). Di sini kalau query
+ * error, kita paksa refreshSession() lalu coba lagi. Semua langkah dicetak
+ * dengan prefix "[role]" agar mudah dibaca dari DevTools Console.
+ */
+export async function fetchUserRoleById(userId: string): Promise<string | null> {
+  const supabase = createClient();
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const t0 = Date.now();
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('id', userId)
+      .maybeSingle();
+    const ms = Date.now() - t0;
+
+    if (!error && data?.role) {
+      console.log(`[role] OK attempt=${attempt} ${ms}ms role=${data.role}`);
+      return data.role as string;
+    }
+    if (!error) {
+      console.warn(`[role] NO-ROW attempt=${attempt} ${ms}ms uid=${userId} (tidak ada baris role untuk user ini)`);
+      return null;
+    }
+
+    console.warn(`[role] ERROR attempt=${attempt} ${ms}ms code=${error.code ?? '-'} msg=${error.message}`);
+    // Kemungkinan token basi -> paksa refresh sebelum percobaan berikutnya.
+    try {
+      const { error: refreshErr } = await supabase.auth.refreshSession();
+      console.log('[role] refreshSession:', refreshErr ? 'GAGAL ' + refreshErr.message : 'ok');
+    } catch (e) {
+      console.warn('[role] refreshSession threw:', e);
+    }
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  console.error(`[role] MENYERAH setelah 3 percobaan untuk uid=${userId}`);
+  return null;
+}
+
 // ==========================================================
 // OPEN RECRUITMENT REGISTRATION
 // ==========================================================

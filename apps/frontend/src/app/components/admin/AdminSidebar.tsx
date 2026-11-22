@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { fetchUserRoleById } from "@/services/api";
 import { ToastStyles, ToastItem } from "@/app/components/ui/Toast";
 import { type User } from "@supabase/supabase-js";
 import {
@@ -103,24 +104,23 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
   };
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user }, error }) => {
+      console.log("[sidebar] getUser:", user?.email ?? "(null)", error ? "err=" + error.message : "");
       setUser(user);
       if (user) {
-        const { data } = await supabase.from("user_roles").select("role").eq("id", user.id).single();
-        if (data) {
-          setUserRole(data.role);
-        }
+        const role = await fetchUserRoleById(user.id);
+        console.log("[sidebar] role resolved:", role);
+        if (role) setUserRole(role);
       }
     });
 
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       const u = session?.user ?? null;
+      console.log("[sidebar] authStateChange:", event, u?.email ?? "(null)");
       setUser(u);
       if (u) {
-        const { data } = await supabase.from("user_roles").select("role").eq("id", u.id).single();
-        if (data) {
-          setUserRole(data.role);
-        }
+        const role = await fetchUserRoleById(u.id);
+        if (role) setUserRole(role);
       } else {
         setUserRole(null);
       }

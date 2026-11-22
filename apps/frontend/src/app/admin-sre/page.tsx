@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { fetchUserRoleById } from "@/services/api";
 import {
   FaBook,
   FaCalendarAlt,
@@ -228,12 +229,14 @@ export default function AdminDashboardOverview() {
   };
 
   const fetchUserRole = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabase.auth.getUser();
+    console.log("[overview] getUser:", user?.email ?? "(null)", error ? "err=" + error.message : "");
     if (user) {
-      const { data } = await supabase.from("user_roles").select("role").eq("id", user.id).single();
-      if (data) {
-        setUserRole(data.role);
-        return data.role;
+      const role = await fetchUserRoleById(user.id);
+      console.log("[overview] role resolved:", role);
+      if (role) {
+        setUserRole(role);
+        return role;
       }
     }
     setUserRole("staff");
