@@ -450,20 +450,33 @@ export async function fetchMyRegistration(): Promise<ApiResult<RegistrationEntit
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return { data: null, error: 'Sesi berakhir. Silakan masuk kembali.' };
 
-  const { data, error } = await supabase
-    .from('registrations')
-    .select('*')
-    .eq('user_id', auth.user.id)
-    .maybeSingle();
-
-  if (error) {
-    logRegistrationError('fetchMyRegistration', error);
-    // Tabel belum ada (migrasi belum jalan) diperlakukan sebagai "belum mendaftar"
-    // supaya formulir tetap tampil. Submit nanti yang menolak dengan pesan jelas.
-    if (isRegistrationSetupMissing(error)) return { data: null, error: null };
-    return { data: null, error: 'Gagal memuat data pendaftaran.' };
+  // RPC aman: status seleksi DISAMARKAN jadi 'Menunggu' sampai pengumuman
+  // dirilis, jadi pendaftar tak bisa tahu hasilnya lebih dulu meski admin sudah
+  // mengubah status. (Lihat migrasi 20261123000001_hide_status_until_announced.)
+  const { data, error } = await supabase.rpc('get_my_registration');
+  if (!error) {
+    const rows = (data as RegistrationEntity[] | null) ?? [];
+    return { data: rows[0] ?? null, error: null };
   }
-  return { data: (data as RegistrationEntity | null) ?? null, error: null };
+
+  // RPC belum ada (migrasi belum dijalankan) -> fallback baca langsung sementara.
+  if (error.code === 'PGRST202') {
+    const { data: row, error: selErr } = await supabase
+      .from('registrations')
+      .select('*')
+      .eq('user_id', auth.user.id)
+      .maybeSingle();
+    if (selErr) {
+      logRegistrationError('fetchMyRegistration', selErr);
+      if (isRegistrationSetupMissing(selErr)) return { data: null, error: null };
+      return { data: null, error: 'Gagal memuat data pendaftaran.' };
+    }
+    return { data: (row as RegistrationEntity | null) ?? null, error: null };
+  }
+
+  logRegistrationError('fetchMyRegistration', error);
+  if (isRegistrationSetupMissing(error)) return { data: null, error: null };
+  return { data: null, error: 'Gagal memuat data pendaftaran.' };
 }
 
 const REGISTRATION_FILE_LABEL: Record<RegistrationFileKind, string> = {
@@ -530,7 +543,9 @@ export async function submitRegistration(
 
   onProgress?.('Menyimpan pendaftaran...');
   const portfolio = input.portfolioUrl.trim();
-  const { data, error } = await supabase
+  // Tanpa .select() di sini: sejak status disembunyikan, pendaftar tak lagi
+  // punya hak SELECT langsung. Ringkasan diambil terpisah lewat RPC aman.
+  const { error } = await supabase
     .from('registrations')
     .insert({
       user_id: user.id,
@@ -545,9 +560,7 @@ export async function submitRegistration(
       portfolio_url: portfolio === '' ? null : portfolio,
       mbti_result_path: mbti.data,
       twibbon_proof: twibbonProof,
-    })
-    .select('*')
-    .single();
+    });
 
   if (error) {
     logRegistrationError('submitRegistration', error);
@@ -558,7 +571,35 @@ export async function submitRegistration(
     if (error.code === '23514') return { data: null, error: 'Ada data yang tidak valid. Periksa kembali isian form.' };
     return { data: null, error: 'Gagal menyimpan pendaftaran. Coba lagi.' };
   }
-  return { data: data as RegistrationEntity, error: null };
+
+  // Ambil ringkasan lewat RPC aman (status masih 'Menunggu' saat baru daftar).
+  const { data: rpcRows } = await supabase.rpc('get_my_registration');
+  const created = ((rpcRows as RegistrationEntity[] | null) ?? [])[0];
+  if (created) return { data: created, error: null };
+
+  // Fallback (mis. RPC belum ada): susun ringkasan dari input yang baru dikirim.
+  return {
+    data: {
+      id: '',
+      user_id: user.id,
+      email: user.email ?? '',
+      full_name: input.fullName.trim(),
+      nrp: input.nrp.trim(),
+      study_program: input.studyProgram.trim(),
+      division_id: input.divisionId,
+      division_id_2: input.divisionId2,
+      cover_letter_path: coverLetter.data ?? '',
+      cv_path: cv.data ?? '',
+      portfolio_url: portfolio === '' ? null : portfolio,
+      mbti_result_path: mbti.data ?? '',
+      twibbon_proof: twibbonProof,
+      status: 'Menunggu',
+      submitted_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    } as RegistrationEntity,
+    error: null,
+  };
 }
 
 // ==========================================================
