@@ -23,6 +23,7 @@ import {
 } from "@/lib/registrationData";
 import RecruitmentControlPanel from "@/app/components/admin/RecruitmentControlPanel";
 import RegistrantDetailModal from "@/app/components/admin/RegistrantDetailModal";
+import SpreadsheetSyncPanel from "@/app/components/admin/SpreadsheetSyncPanel";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -242,6 +243,9 @@ export default function PendaftarAdminPage() {
 
       {/* Kontrol Rekrutmen: periode pendaftaran + pengumuman */}
       <RecruitmentControlPanel writable={isWritable} />
+
+      {/* Spreadsheet live — khusus super-admin */}
+      {userRole === "super-admin" && <SpreadsheetSyncPanel />}
 
       {/* Stats Counter */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">

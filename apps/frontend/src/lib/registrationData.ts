@@ -46,22 +46,28 @@ export const divisionLabel = (id: string) =>
 
 /** Saran isian prodi (input tetap bebas agar tidak memblokir prodi yang belum terdaftar). */
 export const studyProgramSuggestions: string[] = [
+  // ===== D3 (Diploma Tiga) =====
   "D3 Teknik Elektronika",
   "D3 Teknik Telekomunikasi",
   "D3 Teknik Elektro Industri",
   "D3 Teknik Informatika",
   "D3 Teknologi Multimedia Broadcasting",
+  // ===== D4 / Sarjana Terapan =====
   "D4 Teknik Elektronika",
   "D4 Teknik Telekomunikasi",
   "D4 Teknik Elektro Industri",
   "D4 Teknik Informatika",
-  "D4 Teknik Mekatronika",
   "D4 Teknik Komputer",
-  "D4 Sistem Pembangkitan Energi",
-  "D4 Teknologi Game",
+  "D4 Teknik Mekatronika",
   "D4 Teknologi Rekayasa Internet",
   "D4 Teknologi Rekayasa Multimedia",
+  "D4 Teknologi Rekayasa Keselamatan (K3)",
+  "D4 Teknologi Rekayasa Perangkat Lunak",
+  "D4 Teknologi Rekayasa Perancangan Manufaktur",
+  "D4 Teknologi Game",
   "D4 Sains Data Terapan",
+  "D4 Sistem Pembangkitan Energi",
+  "D4 Bisnis Digital",
 ];
 
 export type RegistrationFileKind = "cover-letter" | "cv" | "mbti" | "twibbon";

@@ -393,6 +393,19 @@ export async function fetchUserRoleById(userId: string): Promise<string | null> 
   return null;
 }
 
+/** Token rahasia untuk link live spreadsheet (hanya staf CMS yang login). */
+export async function fetchSheetExportToken(): Promise<ApiResult<string>> {
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc('get_sheet_export_token');
+  if (error) {
+    console.error('Supabase fetchSheetExportToken error:', error);
+    if (error.code === 'PGRST202' || /function .*get_sheet_export_token/i.test(error.message ?? ''))
+      return { data: null, error: 'Fitur belum aktif. Jalankan migrasi 20261123000000_sheet_export.sql dulu.' };
+    return { data: null, error: 'Gagal mengambil token spreadsheet.' };
+  }
+  return { data: (data as string) ?? null, error: null };
+}
+
 // ==========================================================
 // OPEN RECRUITMENT REGISTRATION
 // ==========================================================
