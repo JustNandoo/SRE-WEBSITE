@@ -455,8 +455,8 @@ export async function fetchMyRegistration(): Promise<ApiResult<RegistrationEntit
   // mengubah status. (Lihat migrasi 20261123000001_hide_status_until_announced.)
   const { data, error } = await supabase.rpc('get_my_registration');
   if (!error) {
-    const rows = (data as RegistrationEntity[] | null) ?? [];
-    return { data: rows[0] ?? null, error: null };
+    // RPC mengembalikan satu objek JSON (atau null bila belum mendaftar).
+    return { data: (data as RegistrationEntity | null) ?? null, error: null };
   }
 
   // RPC belum ada (migrasi belum dijalankan) -> fallback baca langsung sementara.
@@ -573,8 +573,8 @@ export async function submitRegistration(
   }
 
   // Ambil ringkasan lewat RPC aman (status masih 'Menunggu' saat baru daftar).
-  const { data: rpcRows } = await supabase.rpc('get_my_registration');
-  const created = ((rpcRows as RegistrationEntity[] | null) ?? [])[0];
+  const { data: rpcRow } = await supabase.rpc('get_my_registration');
+  const created = (rpcRow as RegistrationEntity | null) ?? null;
   if (created) return { data: created, error: null };
 
   // Fallback (mis. RPC belum ada): susun ringkasan dari input yang baru dikirim.

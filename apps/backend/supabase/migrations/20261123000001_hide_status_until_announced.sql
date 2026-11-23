@@ -13,59 +13,30 @@
 --    lewat query API). Staf CMS tidak terpengaruh (punya policy sendiri).
 DROP POLICY IF EXISTS "Applicants read own registration" ON public.registrations;
 
--- 2. Fungsi aman: baris milik sendiri, status disamarkan bila belum diumumkan.
-CREATE OR REPLACE FUNCTION public.get_my_registration()
-RETURNS TABLE (
-  id uuid,
-  user_id uuid,
-  email text,
-  full_name text,
-  nrp text,
-  study_program text,
-  division_id text,
-  division_id_2 text,
-  cover_letter_path text,
-  cv_path text,
-  portfolio_url text,
-  mbti_result_path text,
-  twibbon_proof text,
-  status text,
-  submitted_at timestamptz,
-  created_at timestamptz,
-  updated_at timestamptz
-)
-LANGUAGE plpgsql
+-- 2. Fungsi aman: baris milik sendiri sebagai JSON, status disamarkan bila
+--    belum diumumkan. Pakai to_jsonb() agar tidak perlu mencocokkan tipe tiap
+--    kolom (menghindari error "structure of query does not match", 400).
+DROP FUNCTION IF EXISTS public.get_my_registration();
+
+CREATE FUNCTION public.get_my_registration()
+RETURNS jsonb
+LANGUAGE sql
 SECURITY DEFINER
 SET search_path = public
 AS $$
-DECLARE
-  announced boolean;
-BEGIN
-  SELECT announcement_released INTO announced
-  FROM public.recruitment_settings WHERE id = 1;
-
-  RETURN QUERY
-    SELECT
-      r.id,
-      r.user_id,
-      r.email::text,
-      r.full_name::text,
-      r.nrp::text,
-      r.study_program::text,
-      r.division_id::text,
-      r.division_id_2::text,
-      r.cover_letter_path::text,
-      r.cv_path::text,
-      r.portfolio_url::text,
-      r.mbti_result_path::text,
-      r.twibbon_proof::text,
-      (CASE WHEN COALESCE(announced, false) THEN r.status::text ELSE 'Menunggu' END),
-      r.submitted_at,
-      r.created_at,
-      r.updated_at
-    FROM public.registrations r
-    WHERE r.user_id = auth.uid();
-END;
+  SELECT to_jsonb(r) || jsonb_build_object(
+           'status',
+           CASE
+             WHEN COALESCE(
+               (SELECT announcement_released FROM public.recruitment_settings WHERE id = 1),
+               false
+             ) THEN r.status
+             ELSE 'Menunggu'
+           END
+         )
+  FROM public.registrations r
+  WHERE r.user_id = auth.uid()
+  LIMIT 1;
 $$;
 
 REVOKE ALL ON FUNCTION public.get_my_registration() FROM public;
