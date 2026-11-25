@@ -4,6 +4,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaTable, FaCopy, FaCheck, FaSpinner, FaExternalLinkAlt, FaLock } from "react-icons/fa";
 import { fetchSheetExportToken } from "@/services/api";
 
+/** Spreadsheet data pendaftar (live, auto-update tiap 5 menit via Apps Script). */
+const SHEET_URL =
+  "https://docs.google.com/spreadsheets/d/1k9oBPzR8VVvoUnRrUIj4CWcYrPEhkW2bgmVzly_K4jw/edit";
+
 /** Ambil ID spreadsheet dari URL Google Sheets (.../d/<ID>/edit...). */
 function extractSheetId(url: string): string {
   const m = url.match(/\/d\/([a-zA-Z0-9_-]{20,})/);
@@ -11,27 +15,20 @@ function extractSheetId(url: string): string {
 }
 
 /**
- * Panel sinkron data pendaftar ke Google Sheets (live, auto-update tiap 5 menit).
- *
- * Menghasilkan SELURUH kode Google Apps Script dengan token yang benar sudah
- * terisi otomatis + ID sheet dari URL yang ditempel admin, jadi tidak ada lagi
- * salah ketik/salin token (penyebab umum "data tidak masuk").
+ * Panel spreadsheet data pendaftar. Tampilan utama hanya tombol "Buka
+ * Spreadsheet" yang mengarah ke sheet live. Pengaturan Apps Script (untuk
+ * setup ulang / menyambungkan sheet baru) disembunyikan di bagian lipat.
  * Hanya tampil untuk super-admin (lihat pemakaian di halaman pendaftar).
  */
 export default function SpreadsheetSyncPanel() {
   const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [sheetUrl, setSheetUrl] = useState("");
-  const [copied, setCopied] = useState<string | null>(null);
+  const [sheetUrl, setSheetUrl] = useState(SHEET_URL);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let active = true;
-    fetchSheetExportToken().then(({ data, error }) => {
-      if (!active) return;
-      if (error || !data) setError(error ?? "Token tidak tersedia.");
-      else setToken(data);
-      setLoading(false);
+    fetchSheetExportToken().then(({ data }) => {
+      if (active && data) setToken(data);
     });
     return () => {
       active = false;
@@ -63,11 +60,11 @@ function setup() {
 }`;
   }, [token, csvUrl, sheetId]);
 
-  const copy = async (text: string, which: string) => {
+  const copyScript = async () => {
     try {
-      await navigator.clipboard.writeText(text);
-      setCopied(which);
-      window.setTimeout(() => setCopied((c) => (c === which ? null : c)), 2000);
+      await navigator.clipboard.writeText(script);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
     } catch {
       /* abaikan */
     }
@@ -80,24 +77,35 @@ function setup() {
           <FaTable size={18} />
         </div>
         <div>
-          <h2 className="font-akira text-lg sm:text-xl uppercase tracking-tighter">Spreadsheet Live</h2>
+          <h2 className="font-akira text-lg sm:text-xl uppercase tracking-tighter">Spreadsheet Data Pendaftar</h2>
           <p className="text-xs text-white/60 mt-1">
-            Alirkan semua data pendaftar ke Google Sheets (auto-update tiap 5 menit) — mirip Google Form.
+            Seluruh data pendaftar — ter-update otomatis tiap 5 menit.
           </p>
         </div>
       </div>
 
-      {loading ? (
-        <p className="text-white/50 text-xs flex items-center gap-2 py-4">
-          <FaSpinner className="animate-spin" /> Menyiapkan...
-        </p>
-      ) : error ? (
-        <div className="p-4 bg-red-950/40 border border-red-500/30 text-red-300 text-xs">{error}</div>
-      ) : (
-        <>
-          {/* Step 1: URL sheet */}
+      {/* Tombol utama: buka spreadsheet */}
+      <a
+        href={SHEET_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-3 px-7 py-4 bg-[#fff0aa] text-[#012e21] text-sm font-bold uppercase tracking-widest hover:bg-white transition"
+      >
+        <FaExternalLinkAlt size={13} /> Buka Spreadsheet
+      </a>
+      <p className="text-[11px] text-white/45 mt-3">
+        Dibuka di Google Sheets. Bagikan link ke pengurus lain lewat tombol Share di Sheets.
+      </p>
+
+      {/* Pengaturan lanjutan (disembunyikan) */}
+      <details className="mt-6 border-t border-white/10 pt-4 group">
+        <summary className="cursor-pointer text-[11px] font-semibold uppercase tracking-widest text-white/50 hover:text-[#fff0aa] transition list-none flex items-center gap-2">
+          <FaLock size={10} /> Pengaturan Apps Script (jika perlu setup ulang / ganti sheet)
+        </summary>
+
+        <div className="mt-4">
           <label className="block text-[10px] text-[#fff0aa] uppercase tracking-widest font-semibold mb-2">
-            1. Tempel URL Google Sheet tujuan
+            1. URL Google Sheet tujuan
           </label>
           <input
             type="text"
@@ -107,57 +115,39 @@ function setup() {
             className="w-full bg-white/5 border border-white/15 focus:border-[#fff0aa] py-3 px-4 text-white placeholder-white/30 focus:outline-none text-sm mb-1"
           />
           <p className={`text-[11px] mb-5 ${sheetId ? "text-emerald-300" : "text-white/40"}`}>
-            {sheetId ? `✓ ID sheet terdeteksi: ${sheetId}` : "Buat/ buka 1 sheet, lalu tempel URL-nya di sini."}
+            {sheetId ? `✓ ID sheet terdeteksi: ${sheetId}` : "Tempel URL sheet untuk membuat kode."}
           </p>
 
-          {/* Step 2: script */}
           <div className="flex items-center justify-between gap-3 mb-2">
             <label className="block text-[10px] text-[#fff0aa] uppercase tracking-widest font-semibold">
               2. Kode Apps Script (token sudah terisi otomatis)
             </label>
             <button
               type="button"
-              disabled={!sheetId}
-              onClick={() => copy(script, "script")}
+              disabled={!sheetId || !token}
+              onClick={copyScript}
               className="shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-[#fff0aa] text-[#012e21] text-[11px] font-bold uppercase tracking-widest hover:bg-white transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {copied === "script" ? <FaCheck /> : <FaCopy />} {copied === "script" ? "Tersalin" : "Salin kode"}
+              {copied ? <FaCheck /> : <FaCopy />} {copied ? "Tersalin" : "Salin kode"}
             </button>
           </div>
-          <pre className="w-full overflow-x-auto bg-black/30 border border-white/15 px-4 py-3 text-[11px] leading-relaxed text-emerald-200 whitespace-pre mb-5">
-            {script}
-          </pre>
+          {token ? (
+            <pre className="w-full overflow-x-auto bg-black/30 border border-white/15 px-4 py-3 text-[11px] leading-relaxed text-emerald-200 whitespace-pre mb-4">
+              {script}
+            </pre>
+          ) : (
+            <p className="text-white/40 text-xs flex items-center gap-2 py-3">
+              <FaSpinner className="animate-spin" /> Menyiapkan kode...
+            </p>
+          )}
 
-          {/* Step 3: langkah */}
-          <ol className="space-y-1.5 text-sm text-white/75 list-decimal list-inside mb-5">
-            <li>Di sheet itu: menu <span className="text-[#fff0aa]">Extensions → Apps Script</span>.</li>
+          <ol className="space-y-1.5 text-[13px] text-white/70 list-decimal list-inside">
+            <li>Di sheet: <span className="text-[#fff0aa]">Extensions → Apps Script</span>.</li>
             <li>Hapus kode bawaan → tempel kode di atas → <span className="text-[#fff0aa]">Save</span>.</li>
-            <li>Pilih fungsi <span className="font-mono text-[#fff0aa]">setup</span> → <span className="text-[#fff0aa]">Run</span> → izinkan akses.</li>
-            <li>Data langsung masuk & auto-update tiap 5 menit. Share sheet-nya ke pengurus lain.</li>
+            <li>Pilih fungsi <span className="font-mono text-[#fff0aa]">setup</span> → <span className="text-[#fff0aa]">Run</span> → izinkan.</li>
           </ol>
-
-          <div className="flex flex-wrap items-center gap-3 mb-5">
-            <a
-              href={csvUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/20 text-white/80 text-[11px] font-semibold uppercase tracking-widest hover:bg-white/10 transition"
-            >
-              <FaExternalLinkAlt size={11} /> Tes data mentah (CSV)
-            </a>
-          </div>
-
-          <div className="flex items-start gap-2.5 p-3 bg-white/[0.03] border border-white/10 text-[11px] text-white/55 leading-relaxed">
-            <FaLock className="shrink-0 mt-0.5 text-[#fff0aa]/70" />
-            <span>
-              Kode ini berisi <b className="text-white/70">token rahasia</b> + data pribadi pendaftar. Simpan
-              hanya di sheet/akun pengurus inti. Kalau belum ada pendaftar, sheet hanya berisi baris header —
-              itu normal. Setup cukup <b className="text-white/70">sekali</b>; pengurus lain tinggal buka sheet
-              yang sudah di-share.
-            </span>
-          </div>
-        </>
-      )}
+        </div>
+      </details>
     </div>
   );
 }
