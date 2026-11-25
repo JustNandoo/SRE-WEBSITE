@@ -41,15 +41,15 @@ BEGIN
   END IF;
   RETURN QUERY
     SELECT
-      r.full_name,
-      r.email,
-      r.nrp,
-      r.study_program,
+      r.full_name::text,
+      r.email::text,
+      r.nrp::text,
+      r.study_program::text,
       r.division_id::text,
       COALESCE(r.division_id_2::text, ''),
       r.status::text,
-      COALESCE(r.portfolio_url, ''),
-      COALESCE(r.twibbon_proof, ''),
+      COALESCE(r.portfolio_url, '')::text,
+      COALESCE(r.twibbon_proof, '')::text,
       r.submitted_at
     FROM public.registrations r
     ORDER BY r.submitted_at DESC;
