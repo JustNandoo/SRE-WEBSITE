@@ -384,20 +384,45 @@ export default function PendaftarAdminPage() {
                     </td>
                     <td className="py-4 px-4 align-top" onClick={(e) => e.stopPropagation()}>
                       {isWritable ? (
-                        <div className="flex items-center gap-2">
-                          <select
-                            value={item.status}
-                            disabled={updatingId === item.id}
-                            onChange={(e) => handleStatusChange(item, e.target.value as RegistrationStatus)}
-                            className={`border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider focus:outline-none focus:border-[#fff0aa] disabled:opacity-50 ${statusClass[item.status]}`}
-                          >
-                            {registrationStatuses.map((s) => (
-                              <option key={s} value={s} className="bg-[#012e21] text-white">
-                                {s}
-                              </option>
+                        <div className="flex flex-col gap-2 min-w-[150px]">
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={item.status}
+                              disabled={updatingId === item.id}
+                              onChange={(e) => handleStatusChange(item, e.target.value as RegistrationStatus)}
+                              className={`border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider focus:outline-none focus:border-[#fff0aa] disabled:opacity-50 ${statusClass[item.status]}`}
+                            >
+                              {registrationStatuses.map((s) => (
+                                <option key={s} value={s} className="bg-[#012e21] text-white">
+                                  {s}
+                                </option>
+                              ))}
+                            </select>
+                            {updatingId === item.id && <FaSpinner className="animate-spin text-white/50" size={12} />}
+                          </div>
+
+                          {/* Divisi penerimaan — muncul saat Lolos (lolos berkas -> wawancara) */}
+                          {item.status === "Lolos" &&
+                            (item.division_id_2 ? (
+                              <select
+                                value={item.accepted_division ?? item.division_id}
+                                disabled={updatingId === item.id}
+                                title="Diterima di divisi"
+                                onChange={(e) => handleStatusChange(item, "Lolos", e.target.value as RegistrationDivisionId)}
+                                className="border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider focus:outline-none focus:border-[#fff0aa] disabled:opacity-50"
+                              >
+                                <option value={item.division_id} className="bg-[#012e21] text-white">
+                                  {divisionLabel(item.division_id)}
+                                </option>
+                                <option value={item.division_id_2} className="bg-[#012e21] text-white">
+                                  {divisionLabel(item.division_id_2)}
+                                </option>
+                              </select>
+                            ) : (
+                              <span className="inline-block border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider">
+                                ✓ {divisionLabel(item.accepted_division ?? item.division_id)}
+                              </span>
                             ))}
-                          </select>
-                          {updatingId === item.id && <FaSpinner className="animate-spin text-white/50" size={12} />}
                         </div>
                       ) : (
                         <span className={`inline-block border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider ${statusClass[item.status]}`}>
