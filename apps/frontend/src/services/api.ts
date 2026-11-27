@@ -335,6 +335,34 @@ export async function resendApplicantConfirmation(email: string): Promise<ApiRes
   return { data: true, error: null };
 }
 
+/**
+ * Kirim email reset password. Supabase mengirim tautan hanya bila email
+ * terdaftar; hasil tetap "sukses" agar tidak membocorkan keberadaan akun.
+ * Tautan mengarah ke /auth/callback -> (sesi recovery) -> /reset-password.
+ */
+export async function requestPasswordReset(email: string): Promise<ApiResult<true>> {
+  const supabase = createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+    redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+  });
+  if (error) {
+    console.error('Supabase requestPasswordReset error:', error);
+    return { data: null, error: translateAuthError(error) };
+  }
+  return { data: true, error: null };
+}
+
+/** Set password baru (dipanggil di /reset-password saat berada di sesi recovery). */
+export async function updateApplicantPassword(newPassword: string): Promise<ApiResult<true>> {
+  const supabase = createClient();
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) {
+    console.error('Supabase updateApplicantPassword error:', error);
+    return { data: null, error: translateAuthError(error) };
+  }
+  return { data: true, error: null };
+}
+
 /** true jika user yang login punya baris di public.user_roles (akun staf CMS). */
 export async function fetchIsCmsUser(userId: string): Promise<boolean> {
   const supabase = createClient();

@@ -120,6 +120,15 @@ export default function SectionLogin() {
           }
         />
 
+        <div className="flex justify-end -mt-2">
+          <Link
+            href="/lupa-password"
+            className="font-poppins text-xs text-white/60 hover:text-[#fff0aa] tracking-wide underline underline-offset-4 transition-colors font-medium"
+          >
+            Lupa password?
+          </Link>
+        </div>
+
         {canResend && (
           <button
             type="button"
