@@ -18,12 +18,10 @@ export default function AnnouncementReveal({
   accepted,
   invitationUrl,
   acceptedDivisionLabel,
-  acceptedDivision2Label,
 }: {
   accepted: boolean;
   invitationUrl: string | null;
   acceptedDivisionLabel: string | null;
-  acceptedDivision2Label: string | null;
 }) {
   const [stage, setStage] = useState<Stage>("idle");
 
@@ -65,12 +63,7 @@ export default function AnnouncementReveal({
 
         {stage === "result" &&
           (accepted ? (
-            <AcceptedScene
-              key="accepted"
-              invitationUrl={invitationUrl}
-              divisionLabel={acceptedDivisionLabel}
-              divisionLabel2={acceptedDivision2Label}
-            />
+            <AcceptedScene key="accepted" invitationUrl={invitationUrl} divisionLabel={acceptedDivisionLabel} />
           ) : (
             <RejectedScene key="rejected" />
           ))}
@@ -130,11 +123,9 @@ function SuspenseScene() {
 function AcceptedScene({
   invitationUrl,
   divisionLabel,
-  divisionLabel2,
 }: {
   invitationUrl: string | null;
   divisionLabel: string | null;
-  divisionLabel2: string | null;
 }) {
   return (
     <motion.div
@@ -186,17 +177,11 @@ function AcceptedScene({
           transition={{ delay: 0.7, type: "spring", stiffness: 200, damping: 14 }}
         >
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-emerald-300">
-            {divisionLabel2 ? "Diterima di Dua Divisi" : "Diterima di Divisi"}
+            Diterima di Divisi
           </span>
           <span className="text-xl md:text-2xl font-black tracking-tight text-[#fff0aa]">
             {divisionLabel}
-            {divisionLabel2 ? ` & ${divisionLabel2}` : ""}
           </span>
-          {divisionLabel2 && (
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-300/80 mt-0.5">
-              Prioritas utama: {divisionLabel}
-            </span>
-          )}
         </motion.div>
       )}
 

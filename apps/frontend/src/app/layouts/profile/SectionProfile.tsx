@@ -179,11 +179,6 @@ export default function SectionProfile() {
                           ? divisionLabel(registration.accepted_division)
                           : null
                       }
-                      acceptedDivision2Label={
-                        registration?.accepted_division_2
-                          ? divisionLabel(registration.accepted_division_2)
-                          : null
-                      }
                     />
                   )}
                 </div>
