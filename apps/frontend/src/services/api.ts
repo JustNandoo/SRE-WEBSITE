@@ -649,13 +649,19 @@ export async function fetchRegistrationStats(): Promise<
 export async function updateRegistrationStatus(
   id: string,
   status: RegistrationStatus,
-  acceptedDivision: RegistrationDivisionId | null = null
+  acceptedDivision: RegistrationDivisionId | null = null,
+  acceptedDivision2: RegistrationDivisionId | null = null
 ): Promise<ApiResult<RegistrationEntity>> {
   const supabase = createClient();
-  // accepted_division hanya relevan saat Lolos; selain itu dikosongkan.
+  // Divisi penerimaan hanya relevan saat Lolos; selain itu dikosongkan.
+  const lolos = status === 'Lolos';
   const { data, error } = await supabase
     .from('registrations')
-    .update({ status, accepted_division: status === 'Lolos' ? acceptedDivision : null })
+    .update({
+      status,
+      accepted_division: lolos ? acceptedDivision : null,
+      accepted_division_2: lolos ? acceptedDivision2 : null,
+    })
     .eq('id', id)
     .select('*')
     .single();

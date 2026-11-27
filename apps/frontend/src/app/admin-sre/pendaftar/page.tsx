@@ -17,9 +17,12 @@ import {
 import {
   REGISTRATION_EDITOR_ROLES,
   REGISTRATION_VIEWER_ROLES,
+  acceptanceChoiceOf,
+  acceptanceDivisions,
   divisionLabel,
   registrationDivisions,
   registrationStatuses,
+  type AcceptanceChoice,
 } from "@/lib/registrationData";
 import RecruitmentControlPanel from "@/app/components/admin/RecruitmentControlPanel";
 import RegistrantDetailModal from "@/app/components/admin/RegistrantDetailModal";
@@ -174,15 +177,32 @@ export default function PendaftarAdminPage() {
   const handleStatusChange = async (
     item: RegistrationEntity,
     status: RegistrationStatus,
-    acceptedDivision?: RegistrationDivisionId | null
+    acceptedDivision?: RegistrationDivisionId | null,
+    acceptedDivision2?: RegistrationDivisionId | null
   ) => {
-    // Saat Lolos, divisi diterima default ke pilihan pertama bila belum dipilih.
-    const div =
-      status === "Lolos" ? acceptedDivision ?? item.accepted_division ?? item.division_id : null;
-    // Lewati bila status & divisi tidak berubah.
-    if (status === item.status && (div ?? null) === (item.accepted_division ?? null)) return;
+    const lolos = status === "Lolos";
+    // Divisi utama default ke pilihan pertama bila belum dipilih.
+    const div1 = lolos ? acceptedDivision ?? item.accepted_division ?? item.division_id : null;
+    // Divisi kedua hanya bila dipilih "keduanya"; undefined = pertahankan yang ada.
+    const div2 = lolos
+      ? acceptedDivision2 === undefined
+        ? item.accepted_division_2 ?? null
+        : acceptedDivision2
+      : null;
+    // Lewati bila status & kedua divisi tidak berubah.
+    if (
+      status === item.status &&
+      (div1 ?? null) === (item.accepted_division ?? null) &&
+      (div2 ?? null) === (item.accepted_division_2 ?? null)
+    )
+      return;
     setUpdatingId(item.id);
-    const { data, error } = await updateRegistrationStatus(item.id, status, div);
+    const { data, error } = await updateRegistrationStatus(
+      item.id,
+      status,
+      div1,
+      div2 as RegistrationDivisionId | null
+    );
     setUpdatingId(null);
     if (error || !data) {
       showToast("error", error ?? "Gagal mengubah status.");
@@ -405,17 +425,32 @@ export default function PendaftarAdminPage() {
                           {item.status === "Lolos" &&
                             (item.division_id_2 ? (
                               <select
-                                value={item.accepted_division ?? item.division_id}
+                                value={acceptanceChoiceOf(item)}
                                 disabled={updatingId === item.id}
                                 title="Diterima di divisi"
-                                onChange={(e) => handleStatusChange(item, "Lolos", e.target.value as RegistrationDivisionId)}
+                                onChange={(e) => {
+                                  const { primary, secondary } = acceptanceDivisions(
+                                    e.target.value as AcceptanceChoice,
+                                    item.division_id,
+                                    item.division_id_2 ?? null
+                                  );
+                                  handleStatusChange(
+                                    item,
+                                    "Lolos",
+                                    primary as RegistrationDivisionId,
+                                    secondary as RegistrationDivisionId | null
+                                  );
+                                }}
                                 className="border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider focus:outline-none focus:border-[#fff0aa] disabled:opacity-50"
                               >
-                                <option value={item.division_id} className="bg-[#012e21] text-white">
+                                <option value="first" className="bg-[#012e21] text-white">
                                   {divisionLabel(item.division_id)}
                                 </option>
-                                <option value={item.division_id_2} className="bg-[#012e21] text-white">
+                                <option value="second" className="bg-[#012e21] text-white">
                                   {divisionLabel(item.division_id_2)}
+                                </option>
+                                <option value="both" className="bg-[#012e21] text-white">
+                                  Keduanya (utama: {divisionLabel(item.division_id)})
                                 </option>
                               </select>
                             ) : (

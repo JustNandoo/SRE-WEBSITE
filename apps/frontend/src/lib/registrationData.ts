@@ -44,6 +44,34 @@ export const divisionRequiresPortfolio = (id: string) =>
 export const divisionLabel = (id: string) =>
   registrationDivisions.find((d) => d.id === id)?.label ?? id;
 
+// ==========================================================
+// Pilihan penerimaan: Pilihan 1 / Pilihan 2 / Keduanya (utama = Pilihan 1)
+// ==========================================================
+export type AcceptanceChoice = "first" | "second" | "both";
+
+/** Tentukan pilihan penerimaan dari data registrasi. */
+export function acceptanceChoiceOf(r: {
+  division_id: string;
+  division_id_2?: string | null;
+  accepted_division?: string | null;
+  accepted_division_2?: string | null;
+}): AcceptanceChoice {
+  if (r.accepted_division_2) return "both";
+  if (r.accepted_division && r.division_id_2 && r.accepted_division === r.division_id_2) return "second";
+  return "first";
+}
+
+/** Dari pilihan -> divisi utama & kedua (kedua null kecuali "both"). */
+export function acceptanceDivisions(
+  choice: AcceptanceChoice,
+  divisionId: string,
+  divisionId2: string | null
+): { primary: string; secondary: string | null } {
+  if (choice === "second") return { primary: divisionId2 ?? divisionId, secondary: null };
+  if (choice === "both") return { primary: divisionId, secondary: divisionId2 };
+  return { primary: divisionId, secondary: null };
+}
+
 /** Saran isian prodi (input tetap bebas agar tidak memblokir prodi yang belum terdaftar). */
 export const studyProgramSuggestions: string[] = [
   // ===== D3 (Diploma Tiga) =====

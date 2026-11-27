@@ -18,10 +18,12 @@ export default function AnnouncementReveal({
   accepted,
   invitationUrl,
   acceptedDivisionLabel,
+  acceptedDivision2Label,
 }: {
   accepted: boolean;
   invitationUrl: string | null;
   acceptedDivisionLabel: string | null;
+  acceptedDivision2Label: string | null;
 }) {
   const [stage, setStage] = useState<Stage>("idle");
 
@@ -63,7 +65,12 @@ export default function AnnouncementReveal({
 
         {stage === "result" &&
           (accepted ? (
-            <AcceptedScene key="accepted" invitationUrl={invitationUrl} divisionLabel={acceptedDivisionLabel} />
+            <AcceptedScene
+              key="accepted"
+              invitationUrl={invitationUrl}
+              divisionLabel={acceptedDivisionLabel}
+              divisionLabel2={acceptedDivision2Label}
+            />
           ) : (
             <RejectedScene key="rejected" />
           ))}
@@ -123,9 +130,11 @@ function SuspenseScene() {
 function AcceptedScene({
   invitationUrl,
   divisionLabel,
+  divisionLabel2,
 }: {
   invitationUrl: string | null;
   divisionLabel: string | null;
+  divisionLabel2: string | null;
 }) {
   return (
     <motion.div
@@ -167,20 +176,39 @@ function AcceptedScene({
       >
         Lolos <span className="text-[#fff0aa]">Berkas!</span>
       </motion.h3>
+
+      {/* Divisi penerimaan — ditonjolkan */}
+      {divisionLabel && (
+        <motion.div
+          className="relative z-10 mt-5 inline-flex flex-col items-center gap-1 px-6 py-3 rounded-2xl bg-emerald-400/15 border border-emerald-400/40"
+          initial={{ opacity: 0, scale: 0.85, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ delay: 0.7, type: "spring", stiffness: 200, damping: 14 }}
+        >
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-emerald-300">
+            {divisionLabel2 ? "Diterima di Dua Divisi" : "Diterima di Divisi"}
+          </span>
+          <span className="text-xl md:text-2xl font-black tracking-tight text-[#fff0aa]">
+            {divisionLabel}
+            {divisionLabel2 ? ` & ${divisionLabel2}` : ""}
+          </span>
+          {divisionLabel2 && (
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-emerald-300/80 mt-0.5">
+              Prioritas utama: {divisionLabel}
+            </span>
+          )}
+        </motion.div>
+      )}
+
       <motion.p
-        className="relative z-10 mt-4 text-white/70 leading-relaxed max-w-md mx-auto"
+        className="relative z-10 mt-5 text-white/70 leading-relaxed max-w-md mx-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 0.9 }}
       >
-        Kamu lolos seleksi berkas dan diterima untuk mengikuti{" "}
-        <span className="text-[#fff0aa] font-semibold">tahap wawancara</span>
-        {divisionLabel ? (
-          <>
-            {" "}di divisi <span className="text-[#fff0aa] font-semibold">{divisionLabel}</span>
-          </>
-        ) : null}
-        . Ini belum hasil final — buka undangan di bawah untuk langkah berikutnya.
+        Selamat! Kamu lolos seleksi berkas dan lanjut ke{" "}
+        <span className="text-[#fff0aa] font-semibold">tahap wawancara</span>. Ini belum hasil final —
+        buka undangan di bawah untuk langkah berikutnya.
       </motion.p>
 
       <motion.div

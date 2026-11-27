@@ -11,7 +11,13 @@ import {
 } from "react-icons/fa";
 import type { RegistrationDivisionId, RegistrationEntity, RegistrationStatus } from "@sre-pens/shared-types";
 import { fetchRegistrationFileUrl } from "@/services/api";
-import { divisionLabel, registrationStatuses } from "@/lib/registrationData";
+import {
+  acceptanceChoiceOf,
+  acceptanceDivisions,
+  divisionLabel,
+  registrationStatuses,
+  type AcceptanceChoice,
+} from "@/lib/registrationData";
 
 type TabKind = "pdf" | "image" | "link";
 interface FileTab {
@@ -75,7 +81,8 @@ export default function RegistrantDetailModal({
   onStatusChange: (
     item: RegistrationEntity,
     status: RegistrationStatus,
-    acceptedDivision?: RegistrationDivisionId | null
+    acceptedDivision?: RegistrationDivisionId | null,
+    acceptedDivision2?: RegistrationDivisionId | null
   ) => void;
   onClose: () => void;
 }) {
@@ -207,27 +214,43 @@ export default function RegistrantDetailModal({
                 <p className="font-mono text-[10px] uppercase tracking-widest text-white/40 mb-3">Diterima di Divisi</p>
                 {isWritable && registration.division_id_2 ? (
                   <select
-                    value={registration.accepted_division ?? registration.division_id}
+                    value={acceptanceChoiceOf(registration)}
                     disabled={updating}
-                    onChange={(e) =>
-                      onStatusChange(registration, "Lolos", e.target.value as RegistrationDivisionId)
-                    }
+                    onChange={(e) => {
+                      const { primary, secondary } = acceptanceDivisions(
+                        e.target.value as AcceptanceChoice,
+                        registration.division_id,
+                        registration.division_id_2 ?? null
+                      );
+                      onStatusChange(
+                        registration,
+                        "Lolos",
+                        primary as RegistrationDivisionId,
+                        secondary as RegistrationDivisionId | null
+                      );
+                    }}
                     className="w-full border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 px-3 py-2.5 text-sm font-semibold uppercase tracking-wider focus:outline-none focus:border-[#fff0aa] disabled:opacity-50"
                   >
-                    <option value={registration.division_id} className="bg-[#012e21] text-white">
+                    <option value="first" className="bg-[#012e21] text-white">
                       {divisionLabel(registration.division_id)}
                     </option>
-                    <option value={registration.division_id_2} className="bg-[#012e21] text-white">
+                    <option value="second" className="bg-[#012e21] text-white">
                       {divisionLabel(registration.division_id_2)}
+                    </option>
+                    <option value="both" className="bg-[#012e21] text-white">
+                      Keduanya (utama: {divisionLabel(registration.division_id)})
                     </option>
                   </select>
                 ) : (
                   <span className="inline-block border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 px-3 py-2 text-sm font-semibold uppercase tracking-wider">
                     {divisionLabel(registration.accepted_division ?? registration.division_id)}
+                    {registration.accepted_division_2
+                      ? ` & ${divisionLabel(registration.accepted_division_2)}`
+                      : ""}
                   </span>
                 )}
                 <p className="mt-2 text-[11px] text-white/40 leading-relaxed">
-                  Lolos berkas &amp; lanjut ke tahap wawancara di divisi ini.
+                  Lolos berkas &amp; lanjut ke tahap wawancara. Jika &quot;Keduanya&quot;, prioritas utama tetap Pilihan 1.
                 </p>
               </div>
             )}
