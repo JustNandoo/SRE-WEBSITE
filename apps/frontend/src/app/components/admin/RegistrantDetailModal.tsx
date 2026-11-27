@@ -9,7 +9,7 @@ import {
   FaLink,
   FaExternalLinkAlt,
 } from "react-icons/fa";
-import type { RegistrationEntity, RegistrationStatus } from "@sre-pens/shared-types";
+import type { RegistrationDivisionId, RegistrationEntity, RegistrationStatus } from "@sre-pens/shared-types";
 import { fetchRegistrationFileUrl } from "@/services/api";
 import { divisionLabel, registrationStatuses } from "@/lib/registrationData";
 
@@ -72,7 +72,11 @@ export default function RegistrantDetailModal({
   isWritable: boolean;
   updating: boolean;
   initialKey?: string;
-  onStatusChange: (item: RegistrationEntity, status: RegistrationStatus) => void;
+  onStatusChange: (
+    item: RegistrationEntity,
+    status: RegistrationStatus,
+    acceptedDivision?: RegistrationDivisionId | null
+  ) => void;
   onClose: () => void;
 }) {
   const tabs = useMemo(() => buildTabs(registration), [registration]);
@@ -196,6 +200,37 @@ export default function RegistrantDetailModal({
                 </p>
               )}
             </div>
+
+            {/* Divisi penerimaan — hanya saat Lolos (lolos berkas -> wawancara) */}
+            {registration.status === "Lolos" && (
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-white/40 mb-3">Diterima di Divisi</p>
+                {isWritable && registration.division_id_2 ? (
+                  <select
+                    value={registration.accepted_division ?? registration.division_id}
+                    disabled={updating}
+                    onChange={(e) =>
+                      onStatusChange(registration, "Lolos", e.target.value as RegistrationDivisionId)
+                    }
+                    className="w-full border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 px-3 py-2.5 text-sm font-semibold uppercase tracking-wider focus:outline-none focus:border-[#fff0aa] disabled:opacity-50"
+                  >
+                    <option value={registration.division_id} className="bg-[#012e21] text-white">
+                      {divisionLabel(registration.division_id)}
+                    </option>
+                    <option value={registration.division_id_2} className="bg-[#012e21] text-white">
+                      {divisionLabel(registration.division_id_2)}
+                    </option>
+                  </select>
+                ) : (
+                  <span className="inline-block border border-emerald-400/40 bg-emerald-400/10 text-emerald-200 px-3 py-2 text-sm font-semibold uppercase tracking-wider">
+                    {divisionLabel(registration.accepted_division ?? registration.division_id)}
+                  </span>
+                )}
+                <p className="mt-2 text-[11px] text-white/40 leading-relaxed">
+                  Lolos berkas &amp; lanjut ke tahap wawancara di divisi ini.
+                </p>
+              </div>
+            )}
 
             <dl className="divide-y divide-white/10 border-t border-white/10">
               {info.map(([label, value]) => (

@@ -17,9 +17,11 @@ type Stage = "idle" | "checking" | "result";
 export default function AnnouncementReveal({
   accepted,
   invitationUrl,
+  acceptedDivisionLabel,
 }: {
   accepted: boolean;
   invitationUrl: string | null;
+  acceptedDivisionLabel: string | null;
 }) {
   const [stage, setStage] = useState<Stage>("idle");
 
@@ -61,7 +63,7 @@ export default function AnnouncementReveal({
 
         {stage === "result" &&
           (accepted ? (
-            <AcceptedScene key="accepted" invitationUrl={invitationUrl} />
+            <AcceptedScene key="accepted" invitationUrl={invitationUrl} divisionLabel={acceptedDivisionLabel} />
           ) : (
             <RejectedScene key="rejected" />
           ))}
@@ -117,8 +119,14 @@ function SuspenseScene() {
   );
 }
 
-// ================= HASIL: LOLOS =================
-function AcceptedScene({ invitationUrl }: { invitationUrl: string | null }) {
+// ================= HASIL: LOLOS BERKAS =================
+function AcceptedScene({
+  invitationUrl,
+  divisionLabel,
+}: {
+  invitationUrl: string | null;
+  divisionLabel: string | null;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -157,7 +165,7 @@ function AcceptedScene({ invitationUrl }: { invitationUrl: string | null }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, type: "spring", stiffness: 160, damping: 14 }}
       >
-        Kamu <span className="text-[#fff0aa]">Lolos!</span>
+        Lolos <span className="text-[#fff0aa]">Berkas!</span>
       </motion.h3>
       <motion.p
         className="relative z-10 mt-4 text-white/70 leading-relaxed max-w-md mx-auto"
@@ -165,8 +173,14 @@ function AcceptedScene({ invitationUrl }: { invitationUrl: string | null }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
       >
-        Kamu resmi diterima sebagai staf SRE PENS. Welcome to the Society — langkah pertamamu menanti
-        di undangan berikut.
+        Kamu lolos seleksi berkas dan diterima untuk mengikuti{" "}
+        <span className="text-[#fff0aa] font-semibold">tahap wawancara</span>
+        {divisionLabel ? (
+          <>
+            {" "}di divisi <span className="text-[#fff0aa] font-semibold">{divisionLabel}</span>
+          </>
+        ) : null}
+        . Ini belum hasil final — buka undangan di bawah untuk langkah berikutnya.
       </motion.p>
 
       <motion.div

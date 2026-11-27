@@ -648,12 +648,14 @@ export async function fetchRegistrationStats(): Promise<
 
 export async function updateRegistrationStatus(
   id: string,
-  status: RegistrationStatus
+  status: RegistrationStatus,
+  acceptedDivision: RegistrationDivisionId | null = null
 ): Promise<ApiResult<RegistrationEntity>> {
   const supabase = createClient();
+  // accepted_division hanya relevan saat Lolos; selain itu dikosongkan.
   const { data, error } = await supabase
     .from('registrations')
-    .update({ status })
+    .update({ status, accepted_division: status === 'Lolos' ? acceptedDivision : null })
     .eq('id', id)
     .select('*')
     .single();

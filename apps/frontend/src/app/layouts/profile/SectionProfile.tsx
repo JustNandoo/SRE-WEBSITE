@@ -171,7 +171,15 @@ export default function SectionProfile() {
                     </div>
                   ) : (
                     // Pengumuman dirilis: cek hasil -> animasi suspense -> hasil.
-                    <AnnouncementReveal accepted={accepted} invitationUrl={invitationUrl} />
+                    <AnnouncementReveal
+                      accepted={accepted}
+                      invitationUrl={invitationUrl}
+                      acceptedDivisionLabel={
+                        registration?.accepted_division
+                          ? divisionLabel(registration.accepted_division)
+                          : null
+                      }
+                    />
                   )}
                 </div>
               )}

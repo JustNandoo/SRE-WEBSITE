@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { FaSearch, FaLock, FaFilePdf, FaImage, FaLink, FaSpinner, FaSyncAlt } from "react-icons/fa";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
-import type { RegistrationEntity, RegistrationStatus } from "@sre-pens/shared-types";
+import type { RegistrationDivisionId, RegistrationEntity, RegistrationStatus } from "@sre-pens/shared-types";
 import {
   fetchRegistrations,
   fetchRegistrationStats,
@@ -171,10 +171,18 @@ export default function PendaftarAdminPage() {
   }, [isAllowedToAccess, loadStats]);
 
   // --- Actions ---
-  const handleStatusChange = async (item: RegistrationEntity, status: RegistrationStatus) => {
-    if (status === item.status) return;
+  const handleStatusChange = async (
+    item: RegistrationEntity,
+    status: RegistrationStatus,
+    acceptedDivision?: RegistrationDivisionId | null
+  ) => {
+    // Saat Lolos, divisi diterima default ke pilihan pertama bila belum dipilih.
+    const div =
+      status === "Lolos" ? acceptedDivision ?? item.accepted_division ?? item.division_id : null;
+    // Lewati bila status & divisi tidak berubah.
+    if (status === item.status && (div ?? null) === (item.accepted_division ?? null)) return;
     setUpdatingId(item.id);
-    const { data, error } = await updateRegistrationStatus(item.id, status);
+    const { data, error } = await updateRegistrationStatus(item.id, status, div);
     setUpdatingId(null);
     if (error || !data) {
       showToast("error", error ?? "Gagal mengubah status.");

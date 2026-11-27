@@ -123,6 +123,8 @@ export interface RegistrationEntity {
    * kolomnya / belum diisi (kompatibel dengan data lama sebelum migrasi twibbon).
    */
   twibbon_proof?: string | null;
+  /** Divisi tempat pendaftar diterima (salah satu dari 2 pilihan). null = belum. */
+  accepted_division?: RegistrationDivisionId | null;
   status: RegistrationStatus;
   submitted_at: string;
   created_at: string;

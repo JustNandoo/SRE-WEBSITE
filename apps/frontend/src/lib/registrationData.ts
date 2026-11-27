@@ -112,8 +112,8 @@ export const registrationStatusCopy: Record<RegistrationStatus, { title: string;
     body: "Berkasmu sedang direview. Informasi tahap berikutnya akan dikirim lewat email akunmu.",
   },
   Lolos: {
-    title: "Selamat, kamu lolos.",
-    body: "Kamu lolos seleksi Open Recruitment SRE PENS. Tunggu informasi lanjutan dari tim SRE PENS.",
+    title: "Selamat, kamu lolos seleksi berkas!",
+    body: "Kamu lolos ke tahap wawancara. Cek undangan dan informasi lanjutan dari tim SRE PENS.",
   },
   "Tidak Lolos": {
     title: "Terima kasih sudah mendaftar.",
